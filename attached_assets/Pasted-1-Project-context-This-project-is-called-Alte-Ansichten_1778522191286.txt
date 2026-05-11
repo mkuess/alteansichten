@@ -1,0 +1,132 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The first MVP starts with the region structure:
+
+- countries
+- states
+- districts
+- municipalities
+
+This task only creates the first table: countries.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+Filament access is restricted to admin and editor users.
+No archive-specific data models exist yet.
+No country, state, district, municipality, category, or place tables exist yet.
+
+3. Exact task
+
+Create the countries database table, the Country model, and a basic CountrySeeder for Austria.
+
+4. What Replit should do
+
+- Create a migration for a countries table.
+- Create an app/Models/Country.php model.
+- Create a database/seeders/CountrySeeder.php file.
+- Add Austria as the first seeded country.
+- Make the seeder idempotent, so running it multiple times does not create duplicates.
+- Add CountrySeeder to DatabaseSeeder.
+- Run the migration.
+- Run the seeder.
+- Verify that the countries table contains exactly one Austria record after seeding.
+
+5. What Replit must NOT do
+
+- Do not create states yet.
+- Do not create districts yet.
+- Do not create municipalities yet.
+- Do not create Filament Resources yet.
+- Do not create public pages yet.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not modify the existing role system.
+- Do not continue with Task 006 or later tasks.
+
+6. Expected files / changes
+
+Expected files:
+
+- database/migrations/xxxx_xx_xx_xxxxxx_create_countries_table.php
+- app/Models/Country.php
+- database/seeders/CountrySeeder.php
+- database/seeders/DatabaseSeeder.php updated to call CountrySeeder
+
+Expected countries table fields:
+
+- id
+- name
+- slug
+- iso_code nullable, max length 2
+- status string, default published
+- timestamps
+
+Expected seeded record:
+
+- name: Austria
+- slug: austria
+- iso_code: AT
+- status: published
+
+The model should allow mass assignment for the relevant fields.
+
+7. Test steps
+
+Run:
+
+php artisan migrate
+
+Run:
+
+php artisan db:seed --class=CountrySeeder
+
+Run the seeder a second time:
+
+php artisan db:seed --class=CountrySeeder
+
+Expected:
+There is still exactly one Austria record.
+
+Run:
+
+php artisan tinker
+
+Then check:
+
+App\Models\Country::count();
+
+Expected:
+1
+
+And:
+
+App\Models\Country::first()->name;
+
+Expected:
+Austria
+
+Finally run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
