@@ -1,0 +1,133 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project.
+
+The real Laravel app runs on port 8000.
+The Filament backend is reachable at /admin and login works.
+
+However, the Filament backend dashboard appears as raw unstyled HTML.
+This means Filament CSS and JavaScript are still not loading correctly after login.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+The user can open:
+
+/admin
+
+The Filament dashboard loads, but it is visually broken:
+- no proper layout
+- no Filament styling
+- oversized icons
+- raw HTML appearance
+
+This confirms:
+- routes work
+- login/session works
+- the issue is CSS/JS asset loading
+
+3. Exact task
+
+Fix Filament asset loading for the authenticated admin dashboard.
+
+4. What Replit should do
+
+- Inspect the rendered HTML source of /admin and find the CSS and JS asset URLs used by Filament.
+- Check whether these asset URLs return HTTP 200 or 404/blocked/mixed-content errors.
+- Check whether Filament assets exist under:
+  - public/css/filament
+  - public/js/filament
+- Check whether APP_URL or ASSET_URL is causing wrong asset URLs.
+- Make sure APP_URL points to the current public Replit HTTPS URL for port 8000.
+- If needed, set ASSET_URL to the same current public Replit HTTPS URL.
+- Run the standard Filament asset command:
+  php artisan filament:assets
+- Clear all Laravel caches:
+  php artisan optimize:clear
+  php artisan view:clear
+  php artisan config:clear
+  php artisan route:clear
+- If Vite build assets are involved, run:
+  npm install
+  npm run build
+- Do not hardcode /home/runner paths.
+- Do not add Replit-specific paths into Laravel code.
+- Use environment variables only for Replit-specific public URLs.
+
+5. What Replit must NOT do
+
+- Do not reinstall Filament.
+- Do not delete database data.
+- Do not reset migrations.
+- Do not remove existing Resources.
+- Do not remove the admin user.
+- Do not change the role system.
+- Do not apply the Claude custom backend design yet.
+- Do not continue with QR code resources or any new backend features.
+- Do not move the app back to /__mockup.
+- Do not use localhost asset URLs in rendered HTML.
+
+6. Expected files / changes
+
+Possible files to inspect or update:
+
+- .env
+- public/css/filament/*
+- public/js/filament/*
+- public/build/*
+- app/Providers/Filament/AdminPanelProvider.php
+- config/app.php
+
+Expected result:
+
+- /admin loads with full Filament styling.
+- /admin/login loads with full Filament styling.
+- Filament CSS and JS URLs use the public Replit HTTPS URL, not localhost.
+- Filament CSS and JS requests return HTTP 200.
+- Existing backend resources remain unchanged.
+
+7. Test steps
+
+Run:
+
+php artisan filament:assets
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/login
+
+Expected:
+The login page is styled correctly.
+
+Open:
+
+/admin
+
+Expected:
+The dashboard is styled correctly.
+
+Check the browser/network output or console:
+
+Expected:
+- no 404 errors for Filament CSS
+- no 404 errors for Filament JS
+- no mixed-content errors
+- no localhost asset URLs in the rendered HTML
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
