@@ -1,0 +1,131 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project.
+
+The backend was working before.
+After recent backend changes, clicking any item in the left Filament navigation causes a browser error:
+
+HTTP ERROR 502
+
+This happens when opening URLs such as:
+
+/admin/places
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own VM.
+
+2. Current state
+
+Laravel runs on port 8000.
+Filament admin exists at /admin.
+Several Filament Resources exist.
+Recent work included PlaceResource relation managers and media/QR/submission/report backend additions.
+
+Now admin navigation links cause HTTP 502.
+
+3. Exact task
+
+Diagnose and fix the HTTP 502 error when opening Filament admin resource pages.
+
+4. What Replit should do
+
+- Check whether the Laravel dev server process is still running.
+- Restart the Laravel dev server if needed.
+- Inspect the Replit console/server logs for the actual PHP error behind the 502.
+- Run:
+  php artisan route:list
+- Run:
+  php artisan test
+- Run:
+  php artisan optimize:clear
+- Check the latest modified Filament files, especially:
+  - app/Filament/Resources/PlaceResource.php
+  - app/Filament/Resources/PlaceResource/RelationManagers/*
+  - app/Filament/Resources/MediaItemResource.php
+  - app/Filament/Resources/QrCodeResource.php
+  - app/Filament/Resources/SubmissionResource.php
+  - app/Filament/Resources/ContentReportResource.php
+- Look for fatal errors such as:
+  - missing class imports
+  - wrong RelationManager relationship names
+  - invalid Filament method calls
+  - invalid table columns
+  - invalid relationship queries
+  - syntax errors
+- Fix only the actual cause of the 502.
+- If the newest PlaceResource media links relation manager caused the crash, disable that relation manager temporarily rather than breaking the backend.
+- Keep existing data and migrations unchanged.
+
+5. What Replit must NOT do
+
+- Do not delete database data.
+- Do not reset migrations.
+- Do not remove existing working resources unless a broken relation manager must be temporarily disabled.
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not apply design changes.
+- Do not add new features.
+- Do not create new tables.
+- Do not continue with the next task.
+- Do not change the app back to /__mockup.
+
+6. Expected files / changes
+
+Possible changed files:
+
+- app/Filament/Resources/PlaceResource.php
+- app/Filament/Resources/PlaceResource/RelationManagers/*
+- any recently changed Resource file only if it is the confirmed source of the error
+
+Expected result:
+
+- /admin loads.
+- /admin/places loads.
+- Other admin navigation links load again.
+- No HTTP 502 occurs when clicking Filament navigation items.
+- Existing resources remain available.
+
+7. Test steps
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan route:list
+
+Expected:
+No fatal errors.
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Restart the Laravel dev server on port 8000.
+
+Open:
+
+/admin
+
+Then click:
+
+- Standorte
+- Medien
+- QR-Codes
+- Einreichungen
+- Meldungen
+- Gemeinden
+
+Expected:
+Each page loads without HTTP 502.
+
+If a specific page still fails, report the exact PHP error from the server log and stop.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
