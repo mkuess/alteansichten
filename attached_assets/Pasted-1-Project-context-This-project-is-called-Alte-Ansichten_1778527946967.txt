@@ -1,0 +1,219 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+Submissions are part of the MVP as external public contributions that are later reviewed in the backend.
+They are not user accounts and not user profiles.
+
+The intended MVP flow is:
+
+A visitor submits material later through a public form.
+The submission appears in the backend.
+An admin reviews it.
+The admin manually creates or updates places, media items, or stories based on the submission.
+
+No automatic publishing is required.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+- qr_codes
+- submissions
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+
+The Submission model exists.
+Submission belongs to Place.
+Submission belongs to Municipality.
+Submission belongs to User as reviewedBy.
+Place has many Submissions.
+Municipality has many Submissions.
+
+No SubmissionResource exists yet.
+
+3. Exact task
+
+Create a simple Filament SubmissionResource so external contributions can be reviewed and managed in the backend.
+
+4. What Replit should do
+
+- Create a Filament Resource for the Submission model.
+- Place it in the admin navigation under a “Moderation” navigation group.
+- Use the label “Einreichungen”.
+- Add a practical form with sections:
+  - Submitted content
+  - Contact data
+  - Target / relation
+  - Rights
+  - Review
+  - Technical data
+- Add these form fields:
+  - place_id as a searchable select field showing the place title
+  - municipality_id as a searchable select field showing the municipality name
+  - submitted_by_name
+  - submitted_by_email
+  - submitted_by_phone
+  - title
+  - message
+  - material_type
+  - source_note
+  - rights_confirmation
+  - rights_note
+  - status
+  - review_note
+  - reviewed_by_user_id as a searchable select field showing the user name/email
+  - reviewed_at
+  - ip_address
+  - user_agent
+- Use simple select fields for:
+  - material_type
+  - status
+- Add a simple table with these columns:
+  - title
+  - material_type
+  - submitted_by_name
+  - submitted_by_email
+  - place title
+  - municipality name
+  - rights_confirmation
+  - status
+  - reviewed_at
+  - created_at
+- Make title, message, submitted_by_name, submitted_by_email, and review_note searchable if practical.
+- Make material_type, status, rights_confirmation, place, and municipality filterable if simple to implement.
+- Sort the table by created_at descending by default.
+- Keep the resource standard Filament 3.
+- Verify that the SubmissionResource appears in the admin panel.
+- Verify that a submission can be manually created, reviewed, and edited.
+
+5. What Replit must NOT do
+
+- Do not create the public submission form yet.
+- Do not add file upload handling yet.
+- Do not create submission attachments yet.
+- Do not send emails yet.
+- Do not create notification logic yet.
+- Do not automatically create media items or places from submissions.
+- Do not create reports yet.
+- Do not create people or organizations.
+- Do not modify public frontend pages.
+- Do not apply any new design changes.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/SubmissionResource.php
+- app/Filament/Resources/SubmissionResource/Pages/CreateSubmission.php
+- app/Filament/Resources/SubmissionResource/Pages/EditSubmission.php
+- app/Filament/Resources/SubmissionResource/Pages/ListSubmissions.php
+
+Expected behavior:
+
+- “Einreichungen” appears in the Filament admin navigation under “Moderation”.
+- Admin users can create, edit, list, and review submissions.
+- Existing place and municipality relations can be selected.
+- The status can be changed manually.
+- No automatic publishing or conversion happens.
+
+Expected material_type values:
+
+- image
+- document
+- story
+- correction
+- location_hint
+- other
+
+Expected status values:
+
+- pending
+- in_review
+- accepted
+- rejected
+- archived
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource Submission
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- SubmissionResource is visible in the navigation as “Einreichungen”.
+- The create page opens.
+- Create one test submission manually, for example:
+  - title: Testeinreichung Gasthaus
+  - submitted_by_name: Max Mustermann
+  - submitted_by_email: max@example.com
+  - material_type: image
+  - message: Testeinreichung für spätere Prüfung.
+  - rights_confirmation: true
+  - status: pending
+- Save the record.
+- Open it for editing.
+- Change status to in_review.
+- Add a review_note.
+- Save without changes afterward.
+
+Also check routes:
+
+php artisan route:list --path=admin/submissions
+
+Expected:
+index, create, and edit routes for the SubmissionResource are registered.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
