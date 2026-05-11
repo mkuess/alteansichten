@@ -1,0 +1,205 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+Content reports are part of the MVP.
+They allow later public reports about rights issues, wrong information, privacy concerns, duplicates, inappropriate content, or technical problems.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+- qr_codes
+- submissions
+- content_reports
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+- SubmissionResource
+
+The ContentReport model exists.
+ContentReport belongs to Place.
+ContentReport belongs to MediaItem.
+ContentReport belongs to Municipality.
+ContentReport belongs to User as reviewedBy.
+
+No ContentReportResource exists yet.
+
+3. Exact task
+
+Create a simple Filament ContentReportResource so reports and rights notices can be reviewed and managed in the backend.
+
+4. What Replit should do
+
+- Create a Filament Resource for the ContentReport model.
+- Place it in the admin navigation under the “Moderation” navigation group.
+- Use the label “Meldungen”.
+- Add a practical form with sections:
+  - Reported content
+  - Reporter contact
+  - Report details
+  - Review
+  - Technical data
+- Add these form fields:
+  - place_id as a searchable select field showing the place title
+  - media_item_id as a searchable select field showing the media item title
+  - municipality_id as a searchable select field showing the municipality name
+  - reporter_name
+  - reporter_email
+  - report_type
+  - message
+  - rights_claim
+  - status
+  - review_note
+  - reviewed_by_user_id as a searchable select field showing the user name/email
+  - reviewed_at
+  - ip_address
+  - user_agent
+- Use simple select fields for:
+  - report_type
+  - status
+- Add a simple table with these columns:
+  - report_type
+  - message shortened if possible
+  - reporter_name
+  - reporter_email
+  - place title
+  - media item title
+  - municipality name
+  - rights_claim
+  - status
+  - reviewed_at
+  - created_at
+- Make message, reporter_name, reporter_email, and review_note searchable if practical.
+- Make report_type, status, rights_claim, place, media item, and municipality filterable if simple to implement.
+- Sort the table by created_at descending by default.
+- Keep the resource standard Filament 3.
+- Verify that the ContentReportResource appears in the admin panel.
+- Verify that a report can be manually created, reviewed, and edited.
+
+5. What Replit must NOT do
+
+- Do not create the public report form yet.
+- Do not send emails yet.
+- Do not create notification logic yet.
+- Do not automatically hide or delete reported content.
+- Do not create people or organizations.
+- Do not modify public frontend pages.
+- Do not apply any new design changes.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/ContentReportResource.php
+- app/Filament/Resources/ContentReportResource/Pages/CreateContentReport.php
+- app/Filament/Resources/ContentReportResource/Pages/EditContentReport.php
+- app/Filament/Resources/ContentReportResource/Pages/ListContentReports.php
+
+Expected behavior:
+
+- “Meldungen” appears in the Filament admin navigation under “Moderation”.
+- Admin users can create, edit, list, and review content reports.
+- Existing place, media item, and municipality relations can be selected.
+- The status can be changed manually.
+- No automatic content hiding or deletion happens.
+
+Expected report_type values:
+
+- rights_issue
+- wrong_information
+- privacy_concern
+- duplicate
+- inappropriate_content
+- technical_problem
+- other
+
+Expected status values:
+
+- open
+- in_review
+- resolved
+- rejected
+- archived
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource ContentReport
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- ContentReportResource is visible in the navigation as “Meldungen”.
+- The create page opens.
+- Create one test report manually, for example:
+  - report_type: rights_issue
+  - reporter_name: Max Mustermann
+  - reporter_email: max@example.com
+  - message: Testmeldung zu einem möglichen Rechtehinweis.
+  - rights_claim: true
+  - status: open
+- Save the record.
+- Open it for editing.
+- Change status to in_review.
+- Add a review_note.
+- Save without changes afterward.
+
+Also check routes:
+
+php artisan route:list --path=admin/content-reports
+
+Expected:
+index, create, and edit routes for the ContentReportResource are registered.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
