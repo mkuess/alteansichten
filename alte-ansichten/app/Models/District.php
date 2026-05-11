@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class District extends Model
 {
@@ -18,5 +19,10 @@ class District extends Model
     public function state(): BelongsTo
     {
         return $this->belongsTo(State::class);
+    }
+
+    public function municipalities(): HasMany
+    {
+        return $this->hasMany(Municipality::class);
     }
 }
