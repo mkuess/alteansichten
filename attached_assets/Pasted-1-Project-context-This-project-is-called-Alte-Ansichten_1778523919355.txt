@@ -1,0 +1,227 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend first so entries can be maintained properly in Filament.
+The public frontend will be handled later.
+
+Media items and media links now exist as backend data structures.
+This task creates the first Filament Resource for media management.
+
+For the first MVP, media links should only support:
+- place
+- municipality
+
+People and organizations are not part of the first MVP yet.
+
+The Claude backend UI mockup is saved as a later design reference.
+Do not apply the custom design yet.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+
+The MediaItem model exists.
+The MediaLink model exists.
+MediaItem has many MediaLinks.
+MediaLink belongs to MediaItem.
+Place has primaryMediaItems.
+
+No MediaItemResource exists yet.
+
+3. Exact task
+
+Create a simple Filament MediaItemResource for managing media items in the admin panel.
+
+4. What Replit should do
+
+- Create a Filament Resource for the MediaItem model.
+- Place it in the admin navigation under the “Inhalte” navigation group.
+- Use the label “Medien”.
+- Add a practical form with sections:
+  - Basic data
+  - File or external link
+  - Rights and source
+  - Location and publication
+- Add these form fields:
+  - primary_place_id as a searchable select field showing the place title
+  - type
+  - title
+  - slug
+  - description
+  - file_path as a simple text field for now
+  - external_url as a URL/text field
+  - year
+  - date_text
+  - source_note
+  - rights_note
+  - rights_status
+  - location_status
+  - location_note
+  - status
+  - internal_reference_code
+- Use simple select fields for:
+  - type
+  - rights_status
+  - location_status
+  - status
+- Add a simple table with these columns:
+  - title
+  - type
+  - primary place title
+  - year
+  - rights_status
+  - location_status
+  - status
+  - created_at
+- Make title, slug, description, source_note, and internal_reference_code searchable if practical.
+- Make type, rights_status, location_status, and status filterable.
+- Keep file upload handling out of this task.
+- Keep the resource standard Filament 3.
+- Verify that the MediaItemResource appears in the admin panel.
+- Verify that a media item can be manually created and edited using text paths or external URLs.
+
+5. What Replit must NOT do
+
+- Do not add file upload handling yet.
+- Do not install Intervention Image.
+- Do not create thumbnail generation.
+- Do not create MediaLink relation managers yet.
+- Do not create QR code tables yet.
+- Do not create submissions or reports yet.
+- Do not create people or organizations.
+- Do not modify the public frontend.
+- Do not apply the Claude admin UI design yet.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/MediaItemResource.php
+- app/Filament/Resources/MediaItemResource/Pages/CreateMediaItem.php
+- app/Filament/Resources/MediaItemResource/Pages/EditMediaItem.php
+- app/Filament/Resources/MediaItemResource/Pages/ListMediaItems.php
+
+Expected behavior:
+
+- “Medien” appears in the Filament admin navigation under “Inhalte”.
+- Admin users can create, edit, and list media items.
+- primary_place_id can be selected from existing places.
+- File path and external URL are simple text fields for now.
+- No upload UI is required yet.
+- The resource uses standard Filament CRUD behavior.
+
+Expected select values:
+
+type:
+- image
+- document
+- newspaper_article
+- external_link
+- audio
+- video
+- other
+
+rights_status:
+- uploader_confirmed
+- own_photo
+- family_collection
+- permission_granted
+- public_domain
+- unknown
+- needs_review
+
+location_status:
+- exact_place
+- approximate_area
+- municipality_only
+- unknown
+- multiple_places
+- not_location_based
+
+status:
+- pending
+- approved
+- rejected
+- hidden
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource MediaItem
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- MediaItemResource is visible in the navigation as “Medien”.
+- The create page opens.
+- Create one test media item manually, for example:
+  - type: external_link
+  - title: Testbild Gasthaus zur Linde
+  - external_url: https://example.com/testbild.jpg
+  - rights_status: needs_review
+  - location_status: exact_place
+  - status: pending
+- Save the record.
+- Open it for editing.
+- Save without changes.
+
+Also check routes:
+
+php artisan route:list --path=admin/media-items
+
+Expected:
+index, create, and edit routes for the MediaItemResource are registered.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
