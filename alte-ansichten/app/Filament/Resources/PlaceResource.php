@@ -6,12 +6,15 @@ use App\Filament\Resources\PlaceResource\Pages;
 use App\Models\Category;
 use App\Models\Municipality;
 use App\Models\Place;
+use App\Services\QrCodeService;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -225,6 +228,27 @@ class PlaceResource extends Resource
                         'unlisted' => 'Nicht gelistet',
                         'private'  => 'Privat',
                     ]),
+            ])
+            ->actions([
+                Action::make('createQrCode')
+                    ->label('QR-Code erstellen')
+                    ->icon('heroicon-o-qr-code')
+                    ->color('info')
+                    ->action(function (Place $record) {
+                        $result = app(QrCodeService::class)->createForPlace($record);
+
+                        if ($result === false) {
+                            Notification::make()
+                                ->title('QR-Code bereits vorhanden')
+                                ->warning()
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->title('QR-Code erfolgreich erstellt')
+                                ->success()
+                                ->send();
+                        }
+                    }),
             ]);
     }
 

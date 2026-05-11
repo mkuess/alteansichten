@@ -1,0 +1,170 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+QR code records already exist and can be managed in Filament.
+Now the backend needs a simple service/action to create a QR code record for a place.
+
+This task should only create the QR code record and target URL.
+It should not generate actual QR image files yet.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+- qr_codes
+- submissions
+- content_reports
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+- SubmissionResource
+- ContentReportResource
+
+QrCode belongs to Place.
+Place has one QrCode.
+
+No automatic QR code creation exists yet.
+
+3. Exact task
+
+Add a simple backend action to create a QR code record for a place from the PlaceResource.
+
+Do not generate QR image files yet.
+
+4. What Replit should do
+
+- Add a small service class or helper method for creating QR code records for places.
+- The generated QR code record should include:
+  - place_id
+  - code
+  - target_url
+  - scan_count = 0
+- Generate a stable unique code based on the place slug plus a short unique suffix if needed.
+- The target_url should point to the future public place URL, for example:
+  - /orte/{place-slug}
+- Add an action to PlaceResource, preferably on the edit page or table row:
+  - “QR-Code erstellen”
+- The action should:
+  - check whether the place already has a QR code
+  - create one only if none exists
+  - show a success notification
+  - not create duplicates
+- Keep this standard Filament and Laravel.
+- Verify that the action can create a QR code record for an existing place.
+
+5. What Replit must NOT do
+
+- Do not install a QR code image package yet.
+- Do not generate PNG or SVG files yet.
+- Do not create public QR redirect routes yet.
+- Do not modify public frontend pages.
+- Do not change existing QR code table structure unless absolutely necessary.
+- Do not create people or organizations.
+- Do not apply any new design changes.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Possible new file:
+
+- app/Services/QrCodeService.php
+
+Expected changed files may include:
+
+- app/Filament/Resources/PlaceResource.php
+- app/Models/Place.php if a small helper is useful
+
+Expected behavior:
+
+- In PlaceResource, an admin can create a QR code record for a place.
+- If the place already has a QR code, the action does not create another one.
+- The created QrCode record has:
+  - place_id set
+  - code set
+  - target_url set
+  - scan_count = 0
+- Existing QrCodeResource can show the new record.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Go to:
+
+/admin/places
+
+Open or create a test place.
+
+Run the action:
+
+QR-Code erstellen
+
+Expected:
+A QR code record is created.
+
+Then go to:
+
+/admin/qr-codes
+
+Expected:
+The new QR code record is visible.
+
+Try running the action again for the same place.
+
+Expected:
+No duplicate QR code is created.
+
+Optional tinker check:
+
+App\Models\Place::first()?->qrCode;
+
+Expected:
+Returns the related QrCode record if the action was run.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
