@@ -1,0 +1,188 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend first so entries can be maintained properly in Filament.
+The public frontend will be handled later.
+
+The Replit preview issue is fixed:
+The Laravel app and Filament admin panel now run correctly on port 8000.
+The mockup artifact has been moved away and no longer interferes with the real app.
+
+Media items and media links already exist.
+MediaItemResource already exists.
+Now media links should become maintainable inside the MediaItem edit page.
+
+For the first MVP, media links should only support:
+- place
+- municipality
+
+People and organizations are not part of the first MVP yet.
+
+The Claude backend UI mockup is saved as a later design reference.
+Do not apply the custom design yet.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets now load correctly.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+
+The MediaItem model exists.
+The MediaLink model exists.
+MediaItem has many MediaLinks.
+MediaLink belongs to MediaItem.
+
+No MediaLink relation manager exists yet.
+
+3. Exact task
+
+Create a simple Filament RelationManager for MediaItemResource so media links can be managed from a media item edit page.
+
+4. What Replit should do
+
+- Create a MediaLinksRelationManager for MediaItemResource.
+- Add it to MediaItemResource.
+- Show media links on the MediaItem edit page.
+- Allow creating, editing, and deleting media links for the current media item.
+- Use simple fields:
+  - linkable_type
+  - linkable_id
+  - relationship_type
+  - is_primary
+  - sort_order
+  - period_from
+  - period_to
+- For linkable_type, use a select with only:
+  - place
+  - municipality
+- For linkable_id, use a numeric input for now.
+- Add helper text explaining:
+  - use a Place ID when linkable_type is place
+  - use a Municipality ID when linkable_type is municipality
+- Add table columns:
+  - linkable_type
+  - linkable_id
+  - relationship_type
+  - is_primary
+  - sort_order
+  - period_from
+  - period_to
+- Keep this simple and standard Filament.
+- Verify that media links can be created from a media item edit page.
+
+5. What Replit must NOT do
+
+- Do not create a standalone MediaLinkResource.
+- Do not build dynamic dependent selects yet.
+- Do not create polymorphic UI helpers yet.
+- Do not support people or organizations yet.
+- Do not add file upload handling yet.
+- Do not install Intervention Image.
+- Do not create thumbnail generation.
+- Do not create QR code tables yet.
+- Do not create submissions or reports yet.
+- Do not modify the public frontend.
+- Do not apply the Claude admin UI design yet.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/MediaItemResource/RelationManagers/MediaLinksRelationManager.php
+
+Expected changed files may include:
+
+- app/Filament/Resources/MediaItemResource.php
+
+Expected behavior:
+
+- On a MediaItem edit page, there is a media links section or tab.
+- Admin users can add a media link for the current media item.
+- linkable_type only allows place or municipality.
+- linkable_id is entered manually for now.
+- relationship_type can be entered manually or selected from simple values.
+- is_primary can be toggled.
+- No advanced dynamic lookup is required yet.
+
+Suggested relationship_type values if using a select:
+
+- main_subject
+- panorama_of
+- shows_detail
+- related
+- document_about
+- source_for
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Create or open a media item.
+
+On the media item edit page:
+
+- Find the media links section.
+- Add one media link:
+  - linkable_type: place
+  - linkable_id: use the ID of an existing place if available
+  - relationship_type: main_subject
+  - is_primary: true
+  - sort_order: 1
+- Save the link.
+- Edit the link.
+- Save without changes.
+- Delete the link if this is only test data.
+
+Also verify in tinker if needed:
+
+App\Models\MediaItem::first()?->mediaLinks()->count();
+
+Expected:
+The count reflects the created media link.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
