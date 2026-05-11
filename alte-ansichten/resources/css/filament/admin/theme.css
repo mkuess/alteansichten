@@ -1,0 +1,82 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config '../../../../tailwind.filament.config.js';
+
+/* ── Alte Ansichten warm palette ── */
+
+/* Overall page background */
+body,
+.fi-body {
+    background-color: #f3f1ec !important;
+}
+
+/* Sidebar */
+.fi-sidebar {
+    background-color: #ede9e1 !important;
+    border-right: 1px solid #d8d3c9 !important;
+}
+
+.fi-sidebar-header {
+    background-color: #ede9e1 !important;
+    border-bottom: 1px solid #d8d3c9 !important;
+}
+
+/* Main content wrapper */
+.fi-main-ctn,
+.fi-main {
+    background-color: #f3f1ec !important;
+}
+
+/* Topbar */
+.fi-topbar,
+header.fi-topbar {
+    background-color: #f3f1ec !important;
+    border-bottom: 1px solid #d8d3c9 !important;
+}
+
+/* Nav group labels */
+.fi-sidebar-group-label {
+    color: #8a8278 !important;
+    letter-spacing: 0.06em;
+    font-size: 0.65rem;
+    font-weight: 600;
+}
+
+/* Nav items — default state */
+.fi-sidebar-item-button {
+    color: #2e2b26 !important;
+}
+
+.fi-sidebar-item-button:hover {
+    background-color: #e3dfd7 !important;
+}
+
+/* Panels / sections background */
+.fi-section,
+.fi-card {
+    background-color: #ffffff !important;
+    border: 1px solid #e0dbd3 !important;
+}
+
+/* Widgets */
+.fi-wi-stats-overview-stat {
+    background-color: #ffffff !important;
+    border: 1px solid #e0dbd3 !important;
+}
+
+/* Tables */
+.fi-ta-ctn {
+    background-color: #ffffff !important;
+    border: 1px solid #e0dbd3 !important;
+}
+
+/* Input fields */
+.fi-input,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    background-color: #faf9f6 !important;
+    border-color: #d8d3c9 !important;
+}

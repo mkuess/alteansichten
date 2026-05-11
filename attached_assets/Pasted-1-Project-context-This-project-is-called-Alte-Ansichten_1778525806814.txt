@@ -1,0 +1,169 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend first so entries can be maintained properly in Filament.
+The public frontend will be handled later.
+
+A Claude backend UI mockup already exists as a visual reference.
+It shows a calm, warm, archive-style backend with:
+- “Alte Ansichten” branding
+- AA logo mark
+- warm off-white background
+- dark text
+- muted green accents
+- clear sidebar navigation
+- calm card-like interface
+
+This task should only apply a first design foundation to Filament.
+Do not rebuild the full mockup yet.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament CSS and JavaScript now load correctly.
+The backend is visible and usable.
+
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+- qr_codes
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+
+Media links can be managed from the MediaItem edit page.
+
+The Claude mockup is only a design reference.
+It must not be copied directly as JavaScript into the Laravel app.
+
+3. Exact task
+
+Apply a first calm “Alte Ansichten” design foundation to the Filament admin panel.
+
+This should improve branding, colors, navigation labels, and basic visual direction without rebuilding the full UI.
+
+4. What Replit should do
+
+- Update the Filament admin panel branding to “Alte Ansichten”.
+- Add a simple text/logo mark using “AA” if possible.
+- Use a calm archive-style visual direction inspired by the Claude mockup.
+- Apply a warm, readable color direction:
+  - warm off-white / beige background where appropriate
+  - dark neutral text
+  - muted green accent color
+- Keep the design accessible and readable.
+- Keep sufficient contrast.
+- Keep Filament’s standard layout and behavior.
+- Keep the existing resource groups:
+  - Regionen
+  - Inhalte
+  - System
+- Make sure the Filament panel still works on mobile/narrow widths.
+- Use standard Filament theming or CSS customization in a maintainable way.
+- If a custom Filament theme is needed, create it using the standard Filament 3 approach.
+- Keep all changes VM-compatible and not Replit-specific.
+- Clear/build assets if required.
+
+5. What Replit must NOT do
+
+- Do not copy the standalone Claude HTML/JavaScript file directly into Laravel.
+- Do not replace Filament with a custom React/Vue/JS admin.
+- Do not rebuild all dashboard pages yet.
+- Do not create custom Standorte card views yet.
+- Do not create custom Personen, Organisationen, or mockup-only pages.
+- Do not add new database tables.
+- Do not create new backend features.
+- Do not modify existing migrations.
+- Do not remove existing Resources.
+- Do not break Filament’s standard CRUD behavior.
+- Do not add Replit-specific paths into the code.
+- Do not continue with QR generation, submissions, reports, or other backend tasks.
+
+6. Expected files / changes
+
+Possible files to inspect or update:
+
+- app/Providers/Filament/AdminPanelProvider.php
+- resources/css/filament/admin/theme.css or equivalent standard Filament theme file
+- tailwind.config.js if required by Filament theme setup
+- vite.config.js if required by Filament theme setup
+- package.json only if required for standard Filament theme building
+
+Expected behavior:
+
+- /admin shows “Alte Ansichten” branding.
+- The backend visually feels closer to the Claude mockup:
+  - calmer
+  - warmer
+  - archive-like
+  - clearer
+- Existing Resources remain usable.
+- Navigation groups remain intact.
+- Filament styling still loads correctly.
+- No full mockup rebuild is done yet.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+If assets are changed, run the required asset command, for example:
+
+npm install
+
+npm run build
+
+php artisan optimize:clear
+
+Open:
+
+/admin
+
+Expected:
+The Filament dashboard loads with the new “Alte Ansichten” branding and visual foundation.
+
+Check:
+
+- /admin/login is styled correctly.
+- /admin works after login.
+- /admin/places works.
+- /admin/media-items works.
+- /admin/categories works.
+- Navigation groups are still visible.
+- No CSS or JS 404 errors appear.
+- No localhost asset URLs appear in rendered HTML.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
