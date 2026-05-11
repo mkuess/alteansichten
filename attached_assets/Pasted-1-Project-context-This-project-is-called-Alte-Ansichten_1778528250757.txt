@@ -1,0 +1,209 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+The backend already supports regions, categories, places, media, media links, QR codes, and submissions.
+
+Now the project needs a simple reporting / rights notice structure.
+This is part of the MVP so visitors can later report problems, rights concerns, wrong information, or request corrections.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+- qr_codes
+- submissions
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+- SubmissionResource
+
+No content_reports table exists yet.
+
+3. Exact task
+
+Create the content_reports database table and the ContentReport model.
+
+Do not create the public report form yet in this task.
+Do not create ContentReportResource yet in this task.
+
+4. What Replit should do
+
+- Create a migration for a content_reports table.
+- Create an app/Models/ContentReport.php model.
+- Add optional relationships:
+  - ContentReport belongs to Place via place_id
+  - ContentReport belongs to MediaItem via media_item_id
+  - ContentReport belongs to Municipality via municipality_id
+  - ContentReport belongs to User as reviewedBy via reviewed_by_user_id
+- Add matching relationships where simple and appropriate:
+  - Place has many ContentReports
+  - MediaItem has many ContentReports
+  - Municipality has many ContentReports
+- Use SoftDeletes for content_reports.
+- Add fields needed for later public reporting and admin moderation.
+- Keep the model simple and Laravel-standard.
+- Run the migration.
+- Verify that the content_reports table exists.
+
+5. What Replit must NOT do
+
+- Do not create ContentReportResource yet.
+- Do not create the public report form yet.
+- Do not send emails yet.
+- Do not create notification logic yet.
+- Do not automatically hide or delete reported content.
+- Do not create people or organizations.
+- Do not modify public frontend pages.
+- Do not apply any new design changes.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files:
+
+- database/migrations/xxxx_xx_xx_xxxxxx_create_content_reports_table.php
+- app/Models/ContentReport.php
+- app/Models/Place.php updated with contentReports relationship if simple
+- app/Models/MediaItem.php updated with contentReports relationship if simple
+- app/Models/Municipality.php updated with contentReports relationship if simple
+
+Expected content_reports table fields:
+
+- id
+- place_id nullable foreign key referencing places.id
+- media_item_id nullable foreign key referencing media_items.id
+- municipality_id nullable foreign key referencing municipalities.id
+- reporter_name nullable string
+- reporter_email nullable string
+- report_type string
+- message long text
+- rights_claim boolean, default false
+- status string, default open
+- review_note nullable text
+- reviewed_by_user_id nullable foreign key referencing users.id
+- reviewed_at nullable timestamp
+- ip_address nullable string, max length 45
+- user_agent nullable text
+- timestamps
+- soft deletes
+
+Expected future report_type values:
+
+- rights_issue
+- wrong_information
+- privacy_concern
+- duplicate
+- inappropriate_content
+- technical_problem
+- other
+
+Expected future status values:
+
+- open
+- in_review
+- resolved
+- rejected
+- archived
+
+For now, keep these as simple string fields, not PHP enums.
+
+The model should use SoftDeletes and allow mass assignment for the relevant fields.
+
+7. Test steps
+
+Run:
+
+php artisan migrate
+
+Expected:
+create_content_reports_table runs successfully.
+
+Run:
+
+php artisan tinker
+
+Then check:
+
+Schema::hasTable('content_reports');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('content_reports', 'place_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('content_reports', 'media_item_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('content_reports', 'rights_claim');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('content_reports', 'reviewed_by_user_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('content_reports', 'deleted_at');
+
+Expected:
+true
+
+Finally run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.

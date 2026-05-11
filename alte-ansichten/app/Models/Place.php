@@ -69,4 +69,9 @@ class Place extends Model
     {
         return $this->hasMany(Submission::class);
     }
+
+    public function contentReports(): HasMany
+    {
+        return $this->hasMany(ContentReport::class);
+    }
 }

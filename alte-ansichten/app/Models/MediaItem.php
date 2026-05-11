@@ -48,6 +48,11 @@ class MediaItem extends Model
         return $this->hasMany(MediaLink::class);
     }
 
+    public function contentReports(): HasMany
+    {
+        return $this->hasMany(ContentReport::class);
+    }
+
     public function scopePubliclyVisible(Builder $query): Builder
     {
         return $query->where('status', 'approved')
