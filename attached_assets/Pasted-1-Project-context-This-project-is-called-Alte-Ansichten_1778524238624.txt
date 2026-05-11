@@ -1,0 +1,117 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project.
+
+Filament is installed and the login route works at /admin/login.
+However, the login page is visually broken: HTML loads, but Filament styling and JavaScript assets are missing or not applied.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is running.
+Filament 3 is installed.
+The route /admin/login works.
+The login form appears, but it is unstyled and broken visually.
+The backend resources already exist for:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+
+The problem appears to be missing or unloaded Filament CSS/JS assets.
+
+3. Exact task
+
+Diagnose and fix the broken Filament admin styling/assets.
+
+4. What Replit should do
+
+- Check whether Filament assets exist in:
+  - public/css/filament
+  - public/js/filament
+- Check whether the browser receives 404 errors for Filament CSS or JavaScript assets.
+- Run the standard Filament/Laravel asset publishing command if needed.
+- Run any needed Laravel cache clear commands.
+- Run any needed npm/Vite build command only if necessary.
+- Keep the fix standard Laravel/Filament.
+- Confirm that /admin/login displays with proper Filament styling afterward.
+
+Recommended commands to try, only as needed:
+
+php artisan filament:assets
+
+php artisan optimize:clear
+
+php artisan view:clear
+
+php artisan config:clear
+
+npm install
+
+npm run build
+
+5. What Replit must NOT do
+
+- Do not reinstall Filament.
+- Do not delete database data.
+- Do not reset migrations.
+- Do not remove existing resources.
+- Do not change the admin user.
+- Do not change the role system.
+- Do not apply the Claude custom backend design yet.
+- Do not add new features.
+- Do not continue with media link relation managers or any next backend task.
+- Do not add Replit-specific paths into the code.
+
+6. Expected files / changes
+
+Possible expected changes:
+
+- public/css/filament/* assets generated or refreshed
+- public/js/filament/* assets generated or refreshed
+- public/build/* generated if npm run build is required
+
+Expected behavior:
+
+- /admin/login loads with normal Filament styling.
+- The login page no longer appears as raw unstyled HTML.
+- No application data is changed.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Run:
+
+php artisan route:list --path=admin
+
+Expected:
+Filament admin routes still exist.
+
+Open:
+
+/admin/login
+
+Expected:
+The Filament login page is styled correctly.
+
+Open browser dev tools or Replit console if available and check:
+
+- No 404 errors for Filament CSS files
+- No 404 errors for Filament JavaScript files
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
