@@ -1,0 +1,177 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+Places are the central content entity of the first MVP.
+A place belongs to a municipality and can have a category, address data, coordinates, a story, status, and visibility.
+
+This task only creates the PlaceResource.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+
+The “Regionen” navigation group is complete.
+The “Inhalte” navigation group currently contains “Kategorien”.
+
+No PlaceResource exists yet.
+
+3. Exact task
+
+Create a simple Filament PlaceResource for managing places / locations in the admin panel.
+
+4. What Replit should do
+
+- Create a Filament Resource for the Place model.
+- Place it in the admin navigation under the “Inhalte” navigation group.
+- Use the label “Standorte”.
+- Add a practical form with sections:
+  - Basic data
+  - Address
+  - Coordinates
+  - Publication
+- Add these form fields:
+  - municipality_id as a searchable select field showing the municipality name
+  - category_id as a searchable select field showing the category name
+  - title
+  - slug
+  - summary
+  - story
+  - street
+  - house_number
+  - postal_code
+  - address_text
+  - latitude
+  - longitude
+  - location_precision
+  - location_note
+  - period_from
+  - period_to
+  - approximate_date_text
+  - status
+  - visibility
+  - internal_reference_code
+- Add a simple table with these columns:
+  - title
+  - municipality name
+  - category name
+  - status
+  - visibility
+  - period_from
+  - period_to
+  - created_at
+- Make title, slug, address_text, and internal_reference_code searchable.
+- Make municipality, category, status, and visibility filterable if simple to implement.
+- Keep status and visibility as simple select fields, not PHP enums.
+- Keep the resource standard Filament 3.
+- Verify that the PlaceResource appears in the admin panel.
+- Verify that a place can be manually created and edited.
+
+5. What Replit must NOT do
+
+- Do not create media tables yet.
+- Do not create QR code tables yet.
+- Do not create public pages yet.
+- Do not create custom map components yet.
+- Do not add geocoding yet.
+- Do not apply the Claude UI design yet.
+- Do not create dashboard widgets yet.
+- Do not add submissions, reports, people, or organizations.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not modify the existing role system.
+- Do not continue with Task 017 or later tasks.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/PlaceResource.php
+- app/Filament/Resources/PlaceResource/Pages/CreatePlace.php
+- app/Filament/Resources/PlaceResource/Pages/EditPlace.php
+- app/Filament/Resources/PlaceResource/Pages/ListPlaces.php
+
+Expected behavior:
+
+- “Standorte” appears in the Filament admin navigation under “Inhalte”.
+- Admin users can create, edit, and list places.
+- Municipality and category relations are shown clearly.
+- The resource uses standard Filament CRUD behavior.
+- No map picker is required yet.
+- No media handling is required yet.
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource Place
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- PlaceResource is visible in the navigation as “Standorte”.
+- The create page opens.
+- Create one test place manually, for example:
+  - municipality: Maria Saal if it exists, otherwise create or select an existing municipality
+  - category: Gasthaus
+  - title: Gasthaus zur Linde
+  - slug: gasthaus-zur-linde
+  - summary: Historischer Gasthaus-Standort als erster Testeintrag.
+  - status: draft
+  - visibility: public
+- Save the record.
+- Open it for editing.
+- Save without changes.
+
+Also check routes:
+
+php artisan route:list --path=admin/places
+
+Expected:
+index, create, and edit routes for the PlaceResource are registered.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
