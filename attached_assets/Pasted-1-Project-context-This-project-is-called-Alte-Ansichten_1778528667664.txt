@@ -1,0 +1,182 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+QR code records already exist.
+A QR code record can already be created from the PlaceResource.
+Now the project needs a simple QR redirect route that can later be used by generated QR codes.
+
+This task should only create the redirect route and scan counting.
+It should not generate actual QR image files yet.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+- qr_codes
+- submissions
+- content_reports
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+- SubmissionResource
+- ContentReportResource
+
+A QR code record can be created from a place.
+QrCode belongs to Place.
+Place has one QrCode.
+
+No QR redirect route exists yet.
+
+3. Exact task
+
+Create a simple public QR redirect route.
+
+The route should receive a QR code, increase the scan count, update last_scanned_at, and redirect to the QR code target URL.
+
+4. What Replit should do
+
+- Add a public route:
+  - GET /qr/{code}
+- Create a small controller for QR redirects, for example:
+  - app/Http/Controllers/QrRedirectController.php
+- Find the QrCode record by code.
+- If found:
+  - increment scan_count
+  - set last_scanned_at to now
+  - redirect to target_url
+- If not found:
+  - return a simple 404 response
+- Keep the implementation simple and Laravel-standard.
+- Use the existing target_url value from the qr_codes table.
+- Do not require authentication for this route.
+- Verify that the route works with an existing QR code record.
+
+5. What Replit must NOT do
+
+- Do not install a QR code image package yet.
+- Do not generate PNG or SVG files yet.
+- Do not modify the public place detail page.
+- Do not create the place detail page if it does not exist yet.
+- Do not create tracking beyond scan_count and last_scanned_at.
+- Do not store IP addresses for QR scans in this task.
+- Do not create analytics tables.
+- Do not apply any new design changes.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected new file:
+
+- app/Http/Controllers/QrRedirectController.php
+
+Expected changed file:
+
+- routes/web.php
+
+Expected behavior:
+
+- Visiting /qr/{code} finds the matching QR code record.
+- scan_count increases by 1.
+- last_scanned_at is updated.
+- The browser redirects to target_url.
+- Unknown codes return 404.
+
+Example:
+
+If a QR code exists with:
+
+- code: teststandort
+- target_url: /orte/teststandort
+
+Then visiting:
+
+/qr/teststandort
+
+should increment scan_count and redirect to:
+
+/orte/teststandort
+
+It is acceptable if /orte/teststandort returns 404 for now, because the public place detail page is not part of this task.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Run:
+
+php artisan route:list --path=qr
+
+Expected:
+GET /qr/{code} is registered.
+
+Use an existing QR code from /admin/qr-codes.
+
+Open:
+
+/qr/{existing-code}
+
+Expected:
+- QR code record scan_count increases by 1
+- last_scanned_at is set
+- browser redirects to target_url
+
+Open:
+
+/qr/code-that-does-not-exist
+
+Expected:
+404 response.
+
+Optional tinker check before and after:
+
+$qr = App\Models\QrCode::first();
+$qr->scan_count;
+
+Then visit /qr/{code}, then check again:
+
+$qr->refresh()->scan_count;
+
+Expected:
+scan_count increased by 1.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
