@@ -1,0 +1,140 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The first MVP now has the basic data foundation for:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+The next phase starts with simple Filament Resources so the admin backend can manage the data step by step.
+
+This task only creates the CountryResource.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+Seeders exist for:
+
+- countries
+- states
+- districts
+- categories
+
+The countries table contains Austria.
+No Filament Resources exist yet.
+
+3. Exact task
+
+Create a simple Filament CountryResource for managing countries in the admin panel.
+
+4. What Replit should do
+
+- Create a Filament Resource for the Country model.
+- Place it in the admin navigation under a “Regions” or “Regionen” navigation group.
+- Use the label “Countries” or “Länder”.
+- Add a simple form with these fields:
+  - name
+  - slug
+  - iso_code
+  - status
+- Add a simple table with these columns:
+  - name
+  - slug
+  - iso_code
+  - status
+  - created_at
+- Make name and slug searchable.
+- Make status filterable if simple to implement.
+- Keep the resource standard Filament 3.
+- Verify that the CountryResource appears in the admin panel.
+- Verify that the existing Austria record can be viewed and edited.
+
+5. What Replit must NOT do
+
+- Do not create StateResource yet.
+- Do not create DistrictResource yet.
+- Do not create MunicipalityResource yet.
+- Do not create CategoryResource yet.
+- Do not create PlaceResource yet.
+- Do not apply the Claude UI design yet.
+- Do not create custom dashboard widgets yet.
+- Do not modify the public frontend.
+- Do not create new database tables.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with Task 012 or later tasks.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/CountryResource.php
+- app/Filament/Resources/CountryResource/Pages/CreateCountry.php
+- app/Filament/Resources/CountryResource/Pages/EditCountry.php
+- app/Filament/Resources/CountryResource/Pages/ListCountries.php
+
+Expected behavior:
+
+- “Countries” / “Länder” appears in the Filament admin navigation.
+- The existing Austria record is visible.
+- Admin users can create, edit, and list countries.
+- The resource uses standard Filament CRUD behavior.
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource Country
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- CountryResource is visible in the navigation.
+- The Austria record appears in the list.
+- The Austria record can be opened for editing.
+- Saving without changes works.
+- Creating a duplicate country is not required for this task.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
