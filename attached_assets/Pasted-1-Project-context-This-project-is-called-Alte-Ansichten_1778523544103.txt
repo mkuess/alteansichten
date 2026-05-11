@@ -1,0 +1,158 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The admin foundation now exists for:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+The next step is to create the first very simple public frontend page.
+
+This task only creates a simple public homepage.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+
+The admin navigation now contains:
+
+- Regionen
+- Inhalte
+
+No public frontend pages exist yet beyond the default Laravel page.
+
+3. Exact task
+
+Create a simple public homepage at the root route `/`.
+
+The homepage should be a clean Blade page for “Alte Ansichten” and replace the default Laravel welcome page.
+
+4. What Replit should do
+
+- Create a simple public Blade layout or page for the homepage.
+- Add or update the root route `/` to render this page.
+- Use plain Blade and simple CSS or Tailwind if already available through Laravel/Vite.
+- Keep the page lightweight and accessible.
+- Add a clear page title: “Alte Ansichten”.
+- Add a short introductory text explaining that this is a historical archive for Gemeinden, Orte, Bilder, and Geschichten.
+- Add simple navigation links for future pages:
+  - Gemeinden
+  - Orte
+  - Beitrag einreichen
+  - Problem melden
+- These links may point to placeholder routes or `#` for now if the routes do not exist yet.
+- Use semantic HTML:
+  - header
+  - main
+  - section
+  - nav
+  - footer
+- Ensure there is exactly one h1.
+- Keep the design simple, calm, and readable.
+- Do not implement the full Claude UI design yet.
+
+5. What Replit must NOT do
+
+- Do not create municipality list pages yet.
+- Do not create municipality detail pages yet.
+- Do not create place detail pages yet.
+- Do not create maps yet.
+- Do not add Leaflet yet.
+- Do not add geocoding yet.
+- Do not create submissions or reports yet.
+- Do not create media tables yet.
+- Do not add QR code functionality yet.
+- Do not apply the Claude admin UI design yet.
+- Do not modify Filament resources.
+- Do not create new database tables.
+- Do not install extra packages.
+- Do not continue with Task 018 or later tasks.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- resources/views/public/home.blade.php
+
+Expected changed files may include:
+
+- routes/web.php
+
+Optional, only if needed:
+
+- resources/views/layouts/public.blade.php
+
+Expected behavior:
+
+- Visiting `/` shows the new public “Alte Ansichten” homepage.
+- The default Laravel welcome page is no longer shown at `/`.
+- The page is simple, readable, and responsive enough for a first MVP step.
+- The page does not depend on Replit-specific paths or services.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Run:
+
+php artisan route:list
+
+Check that the root route `/` exists and points to the new public homepage.
+
+Start the dev server and open:
+
+/
+
+Expected:
+The new “Alte Ansichten” homepage loads.
+
+Check manually:
+
+- There is exactly one h1.
+- The page has a visible navigation.
+- The page works on a narrow/mobile viewport.
+- There are no broken PHP errors.
+- No database records are required for this page to load.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
