@@ -1,0 +1,220 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority has changed:
+The backend should be built out first so entries can be maintained properly in Filament.
+The public frontend will be handled later.
+
+The Claude backend UI mockup is saved as a later design reference.
+Do not apply the custom design yet.
+First build the real backend data structure and Filament resources.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+
+A simple public homepage exists, but public frontend work is now paused.
+
+No media tables exist yet.
+
+3. Exact task
+
+Create the media_items database table and the MediaItem model.
+
+This is the first backend-media step.
+Do not create MediaItemResource yet in this task.
+
+4. What Replit should do
+
+- Create a migration for a media_items table.
+- Create an app/Models/MediaItem.php model.
+- Add the relationship:
+  - MediaItem belongs to Place as primaryPlace through primary_place_id
+  - Place has many primaryMediaItems
+- Use SoftDeletes for media_items.
+- Add fields needed for uploaded files, external links, rights information, date information, and moderation status.
+- Add a simple scopePubliclyVisible() method to MediaItem.
+- Keep the model simple and Laravel-standard.
+- Run the migration.
+- Verify that the media_items table exists.
+
+5. What Replit must NOT do
+
+- Do not create media_links yet.
+- Do not create MediaItemResource yet.
+- Do not create upload handling yet.
+- Do not create thumbnail generation yet.
+- Do not install Intervention Image yet.
+- Do not create QR code tables yet.
+- Do not create submissions or reports yet.
+- Do not create people or organizations yet.
+- Do not modify the public frontend.
+- Do not apply the Claude admin UI design yet.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files:
+
+- database/migrations/xxxx_xx_xx_xxxxxx_create_media_items_table.php
+- app/Models/MediaItem.php
+- app/Models/Place.php updated with primaryMediaItems relationship
+
+Expected media_items table fields:
+
+- id
+- primary_place_id nullable foreign key referencing places.id
+- type string, default image
+- title
+- slug nullable
+- description nullable text
+- file_path nullable
+- external_url nullable
+- year nullable unsigned small integer
+- date_text nullable
+- source_note nullable text
+- rights_note nullable text
+- rights_status string, default needs_review
+- location_status string, default unknown
+- location_note nullable
+- status string, default pending
+- internal_reference_code nullable, max length 50
+- timestamps
+- soft deletes
+
+Expected future type values:
+
+- image
+- document
+- newspaper_article
+- external_link
+- audio
+- video
+- other
+
+Expected future rights_status values:
+
+- uploader_confirmed
+- own_photo
+- family_collection
+- permission_granted
+- public_domain
+- unknown
+- needs_review
+
+Expected future location_status values:
+
+- exact_place
+- approximate_area
+- municipality_only
+- unknown
+- multiple_places
+- not_location_based
+
+Expected future status values:
+
+- pending
+- approved
+- rejected
+- hidden
+
+For now, keep these as simple string fields, not PHP enums.
+
+The model should use SoftDeletes and allow mass assignment for the relevant fields.
+
+The scopePubliclyVisible() method should return media where:
+- status = approved
+- and primary_place_id is not null
+
+The media_links extension will be added in the next task.
+
+7. Test steps
+
+Run:
+
+php artisan migrate
+
+Expected:
+create_media_items_table runs successfully.
+
+Run:
+
+php artisan tinker
+
+Then check:
+
+Schema::hasTable('media_items');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('media_items', 'primary_place_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('media_items', 'rights_status');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('media_items', 'location_status');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('media_items', 'deleted_at');
+
+Expected:
+true
+
+Finally run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
