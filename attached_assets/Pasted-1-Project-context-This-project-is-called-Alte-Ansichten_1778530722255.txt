@@ -1,0 +1,156 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project.
+
+The Filament admin routes are reachable again.
+However, the admin UI is visually broken and appears as raw unstyled HTML.
+
+This means the route/session issue is mostly fixed, but Filament CSS and JavaScript assets are not loading correctly.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own VM.
+
+2. Current state
+
+/admin loads.
+The dashboard appears, but it is unstyled:
+- raw HTML layout
+- oversized icons
+- default browser fonts
+- Filament CSS not applied
+
+This happened after changes around external URL / APP_URL / session configuration.
+
+The backend itself should not be changed.
+Only asset loading should be diagnosed and fixed.
+
+3. Exact task
+
+Fix Filament CSS and JavaScript asset loading after the URL/session changes.
+
+4. What Replit should do
+
+- Inspect the rendered HTML source of /admin and /admin/login.
+- Identify the CSS and JS URLs used by Filament.
+- Check whether those URLs return HTTP 200, 404, blocked, mixed-content, or localhost errors.
+- Check .env values:
+  - APP_URL
+  - ASSET_URL
+  - VITE_*
+- Make sure APP_URL matches the current usable Replit HTTPS URL for port 8000.
+- If ASSET_URL is set and causing wrong URLs, either correct it to the same HTTPS Replit URL or remove it if Laravel/Filament works better without it.
+- Confirm that no rendered Filament asset URL points to:
+  - localhost
+  - 127.0.0.1
+  - /__mockup
+  - a wrong Replit domain
+- Regenerate Filament assets:
+  php artisan filament:assets
+- Clear caches:
+  php artisan optimize:clear
+  php artisan config:clear
+  php artisan route:clear
+  php artisan view:clear
+- Rebuild frontend assets if the custom Filament theme requires it:
+  npm run build
+- Restart the Laravel dev server on 0.0.0.0:8000.
+- Verify that /admin and /admin/login are styled correctly.
+
+5. What Replit must NOT do
+
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not delete database data.
+- Do not reset migrations.
+- Do not remove existing resources.
+- Do not remove the admin user.
+- Do not change the role system.
+- Do not change backend functionality.
+- Do not add new features.
+- Do not apply new design changes.
+- Do not move the app back to /__mockup.
+- Do not hardcode /home/runner paths into application code.
+
+6. Expected files / changes
+
+Possible changed file:
+
+- .env
+
+Possible regenerated files:
+
+- public/css/filament/*
+- public/js/filament/*
+- public/build/*
+
+Possible checked files:
+
+- app/Providers/Filament/AdminPanelProvider.php
+- resources/css/filament/admin/theme.css
+- vite.config.js
+
+Expected result:
+
+- /admin/login loads with full Filament styling.
+- /admin loads with full Filament styling.
+- Existing custom warm theme, if present, still loads.
+- No raw unstyled HTML remains.
+- No asset URLs point to localhost, /__mockup, or the wrong domain.
+
+7. Test steps
+
+Run:
+
+php artisan filament:assets
+
+Run:
+
+npm run build
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/login
+
+Expected:
+Login page is styled correctly.
+
+Log in and open:
+
+/admin
+
+Expected:
+Dashboard is styled correctly.
+
+Open:
+
+/admin/categories
+/admin/places
+/admin/media-items
+
+Expected:
+Each page loads with correct styling.
+
+Check browser console/network:
+
+Expected:
+- no CSS 404 errors
+- no JS 404 errors
+- no mixed-content errors
+- no localhost asset URLs
+- no /__mockup asset URLs
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
