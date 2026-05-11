@@ -1,0 +1,162 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project running in Replit.
+
+The Laravel app should run on port 8000.
+The Filament admin should be available at:
+
+/admin
+/admin/login
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own VM.
+
+2. Current state
+
+The embedded Replit Preview has shown navigation/external URL issues.
+Now the externally opened browser window also returns HTTP 502.
+
+This means the problem is not only the embedded Preview.
+The Laravel server, port binding, Replit web process, or a PHP fatal error must be checked.
+
+3. Exact task
+
+Diagnose and fix the HTTP 502 error in the external browser window.
+
+4. What Replit should do
+
+- Check whether the Laravel server process is running.
+- Check the exact command used to start the server.
+- Ensure Laravel is bound to:
+  - host: 0.0.0.0
+  - port: 8000
+- Restart the Laravel dev server cleanly.
+- Inspect the server logs immediately after reproducing the 502.
+- Check for PHP fatal errors.
+- Check for memory errors, port conflicts, or process crashes.
+- Run:
+
+php artisan optimize:clear
+
+php artisan route:list
+
+php artisan test
+
+- Check whether these URLs respond locally inside Replit:
+
+curl -I http://127.0.0.1:8000/
+curl -I http://127.0.0.1:8000/admin/login
+curl -I http://127.0.0.1:8000/admin/categories
+
+- Then check whether the public Replit URL works externally.
+- Confirm whether the 502 is caused by:
+  - Laravel app crash
+  - Replit web server/proxy issue
+  - wrong port binding
+  - wrong APP_URL / ASSET_URL
+  - session/cookie problem
+  - asset build problem
+  - a specific Filament resource fatal error
+
+5. What Replit must NOT do
+
+- Do not delete database data.
+- Do not reset migrations.
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not remove existing resources.
+- Do not remove uploaded files.
+- Do not remove QR/media/submission/report functionality.
+- Do not apply design changes.
+- Do not add new features.
+- Do not move the app to /__mockup.
+- Do not hardcode local filesystem paths into application code.
+
+6. Expected files / changes
+
+Preferably no code changes unless a clear cause is found.
+
+Possible files to inspect:
+
+- .env
+- config/app.php
+- config/session.php
+- app/Providers/Filament/AdminPanelProvider.php
+- routes/web.php
+- recently modified Filament Resources
+
+Expected result:
+
+- The Laravel server runs continuously on 0.0.0.0:8000.
+- Local curl checks return valid responses.
+- External Replit URL no longer returns 502.
+- /admin/login loads.
+- /admin loads after login.
+- /admin/categories and /admin/places load.
+- Filament CSS/JS still load.
+
+7. Test steps
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan route:list
+
+Expected:
+No fatal errors.
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Run:
+
+curl -I http://127.0.0.1:8000/admin/login
+
+Expected:
+HTTP 200 or 302, not connection refused.
+
+Run:
+
+curl -I http://127.0.0.1:8000/admin/categories
+
+Expected:
+HTTP 302 to login if unauthenticated, not 500.
+
+Open external browser URL:
+
+/admin/login
+
+Expected:
+Login page loads without 502.
+
+After login, open:
+
+/admin
+/admin/categories
+/admin/places
+/admin/media-items
+/admin/qr-codes
+
+Expected:
+All pages load without 502.
+
+If 502 still happens, report:
+- exact URL
+- server log error
+- whether local curl works
+- current server command
+- current APP_URL
+- current ASSET_URL
+- current port binding
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
