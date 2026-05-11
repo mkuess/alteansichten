@@ -1,0 +1,159 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project running in Replit.
+
+The Laravel app itself works on port 8000.
+The Filament backend is reachable and styled.
+However, navigation inside the Replit embedded Preview panel still fails.
+
+The visible Replit message is:
+
+“The URL bar is not supported when navigating to external pages.
+You can open in a new tab to use your browser instead.”
+
+This happens when clicking Filament sidebar navigation links.
+
+2. Current state
+
+The admin panel loads.
+CSS and JS assets now return HTTP 200.
+Filament styling is working again.
+The Laravel server is running.
+Tests pass.
+
+But in the embedded Replit Preview, clicking Filament sidebar links causes Replit’s preview frame to treat the navigation as an external page.
+
+This is likely caused by absolute URLs generated for Filament navigation, APP_URL / ASSET_URL configuration, or a Replit Preview limitation.
+
+3. Exact task
+
+Diagnose and fix Filament admin navigation so internal admin links work correctly inside Replit Preview if possible.
+
+If this is a Replit Preview limitation that cannot be fixed safely in Laravel, clearly report that and confirm the correct workaround is to open the app in an external browser tab.
+
+4. What Replit should do
+
+- Inspect the rendered HTML of the Filament sidebar navigation.
+- Check the href values for sidebar links such as:
+  - Kategorien
+  - Standorte
+  - Medien
+  - QR-Codes
+  - Einreichungen
+  - Meldungen
+- Determine whether these links are:
+  - relative paths like /admin/places
+  - absolute URLs on the same Replit domain
+  - absolute URLs with :8000
+  - absolute URLs on a different Replit/janeway domain
+  - localhost URLs
+- Check .env values:
+  - APP_URL
+  - ASSET_URL
+  - VITE_*
+  - SESSION_DOMAIN
+- Confirm whether APP_URL is causing Filament to generate absolute admin links that Replit Preview treats as external.
+- Try to keep internal Filament navigation links as same-origin relative URLs if possible.
+- Keep asset URLs working.
+- Do not break CSS/JS loading while fixing navigation.
+- If changing APP_URL would break assets, do not force it.
+- If the embedded Replit Preview cannot support these links reliably, report clearly:
+  - “The app works correctly in an external browser tab, but Replit Preview treats the generated admin links as external.”
+- Confirm the correct stable workflow:
+  - open the Laravel app with the external browser/open-in-new-tab button
+  - use /admin there instead of the embedded Replit Preview URL bar
+
+5. What Replit must NOT do
+
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not delete data.
+- Do not reset migrations.
+- Do not remove resources.
+- Do not remove custom theme files.
+- Do not add new features.
+- Do not apply design changes.
+- Do not move the app to /__mockup.
+- Do not hardcode local paths like /home/runner into Laravel code.
+- Do not break asset loading again.
+
+6. Expected files / changes
+
+Possible file to inspect or update:
+
+- .env
+- config/app.php
+- config/session.php
+- app/Providers/Filament/AdminPanelProvider.php
+
+Expected result:
+
+Either:
+
+A) Filament sidebar links work inside Replit Preview without being treated as external pages.
+
+Or:
+
+B) Replit confirms this is a Preview limitation, and the correct workflow is to open the app in an external browser tab.
+
+In both cases:
+
+- /admin loads
+- /admin/categories loads
+- /admin/places loads
+- /admin/media-items loads
+- CSS/JS assets still load
+- no localhost asset URLs
+- no /__mockup redirects
+- no HTTP 502 from Laravel itself
+
+7. Test steps
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open the app in embedded Replit Preview:
+
+/admin
+
+Click sidebar links:
+
+- Kategorien
+- Standorte
+- Medien
+- QR-Codes
+
+Check whether Replit Preview still shows:
+
+“The URL bar is not supported when navigating to external pages.”
+
+Then open the app using Replit’s external browser/open-in-new-tab button.
+
+Check:
+
+/admin
+/admin/categories
+/admin/places
+/admin/media-items
+/admin/qr-codes
+
+Expected:
+The admin panel works correctly in the external browser tab.
+
+Report clearly whether the remaining issue is:
+- Laravel/Filament configuration
+or
+- Replit embedded Preview limitation
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
