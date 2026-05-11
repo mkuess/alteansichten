@@ -10,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -82,6 +83,13 @@ class QrCodeResource extends Resource
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('redirect_url')
+                    ->label('QR-Redirect-URL')
+                    ->getStateUsing(fn (QrCode $record): string => url('/qr/' . $record->code))
+                    ->copyable()
+                    ->copyMessage('URL kopiert')
+                    ->limit(50),
+
                 TextColumn::make('target_url')
                     ->label('Ziel-URL')
                     ->searchable()
@@ -100,6 +108,14 @@ class QrCodeResource extends Resource
                     ->label('Erstellt am')
                     ->dateTime('d.m.Y')
                     ->sortable(),
+            ])
+            ->actions([
+                Action::make('openQrUrl')
+                    ->label('QR-URL öffnen')
+                    ->icon('heroicon-o-arrow-top-right-on-square')
+                    ->color('info')
+                    ->url(fn (QrCode $record): string => url('/qr/' . $record->code))
+                    ->openUrlInNewTab(),
             ])
             ->defaultSort('created_at', 'desc');
     }

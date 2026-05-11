@@ -1,0 +1,136 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+QR code records already exist.
+QR code records can be created from places.
+The public redirect route /qr/{code} exists and increments scan_count.
+
+Now the backend should make the QR redirect URL easy to see and copy.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+
+Existing QR functionality:
+
+- QR records can be created from PlaceResource
+- GET /qr/{code} redirects to target_url
+- scan_count increments
+- last_scanned_at updates
+
+Existing related files:
+
+- app/Models/QrCode.php
+- app/Filament/Resources/QrCodeResource.php
+- app/Http/Controllers/QrRedirectController.php
+- routes/web.php
+
+3. Exact task
+
+Improve QrCodeResource so admins can easily see, copy, and open the public QR redirect URL.
+
+Do not generate QR image files yet.
+
+4. What Replit should do
+
+- Update QrCodeResource only.
+- Add a display column for the QR redirect URL.
+- The redirect URL should point to:
+  - /qr/{code}
+- If practical, show the full absolute URL using Laravel’s url() helper.
+- Make the QR redirect URL copyable if Filament supports it simply.
+- Add a table action if practical:
+  - “Open QR URL”
+  - opens /qr/{code} in a new tab
+- Keep existing columns:
+  - place
+  - code
+  - target_url
+  - scan_count
+  - last_scanned_at
+  - created_at
+- Keep code and target_url searchable.
+- Do not change the database structure.
+- Do not change the QR redirect controller.
+
+5. What Replit must NOT do
+
+- Do not install a QR code image package.
+- Do not generate PNG or SVG files.
+- Do not change qr_codes migration.
+- Do not create new tables.
+- Do not create analytics tables.
+- Do not store IP addresses for QR scans.
+- Do not modify public frontend pages.
+- Do not apply design changes.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected changed file:
+
+- app/Filament/Resources/QrCodeResource.php
+
+Optional changed file only if needed:
+
+- app/Models/QrCode.php
+
+Expected behavior:
+
+- In /admin/qr-codes, admins can see a QR redirect URL for each record.
+- The URL points to /qr/{code}.
+- The URL can be copied easily if practical.
+- The QR redirect URL can be opened from the backend if practical.
+- Existing QR code creation and redirect behavior remains unchanged.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/qr-codes
+
+Check:
+
+- Existing QR code records are visible.
+- Each QR code shows its redirect URL.
+- The redirect URL points to /qr/{code}.
+- If a copy action exists, copying works.
+- If an open action exists, it opens the QR URL.
+
+Open:
+
+/qr/{existing-code}
+
+Expected:
+
+- scan_count increments
+- last_scanned_at updates
+- browser redirects to target_url
+
+Check browser console/network:
+
+Expected:
+
+- no CSS or JS errors
+- no localhost asset URLs
+- no mixed-content errors
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
