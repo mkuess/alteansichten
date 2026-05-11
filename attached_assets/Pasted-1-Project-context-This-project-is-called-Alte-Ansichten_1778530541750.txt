@@ -1,0 +1,149 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project.
+
+The Laravel app runs on Replit port 8000.
+The Filament admin panel should work at:
+
+/admin
+
+The external Replit URL currently used is:
+
+https://673da689-dfff-44c6-ae3e-cc4bcc751bcb-00-fwsieclc3p1p.janeway.replit.dev
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own VM.
+
+2. Current state
+
+Admin routes exist.
+Unauthenticated requests return 302 to login correctly.
+However, in the browser the external URL sometimes returns HTTP 502, especially when:
+
+- opening admin resource links such as /admin/categories
+- logging out from Filament
+
+Example URL:
+
+https://673da689-dfff-44c6-ae3e-cc4bcc751bcb-00-fwsieclc3p1p.janeway.replit.dev/admin/categories
+
+This suggests the issue may be related to the external Replit URL, session/cookie configuration, APP_URL, logout redirect, or the running server process.
+
+3. Exact task
+
+Diagnose and fix unstable access to the Filament admin panel through the external Replit URL, including logout.
+
+4. What Replit should do
+
+- Check whether the Laravel dev server is running continuously on port 8000.
+- Check the actual server command used to start Laravel.
+- Make sure the server binds to 0.0.0.0 and port 8000, not localhost only.
+- Inspect .env values related to URL and sessions:
+  - APP_URL
+  - ASSET_URL
+  - SESSION_DRIVER
+  - SESSION_DOMAIN
+  - SESSION_SECURE_COOKIE
+  - SESSION_SAME_SITE
+- Make sure APP_URL matches the current external Replit HTTPS URL.
+- If ASSET_URL is set, make sure it also matches the current external Replit HTTPS URL.
+- Do not set SESSION_DOMAIN to a value that breaks the Replit preview domain.
+- Prefer SESSION_DOMAIN to be empty/null unless explicitly needed.
+- Make sure SESSION_SECURE_COOKIE is compatible with HTTPS Replit preview.
+- Clear all caches after changes:
+  php artisan optimize:clear
+  php artisan config:clear
+  php artisan route:clear
+  php artisan view:clear
+- Restart the Laravel dev server.
+- Check Filament logout behavior.
+- Verify that /admin/categories works after login.
+- Verify that logout redirects to a valid login page and does not cause 502.
+- Report the exact cause found.
+
+5. What Replit must NOT do
+
+- Do not delete database data.
+- Do not reset migrations.
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not remove existing resources.
+- Do not remove the admin user.
+- Do not change the role system.
+- Do not apply design changes.
+- Do not add new features.
+- Do not create new tables.
+- Do not move the app back to /__mockup.
+- Do not hardcode local machine paths into the Laravel code.
+
+6. Expected files / changes
+
+Possible changed file:
+
+- .env
+
+Possible checked files:
+
+- config/session.php
+- config/app.php
+- app/Providers/Filament/AdminPanelProvider.php
+- bootstrap/providers.php
+
+Expected result:
+
+- The external Replit URL works reliably.
+- /admin/login loads.
+- /admin/categories loads after login.
+- /admin/places loads after login.
+- /admin/media-items loads after login.
+- Filament logout works without HTTP 502.
+- After logout, the browser returns to a valid login page.
+
+7. Test steps
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Restart the Laravel dev server on 0.0.0.0:8000.
+
+Open the external URL:
+
+/admin/login
+
+Log in.
+
+Then open:
+
+/admin/categories
+/admin/places
+/admin/media-items
+/admin/qr-codes
+
+Expected:
+All pages load without HTTP 502.
+
+Click logout.
+
+Expected:
+Logout works and redirects to /admin/login without HTTP 502.
+
+If any step fails, report:
+- exact failing URL
+- server log error
+- current APP_URL
+- current SESSION_DOMAIN
+- current SESSION_SECURE_COOKIE
+- current SESSION_SAME_SITE
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
