@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             CountrySeeder::class,
             StateSeeder::class,
             DistrictSeeder::class,
+            CategorySeeder::class,
         ]);
     }
 }
