@@ -1,0 +1,137 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+Places are the central content entity.
+Media items, QR codes, submissions, and content reports already exist.
+Now the Place edit page should become more useful for content maintenance.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+
+Existing backend resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+- SubmissionResource
+- ContentReportResource
+
+Existing functionality:
+
+- Places can be managed
+- Media items can be managed
+- Media links can connect media to places or municipalities
+- QR codes can be created from places
+- QR redirect and QR image generation exist
+- Submissions and content reports exist
+- Media upload and preview exist
+
+3. Exact task
+
+Improve the PlaceResource edit page by adding simple relation managers or backend sections for related maintenance data.
+
+The goal is to make a place easier to maintain from one place edit page.
+
+4. What Replit should do
+
+- Add a simple relation manager or section on PlaceResource for the related QR code.
+- Add a simple relation manager or section on PlaceResource for related submissions.
+- Add a simple relation manager or section on PlaceResource for related content reports.
+- If simple and safe, add a relation manager or read-only table for media links that point to this place.
+- Keep this standard Filament.
+- Keep the implementation simple.
+- Do not redesign the page.
+- Do not create new database tables.
+- Do not duplicate existing resources.
+- Do not build complex nested editing if it becomes risky.
+
+Preferred behavior:
+
+- On a Place edit page, an admin can see whether the place has a QR code.
+- On a Place edit page, an admin can see submissions related to this place.
+- On a Place edit page, an admin can see reports related to this place.
+- On a Place edit page, an admin can see linked media references if practical.
+
+5. What Replit must NOT do
+
+- Do not change the database structure.
+- Do not create new tables.
+- Do not modify migrations.
+- Do not remove existing Resources.
+- Do not create public frontend pages.
+- Do not apply design changes.
+- Do not add people or organizations.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not create automatic publishing logic.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected changed file:
+
+- app/Filament/Resources/PlaceResource.php
+
+Possible new files:
+
+- app/Filament/Resources/PlaceResource/RelationManagers/QrCodeRelationManager.php
+- app/Filament/Resources/PlaceResource/RelationManagers/SubmissionsRelationManager.php
+- app/Filament/Resources/PlaceResource/RelationManagers/ContentReportsRelationManager.php
+- app/Filament/Resources/PlaceResource/RelationManagers/MediaLinksRelationManager.php if practical
+
+Expected behavior:
+
+- Place edit pages become more useful for maintenance.
+- Existing PlaceResource form and table keep working.
+- Existing QR code action still works.
+- Existing MediaItemResource and MediaLinksRelationManager still work.
+- Existing SubmissionResource and ContentReportResource still work.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/places
+
+Open an existing place for editing.
+
+Check:
+
+- The existing place form still works.
+- QR code information or relation is visible if a QR code exists.
+- Related submissions are visible if any exist.
+- Related content reports are visible if any exist.
+- Related media links are visible if implemented.
+- Saving the place still works.
+- The existing “QR-Code erstellen” action still works and does not create duplicates.
+
+Check browser/network:
+
+Expected:
+- no CSS or JS errors
+- no localhost asset URLs
+- no mixed-content errors
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.

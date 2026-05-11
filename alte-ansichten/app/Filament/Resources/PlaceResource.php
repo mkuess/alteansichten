@@ -3,6 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PlaceResource\Pages;
+use App\Filament\Resources\PlaceResource\RelationManagers\ContentReportsRelationManager;
+use App\Filament\Resources\PlaceResource\RelationManagers\QrCodeRelationManager;
+use App\Filament\Resources\PlaceResource\RelationManagers\SubmissionsRelationManager;
 use App\Models\Category;
 use App\Models\Municipality;
 use App\Models\Place;
@@ -250,6 +253,15 @@ class PlaceResource extends Resource
                         }
                     }),
             ]);
+    }
+
+    public static function getRelationManagers(): array
+    {
+        return [
+            QrCodeRelationManager::class,
+            SubmissionsRelationManager::class,
+            ContentReportsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
