@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MediaItemResource\Pages;
+use App\Filament\Resources\MediaItemResource\RelationManagers\MediaLinksRelationManager;
 use App\Models\MediaItem;
 use App\Models\Place;
 use Filament\Forms\Components\Section;
@@ -250,6 +251,13 @@ class MediaItemResource extends Resource
                         'hidden'   => 'Versteckt',
                     ]),
             ]);
+    }
+
+    public static function getRelationManagers(): array
+    {
+        return [
+            MediaLinksRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
