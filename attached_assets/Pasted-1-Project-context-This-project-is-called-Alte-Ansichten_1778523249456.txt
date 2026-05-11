@@ -1,0 +1,166 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The admin backend is being built step by step with simple Filament Resources.
+
+The region structure is:
+
+- countries
+- states
+- districts
+- municipalities
+
+CountryResource, StateResource, and DistrictResource already exist.
+This task only creates the MunicipalityResource.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+
+These are visible under the “Regionen” navigation group.
+
+The municipalities table exists but currently has no seeder and may be empty.
+
+No MunicipalityResource exists yet.
+
+3. Exact task
+
+Create a simple Filament MunicipalityResource for managing municipalities in the admin panel.
+
+4. What Replit should do
+
+- Create a Filament Resource for the Municipality model.
+- Place it in the admin navigation under the same “Regionen” navigation group.
+- Use the label “Gemeinden”.
+- Add a practical form with these fields:
+  - district_id as a searchable select field showing the district name
+  - name
+  - slug
+  - summary
+  - description
+  - postal_code
+  - latitude
+  - longitude
+  - status
+  - public_profile_enabled
+  - internal_reference_code
+- Keep hero_image_path and logo_path out of the form for now, unless they are simple text fields and do not require upload handling.
+- Add a simple table with these columns:
+  - district name
+  - name
+  - slug
+  - postal_code
+  - status
+  - public_profile_enabled
+  - created_at
+- Make name, slug, and postal_code searchable.
+- Make district and status filterable if simple to implement.
+- Keep the resource standard Filament 3.
+- Verify that the MunicipalityResource appears in the admin panel.
+- Verify that a municipality can be manually created and edited.
+
+5. What Replit must NOT do
+
+- Do not create a MunicipalitySeeder yet.
+- Do not seed municipalities yet.
+- Do not create CategoryResource yet.
+- Do not create PlaceResource yet.
+- Do not apply the Claude UI design yet.
+- Do not create custom dashboard widgets yet.
+- Do not modify the public frontend.
+- Do not create new database tables.
+- Do not add media, QR codes, submissions, reports, people, or organizations.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with Task 015 or later tasks.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/MunicipalityResource.php
+- app/Filament/Resources/MunicipalityResource/Pages/CreateMunicipality.php
+- app/Filament/Resources/MunicipalityResource/Pages/EditMunicipality.php
+- app/Filament/Resources/MunicipalityResource/Pages/ListMunicipalities.php
+
+Expected behavior:
+
+- “Gemeinden” appears in the Filament admin navigation under “Regionen”.
+- Admin users can create, edit, and list municipalities.
+- The district relation is shown clearly.
+- The resource uses standard Filament CRUD behavior.
+- No seed data is required yet.
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource Municipality
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- MunicipalityResource is visible in the navigation as “Gemeinden”.
+- The create page opens.
+- Create one test municipality manually, for example:
+  - district: Klagenfurt Land
+  - name: Maria Saal
+  - slug: maria-saal
+  - postal_code: 9063
+  - status: draft
+  - public_profile_enabled: true
+- Save the record.
+- Open it for editing.
+- Save without changes.
+
+Also check routes:
+
+php artisan route:list --path=admin/municipalities
+
+Expected:
+index, create, and edit routes for the MunicipalityResource are registered.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
