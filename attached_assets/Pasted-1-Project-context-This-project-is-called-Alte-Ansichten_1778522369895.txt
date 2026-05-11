@@ -1,0 +1,178 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The first MVP starts with the region structure:
+
+- countries
+- states
+- districts
+- municipalities
+
+The countries and states tables already exist.
+
+This task only creates the third region table: districts.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The countries table exists and contains Austria.
+The states table exists and contains the 9 Austrian federal states.
+Country has many States.
+State belongs to Country.
+
+No districts, municipalities, categories, places, or Filament Resources exist yet.
+
+3. Exact task
+
+Create the districts database table, the District model, and a DistrictSeeder with an initial practical set of Austrian districts.
+
+4. What Replit should do
+
+- Create a migration for a districts table.
+- Create an app/Models/District.php model.
+- Add the relationship:
+  - District belongs to State
+  - State has many Districts
+- Create a database/seeders/DistrictSeeder.php file.
+- Seed an initial practical district set for the MVP.
+- Include at minimum these districts:
+  - Klagenfurt Stadt
+  - Klagenfurt Land
+  - Villach Stadt
+  - Villach Land
+  - Sankt Veit an der Glan
+  - Feldkirchen
+  - Völkermarkt
+  - Wolfsberg
+  - Spittal an der Drau
+  - Hermagor
+  - Wien
+- Assign the Carinthian districts to Kärnten.
+- Assign Wien to the Wien state.
+- Make the seeder idempotent, so running it multiple times does not create duplicates.
+- Add DistrictSeeder to DatabaseSeeder after StateSeeder.
+- Run the migration.
+- Run the seeder.
+- Verify that the districts table contains the expected records after seeding.
+
+5. What Replit must NOT do
+
+- Do not try to seed all Austrian districts unless it is already simple and reliable.
+- Do not create municipalities yet.
+- Do not create categories yet.
+- Do not create places yet.
+- Do not create Filament Resources yet.
+- Do not create public pages yet.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not modify the existing role system.
+- Do not continue with Task 008 or later tasks.
+
+6. Expected files / changes
+
+Expected files:
+
+- database/migrations/xxxx_xx_xx_xxxxxx_create_districts_table.php
+- app/Models/District.php
+- app/Models/State.php updated with districts relationship
+- database/seeders/DistrictSeeder.php
+- database/seeders/DatabaseSeeder.php updated to call DistrictSeeder after StateSeeder
+
+Expected districts table fields:
+
+- id
+- state_id foreign key referencing states.id
+- name
+- slug
+- code nullable, max length 20
+- status string, default published
+- timestamps
+
+Expected example seeded records:
+
+- name: Klagenfurt Stadt
+  slug: klagenfurt-stadt
+  state: Kärnten
+
+- name: Klagenfurt Land
+  slug: klagenfurt-land
+  state: Kärnten
+
+- name: Wien
+  slug: wien
+  state: Wien
+
+The model should allow mass assignment for the relevant fields.
+
+7. Test steps
+
+Run:
+
+php artisan migrate
+
+Run:
+
+php artisan db:seed --class=DistrictSeeder
+
+Run the seeder a second time:
+
+php artisan db:seed --class=DistrictSeeder
+
+Expected:
+No duplicate districts are created.
+
+Run:
+
+php artisan tinker
+
+Then check:
+
+App\Models\District::count();
+
+Expected:
+At least 11
+
+Check:
+
+App\Models\State::where('name', 'Kärnten')->first()->districts()->count();
+
+Expected:
+At least 10
+
+Check one example:
+
+App\Models\District::where('name', 'Klagenfurt Land')->first()->slug;
+
+Expected:
+klagenfurt-land
+
+Check:
+
+App\Models\District::where('name', 'Wien')->first()->state->name;
+
+Expected:
+Wien
+
+Finally run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
