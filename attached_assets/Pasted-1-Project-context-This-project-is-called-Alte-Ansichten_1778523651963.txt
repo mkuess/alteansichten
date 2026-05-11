@@ -1,0 +1,149 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The public frontend is now being built step by step.
+
+The homepage at `/` already exists.
+The next public MVP page is a simple municipality list at `/gemeinden`.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+
+A simple public homepage exists at `/`.
+
+The municipalities table exists, but it may contain only manually created test records or may be empty.
+
+3. Exact task
+
+Create a simple public municipality list page at `/gemeinden`.
+
+4. What Replit should do
+
+- Add a public route:
+  - GET /gemeinden
+- Create a Blade view for the municipality list.
+- Query municipalities from the database.
+- Show only municipalities where:
+  - public_profile_enabled = true
+  - status is not hidden
+  - status is not archived
+- Sort municipalities alphabetically by name.
+- Display for each municipality:
+  - name
+  - postal_code if available
+  - district name if available
+  - summary if available
+- Each municipality item should link to its future detail page:
+  - /gemeinden/{slug}
+- The detail route does not need to be implemented yet.
+- Add a clear page title:
+  - Gemeinden
+- Add a short intro text.
+- Add a link back to the homepage.
+- Use semantic HTML and keep the page accessible.
+- Ensure there is exactly one h1.
+- Keep the design simple and consistent with the homepage.
+- If there are no municipalities yet, show a helpful empty state.
+
+5. What Replit must NOT do
+
+- Do not create the municipality detail page yet.
+- Do not create the place list page yet.
+- Do not create the place detail page yet.
+- Do not create maps yet.
+- Do not add Leaflet.
+- Do not add geocoding.
+- Do not create media tables.
+- Do not create QR code tables.
+- Do not create submissions or reports.
+- Do not apply the Claude admin UI design yet.
+- Do not modify Filament Resources unless absolutely necessary.
+- Do not create new database tables.
+- Do not install extra packages.
+- Do not continue with Task 019 or later tasks.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- resources/views/public/municipalities/index.blade.php
+
+Expected changed files may include:
+
+- routes/web.php
+
+Expected behavior:
+
+- Visiting `/gemeinden` shows the municipality list page.
+- If municipalities exist, they are listed alphabetically.
+- If no municipalities exist, a friendly empty state is shown.
+- Each listed municipality links to `/gemeinden/{slug}`.
+- The page uses the existing public visual style from the homepage.
+- No route errors occur on `/gemeinden`.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Run:
+
+php artisan route:list --path=gemeinden
+
+Expected:
+GET /gemeinden is registered.
+
+Open:
+
+/gemeinden
+
+Expected:
+The municipality list page loads.
+
+Check manually:
+
+- There is exactly one h1.
+- The page has a link back to `/`.
+- If a test municipality exists, it appears in the list.
+- If no municipality exists, an empty state appears.
+- The page works on a narrow/mobile viewport.
+- There are no PHP errors.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
