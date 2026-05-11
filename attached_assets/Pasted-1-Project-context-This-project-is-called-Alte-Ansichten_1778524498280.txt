@@ -1,0 +1,126 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project.
+
+The real backend should be available at:
+
+/admin/login
+
+A separate Claude/HTML mockup may exist as a visual reference, but it must not become the app base URL and must not interfere with Laravel or Filament.
+
+2. Current state
+
+When opening the preview, the app shows:
+
+“The server is configured with a public base URL of /__mockup - did you mean to visit /__mockup/admin instead?”
+
+This indicates that the Replit preview or Laravel app is currently pointing to a mockup base path instead of the real Laravel/Filament app.
+
+3. Exact task
+
+Find and remove the accidental mockup base URL configuration so the real Laravel application works again at the normal root and Filament works at /admin/login.
+
+4. What Replit should do
+
+- Check the current URL/path being served in Replit.
+- Check whether any base URL, APP_URL, asset URL, route prefix, Vite base path, or Replit setting points to /__mockup.
+- Check .env for:
+  - APP_URL
+  - ASSET_URL
+  - VITE_*
+  - any value containing __mockup
+- Check config/app.php and config/filament files for any __mockup reference.
+- Search the codebase for:
+  - __mockup
+- Remove or correct accidental __mockup usage if it affects the real Laravel app.
+- Keep the Claude mockup only as a reference file if it exists.
+- Make the real Laravel app accessible at:
+  - /
+  - /admin/login
+- Clear Laravel caches after correction.
+
+Use these commands where useful:
+
+php artisan optimize:clear
+
+php artisan route:list --path=admin
+
+php artisan test
+
+5. What Replit must NOT do
+
+- Do not delete the project.
+- Do not delete database data.
+- Do not reset migrations.
+- Do not remove Filament.
+- Do not remove existing Resources.
+- Do not remove the Claude mockup file unless it is actively being served as the app root and there is no safer option.
+- Do not apply the Claude custom backend design yet.
+- Do not continue with new backend features.
+- Do not add Replit-specific paths into application code.
+
+6. Expected files / changes
+
+Possible files to inspect:
+
+- .env
+- config/app.php
+- config/filament.php if present
+- app/Providers/Filament/AdminPanelProvider.php
+- routes/web.php
+- vite.config.js
+- package.json
+- any file or config containing __mockup
+
+Expected result:
+
+- No active app base URL points to /__mockup.
+- / loads the Laravel public homepage.
+- /admin/login loads the real Filament login page.
+- Filament CSS and JS still load correctly through the public Replit HTTPS URL.
+
+7. Test steps
+
+Run:
+
+grep -R "__mockup" . --exclude-dir=vendor --exclude-dir=node_modules
+
+Expected:
+No active Laravel configuration uses __mockup.
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan route:list --path=admin
+
+Expected:
+Filament admin routes exist.
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/
+
+Expected:
+The Alte Ansichten public homepage loads.
+
+Open:
+
+/admin/login
+
+Expected:
+The real Filament login page loads with styling.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
