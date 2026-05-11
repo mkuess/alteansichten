@@ -1,0 +1,107 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The first MVP uses only simple global roles:
+
+- admin
+- editor
+- user
+
+Regional permissions are not part of the first MVP.
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+The Filament login page exists.
+No admin user exists yet.
+No custom roles exist yet.
+No custom models, resources, public pages, or database structure for the archive exist yet.
+
+3. Exact task
+
+Prepare simple global user roles and create one local admin user for Filament access.
+
+4. What Replit should do
+
+- Add a simple role column to the existing users table.
+- Use a safe enum-like string column or equivalent simple Laravel-compatible approach.
+- Supported role values must be:
+  - admin
+  - editor
+  - user
+- Default role should be user.
+- Update the User model so the role field is fillable or otherwise handled correctly.
+- Add a simple helper method on the User model, for example:
+  - isAdmin()
+  - isEditor()
+- Make Filament access possible only for users with role admin or editor.
+- Create one local admin user through a seeder.
+- Use safe development credentials and document them clearly in the response.
+- Make sure the admin user is created idempotently, so running the seeder twice does not create duplicates.
+- Run the migration and seeder.
+- Verify that the admin user can access /admin.
+
+5. What Replit must NOT do
+
+- Do not install Spatie permissions.
+- Do not create regional permissions.
+- Do not create user_region_permissions.
+- Do not create Country, State, District, Municipality, Category, Place, or Media models yet.
+- Do not create Filament Resources yet.
+- Do not build public pages yet.
+- Do not connect GitHub.
+- Do not add deployment scripts.
+- Do not continue with Task 005 or later tasks.
+
+6. Expected files / changes
+
+Expected changes may include:
+
+- A migration adding role to users
+- app/Models/User.php updated with role handling and simple helper methods
+- database/seeders/AdminUserSeeder.php
+- database/seeders/DatabaseSeeder.php updated to call AdminUserSeeder
+- app/Providers/Filament/AdminPanelProvider.php or User model updated so Filament access is restricted to admin/editor users
+
+Expected role behavior:
+
+- admin: full Filament access
+- editor: Filament access prepared for later restricted content editing
+- user: no Filament access
+
+7. Test steps
+
+Run:
+
+php artisan migrate
+
+Run:
+
+php artisan db:seed --class=AdminUserSeeder
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Then open:
+
+/admin/login
+
+Log in with the created admin user.
+
+Expected:
+The admin user can access the Filament dashboard.
+
+Also verify that a normal user role would not be allowed to access Filament.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
