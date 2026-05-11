@@ -1,0 +1,89 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It will be a Laravel 11 and Filament 3 application for historical municipalities, places, images, stories, QR codes, moderated user submissions, public municipality pages, and public place pages.
+
+Replit is only the development environment.
+The project must not get any Replit-specific dependency.
+The later workflow will be:
+
+Replit development → GitHub → deployment on my own VM at spaceship.com.
+
+The project must stay standalone and deployable on a normal Linux VM.
+
+2. Current state
+
+There is currently no Laravel project.
+Filament is not installed yet.
+There is no database connection yet.
+There is no GitHub repository connected yet.
+
+3. Exact task
+
+Create a fresh Laravel 11 project as the technical base for “Alte Ansichten”.
+
+4. What Replit should do
+
+- Check whether the current Replit workspace is empty or already contains files.
+- If the workspace is empty or safe to initialize, create a new Laravel 11 project in the current workspace.
+- Use Composer and the official Laravel project setup.
+- Make sure the project structure is standard Laravel and not Replit-specific.
+- Confirm that the Laravel application can run locally inside Replit.
+- Do not install Filament yet.
+- Do not create any models, migrations, seeders, roles, pages, or custom features yet.
+
+5. What Replit must NOT do
+
+- Do not install Filament yet.
+- Do not create database tables yet.
+- Do not set up roles yet.
+- Do not create public pages yet.
+- Do not add Replit-specific paths like /home/runner/... into the code.
+- Do not use Replit database-specific code.
+- Do not add deployment scripts yet.
+- Do not modify the project into a non-standard Laravel structure.
+- Do not continue with Task 002 or later tasks.
+
+6. Expected files / changes
+
+Expected result:
+- A clean Laravel 11 project structure.
+- Standard Laravel files such as:
+  - app/
+  - bootstrap/
+  - config/
+  - database/
+  - public/
+  - resources/
+  - routes/
+  - storage/
+  - tests/
+  - artisan
+  - composer.json
+  - package.json
+  - .env.example
+
+7. Test steps
+
+After setup, run:
+
+composer install
+
+Then check:
+
+php artisan --version
+
+Expected:
+Laravel Framework 11.x
+
+Then run the Laravel development server in the Replit environment and confirm that the default Laravel welcome page loads.
+
+Also run:
+
+php artisan test
+
+If tests fail because of environment setup, explain the reason clearly and do not continue with feature development.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.

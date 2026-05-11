@@ -1,45 +1,64 @@
-# [Project name]
+# Alte Ansichten
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A Laravel 11 application for historical municipalities, places, images, stories, QR codes, moderated user submissions, and public pages.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `cd alte-ansichten && php artisan serve --host=0.0.0.0 --port=8000` — run the Laravel dev server (port 8000)
+- `cd alte-ansichten && php artisan --version` — check Laravel version
+- `cd alte-ansichten && composer install` — install PHP dependencies
+- `cd alte-ansichten && php artisan test` — run the test suite
+- `cd alte-ansichten && php artisan migrate` — run database migrations
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- PHP 8.4, Laravel 11
+- SQLite (dev default) → MySQL/PostgreSQL for production
+- Filament 3 (not yet installed)
+- Composer for PHP package management
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `alte-ansichten/` — the Laravel 11 project root (standard structure)
+  - `app/` — application code (Models, Controllers, etc.)
+  - `bootstrap/` — framework bootstrap files
+  - `config/` — configuration files
+  - `database/` — migrations, seeders, factories
+  - `public/` — web root (index.php, assets)
+  - `resources/` — views, CSS, JS
+  - `routes/` — web.php, api.php, etc.
+  - `storage/` — logs, cache, uploaded files
+  - `tests/` — PHPUnit tests
+  - `artisan` — Laravel CLI entry point
+  - `composer.json` — PHP dependencies
+  - `.env` — local environment config (not committed)
+  - `.env.example` — environment template
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Laravel project lives in `alte-ansichten/` subdirectory (not workspace root) to avoid conflicting with the existing Node.js monorepo scaffolding in the workspace root.
+- SQLite used as default database for local development (zero-config). Will switch to MySQL/PostgreSQL on the production VM.
+- No Replit-specific dependencies added — the project is fully portable and deployable on a standard Linux VM.
+- Deployment path: Replit development → GitHub → own VM at spaceship.com.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Historical image and place archive called "Alte Ansichten". Will include municipalities, places, historical images, stories, QR codes, moderated user submissions, and public-facing pages.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- No Replit-specific dependencies — project must be portable to a standard Linux VM.
+- Deployment workflow: Replit → GitHub → own VM.
+- Tasks are done one step at a time; do not continue to next task without being asked.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Always `cd alte-ansichten` before running `php artisan` commands.
+- The workspace root contains a Node.js pnpm monorepo — do not mix Laravel files into the root.
+- `.env` is not committed to git; `.env.example` is the template.
+- When deploying to production VM, switch `DB_CONNECTION` from `sqlite` to `mysql` or `pgsql` and set the appropriate credentials.
 
 ## Pointers
 
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details (Node.js side)
+- Laravel docs: https://laravel.com/docs/11.x
