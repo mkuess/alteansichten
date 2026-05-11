@@ -1,0 +1,143 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The admin backend is being built step by step with simple Filament Resources.
+
+Categories are used to classify places / locations, for example Gasthaus, Schule, Bahnhof, Sakralbau, and so on.
+
+This task only creates the CategoryResource.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+
+These are visible under the “Regionen” navigation group.
+
+The categories table exists and contains 12 seeded categories.
+No CategoryResource exists yet.
+
+3. Exact task
+
+Create a simple Filament CategoryResource for managing place categories in the admin panel.
+
+4. What Replit should do
+
+- Create a Filament Resource for the Category model.
+- Place it in the admin navigation under an “Inhalte” navigation group.
+- Use the label “Kategorien”.
+- Add a simple form with these fields:
+  - name
+  - slug
+  - description
+  - sort_order
+  - status
+- Add a simple table with these columns:
+  - sort_order
+  - name
+  - slug
+  - status
+  - created_at
+- Make name and slug searchable.
+- Make status filterable if simple to implement.
+- Sort the table by sort_order ascending by default.
+- Keep the resource standard Filament 3.
+- Verify that the CategoryResource appears in the admin panel.
+- Verify that the existing 12 categories are visible and editable.
+
+5. What Replit must NOT do
+
+- Do not create PlaceResource yet.
+- Do not apply the Claude UI design yet.
+- Do not create custom dashboard widgets yet.
+- Do not modify the public frontend.
+- Do not create new database tables.
+- Do not create media, QR codes, submissions, reports, people, or organizations.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not modify the existing role system.
+- Do not continue with Task 016 or later tasks.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/CategoryResource.php
+- app/Filament/Resources/CategoryResource/Pages/CreateCategory.php
+- app/Filament/Resources/CategoryResource/Pages/EditCategory.php
+- app/Filament/Resources/CategoryResource/Pages/ListCategories.php
+
+Expected behavior:
+
+- “Kategorien” appears in the Filament admin navigation under “Inhalte”.
+- The existing 12 categories are visible.
+- Admin users can create, edit, and list categories.
+- The list is ordered by sort_order ascending.
+- The resource uses standard Filament CRUD behavior.
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource Category
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- CategoryResource is visible in the navigation as “Kategorien”.
+- The 12 seeded categories appear in the list.
+- Categories are ordered by sort_order ascending.
+- One category can be opened for editing.
+- Saving without changes works.
+
+Also check routes:
+
+php artisan route:list --path=admin/categories
+
+Expected:
+index, create, and edit routes for the CategoryResource are registered.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
