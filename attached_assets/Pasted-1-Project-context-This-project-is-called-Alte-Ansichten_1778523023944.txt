@@ -1,0 +1,151 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The admin backend is being built step by step with simple Filament Resources.
+
+The region structure is:
+
+- countries
+- states
+- districts
+- municipalities
+
+The CountryResource already exists.
+This task only creates the StateResource.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+Seeders exist for:
+
+- countries
+- states
+- districts
+- categories
+
+The countries table contains Austria.
+The states table contains the 9 Austrian federal states.
+CountryResource exists and is visible in Filament under the Regionen group.
+
+No StateResource exists yet.
+
+3. Exact task
+
+Create a simple Filament StateResource for managing Austrian federal states in the admin panel.
+
+4. What Replit should do
+
+- Create a Filament Resource for the State model.
+- Place it in the admin navigation under the same “Regionen” navigation group as CountryResource.
+- Use the label “Bundesländer”.
+- Add a simple form with these fields:
+  - country_id as a select field showing the country name
+  - name
+  - slug
+  - code
+  - status
+- Add a simple table with these columns:
+  - country name
+  - name
+  - slug
+  - code
+  - status
+  - created_at
+- Make name and slug searchable.
+- Make country and status filterable if simple to implement.
+- Keep the resource standard Filament 3.
+- Verify that the StateResource appears in the admin panel.
+- Verify that the existing 9 Austrian federal states are visible and editable.
+
+5. What Replit must NOT do
+
+- Do not create DistrictResource yet.
+- Do not create MunicipalityResource yet.
+- Do not create CategoryResource yet.
+- Do not create PlaceResource yet.
+- Do not apply the Claude UI design yet.
+- Do not create custom dashboard widgets yet.
+- Do not modify the public frontend.
+- Do not create new database tables.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with Task 013 or later tasks.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/StateResource.php
+- app/Filament/Resources/StateResource/Pages/CreateState.php
+- app/Filament/Resources/StateResource/Pages/EditState.php
+- app/Filament/Resources/StateResource/Pages/ListStates.php
+
+Expected behavior:
+
+- “Bundesländer” appears in the Filament admin navigation under “Regionen”.
+- The existing 9 Austrian federal states are visible.
+- Admin users can create, edit, and list states.
+- The country relation is shown clearly.
+- The resource uses standard Filament CRUD behavior.
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource State
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- StateResource is visible in the navigation as “Bundesländer”.
+- The 9 Austrian federal states appear in the list.
+- The country relation shows Austria.
+- One state can be opened for editing.
+- Saving without changes works.
+
+Also check routes:
+
+php artisan route:list --path=admin/states
+
+Expected:
+index, create, and edit routes for the StateResource are registered.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
