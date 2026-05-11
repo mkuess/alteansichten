@@ -1,0 +1,103 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 project for a historical archive platform with municipalities, places, media, moderated submissions, QR codes, and public pages.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+The intended workflow is:
+
+Replit development → GitHub → deployment on my own VM.
+
+2. Current state
+
+A clean Laravel 11 project exists.
+Laravel version is 11.51.0.
+The project structure is standard Laravel.
+The .env file is ignored by Git.
+The SQLite development database file is ignored.
+The .env.example file contains safer placeholder values and VM-oriented database comments.
+No Replit-specific paths or dependencies are present.
+Filament is not installed yet.
+No custom models, migrations, roles, resources, or public pages exist yet.
+
+3. Exact task
+
+Install Filament 3 as the admin panel foundation for the project.
+
+4. What Replit should do
+
+- Install Filament 3 using Composer.
+- Run the official Filament panel installation command.
+- Create the default Filament admin panel.
+- Keep the default Filament admin route unless the installer uses the standard /admin path.
+- Make sure the installation is compatible with Laravel 11.
+- Make sure no Replit-specific code or paths are added.
+- Do not create custom Filament resources yet.
+- Do not create project-specific models, migrations, roles, seeders, or pages yet.
+- After installation, verify that the Filament admin route exists.
+
+5. What Replit must NOT do
+
+- Do not create an admin user yet.
+- Do not create roles yet.
+- Do not create countries, states, districts, municipalities, categories, or places yet.
+- Do not create any Filament Resources yet.
+- Do not modify the public frontend yet.
+- Do not connect GitHub.
+- Do not add deployment scripts.
+- Do not add regional permissions.
+- Do not continue with Task 004 or later tasks.
+
+6. Expected files / changes
+
+Expected changes may include:
+
+- composer.json updated with Filament dependencies
+- composer.lock updated
+- app/Providers/Filament/AdminPanelProvider.php
+- possible Filament-related config or provider entries
+- any standard files created by the official Filament installer
+
+Expected result:
+
+- Filament 3 is installed.
+- A standard Filament admin panel exists.
+- The admin panel is reachable at the standard admin route.
+- The Laravel structure remains standard and portable.
+
+7. Test steps
+
+Run:
+
+composer show filament/filament
+
+Expected:
+Filament 3.x is installed.
+
+Run:
+
+php artisan route:list
+
+Check that Filament admin routes exist, especially the admin login route.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Start the dev server and open:
+
+/admin
+
+Expected:
+The Filament login page loads.
+
+If the login page cannot load because no admin user exists yet, report that clearly and stop. Do not create a user in this task.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
