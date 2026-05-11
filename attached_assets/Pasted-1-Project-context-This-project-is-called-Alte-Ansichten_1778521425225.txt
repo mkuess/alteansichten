@@ -1,0 +1,99 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 project for a historical archive platform.
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+The intended workflow is:
+
+Replit development → GitHub → deployment on my own VM.
+
+The project must not contain Replit-specific dependencies, hardcoded Replit paths, or environment-specific assumptions.
+
+2. Current state
+
+A fresh Laravel 11 project already exists.
+Laravel version is 11.51.0.
+Composer dependencies are installed.
+The development server runs on port 8000.
+The default Laravel page loads with HTTP 200.
+The default Laravel tests pass.
+
+Filament is not installed yet.
+No custom database tables, models, roles, or public pages exist yet.
+No GitHub repository is connected yet.
+
+3. Exact task
+
+Review and prepare the environment and Git structure so the Laravel project stays portable and VM-ready.
+
+4. What Replit should do
+
+- Check the existing .env and .env.example files.
+- Make sure .env is not intended to be committed.
+- Make sure .env.example contains safe placeholder values only.
+- Check .gitignore and confirm that sensitive or generated files are ignored.
+- Make sure the Laravel project does not contain hardcoded Replit-specific paths such as /home/runner/... .
+- Make sure there are no Replit-specific database assumptions in the application code.
+- Keep the project compatible with MySQL or MariaDB via environment variables.
+- Prepare the project for future GitHub usage, but do not connect GitHub yet unless it is already configured.
+- Report what was checked and what, if anything, was changed.
+
+5. What Replit must NOT do
+
+- Do not install Filament yet.
+- Do not create migrations, models, seeders, roles, or resources yet.
+- Do not configure a production database yet.
+- Do not add deployment scripts yet.
+- Do not add Replit-specific code or paths.
+- Do not commit anything to GitHub.
+- Do not continue with Task 003 or later tasks.
+- Do not change the Laravel folder structure away from the standard Laravel structure.
+
+6. Expected files / changes
+
+Expected files to review:
+
+- .env
+- .env.example
+- .gitignore
+- composer.json
+- package.json
+
+Expected result:
+
+- .env exists locally but is ignored by Git.
+- .env.example contains safe placeholder configuration.
+- .gitignore protects sensitive and generated files.
+- No Replit-specific paths are hardcoded in the Laravel codebase.
+- Database configuration remains environment-based and VM-ready.
+
+7. Test steps
+
+Run these checks:
+
+php artisan --version
+
+Expected:
+Laravel Framework 11.x
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Search the codebase for Replit-specific paths or assumptions:
+
+- /home/runner
+- replit
+- REPLIT
+- repl.co
+
+If any are found inside application code or configuration, report them clearly before changing anything risky.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.

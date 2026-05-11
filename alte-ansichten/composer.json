@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "alte-ansichten/alte-ansichten",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Alte Ansichten – historical archive platform.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
