@@ -6,6 +6,7 @@ use App\Filament\Resources\MediaItemResource\Pages;
 use App\Filament\Resources\MediaItemResource\RelationManagers\MediaLinksRelationManager;
 use App\Models\MediaItem;
 use App\Models\Place;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -82,9 +83,18 @@ class MediaItemResource extends Resource
 
             Section::make('Datei oder externer Link')
                 ->schema([
-                    TextInput::make('file_path')
-                        ->label('Dateipfad')
-                        ->maxLength(500),
+                    FileUpload::make('file_path')
+                        ->label('Datei hochladen')
+                        ->disk('public')
+                        ->directory('media-items')
+                        ->acceptedFileTypes([
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
+                            'application/pdf',
+                        ])
+                        ->maxSize(10240)
+                        ->nullable(),
 
                     TextInput::make('external_url')
                         ->label('Externe URL')

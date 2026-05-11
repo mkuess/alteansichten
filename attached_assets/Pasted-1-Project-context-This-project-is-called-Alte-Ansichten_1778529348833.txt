@@ -1,0 +1,145 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+Media items already exist and can be managed in Filament.
+Currently, file_path is only a simple text field.
+Now the backend should allow basic file upload for media items.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+
+Existing backend resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+- SubmissionResource
+- ContentReportResource
+
+Existing media structure:
+
+- media_items table exists
+- MediaItem model exists
+- media_links table exists
+- Media links can be managed from the MediaItem edit page
+- MediaItemResource exists
+- file_path currently exists as a field
+- external_url exists for external media
+
+QR code functionality is already working, including PNG/SVG generation.
+
+3. Exact task
+
+Add basic file upload handling to MediaItemResource.
+
+This should allow admins to upload files for media items and store the uploaded file path in the existing file_path column.
+
+4. What Replit should do
+
+- Update MediaItemResource.
+- Replace or enhance the current file_path text field with a Filament FileUpload field.
+- Store uploaded files on the public disk.
+- Use a clear directory, for example:
+  - media-items
+- Store the resulting path in the existing file_path column.
+- Allow common MVP file types:
+  - images: jpg, jpeg, png, webp
+  - documents: pdf
+- Keep max file size reasonable for development, for example 10 MB.
+- Keep external_url available for external media links.
+- Make sure php artisan storage:link exists or is created if needed.
+- Keep the implementation standard Laravel/Filament.
+- Do not add image processing yet.
+- Do not add thumbnail generation yet.
+
+5. What Replit must NOT do
+
+- Do not change the media_items table structure.
+- Do not create new media tables.
+- Do not install Intervention Image.
+- Do not generate thumbnails yet.
+- Do not create public media gallery pages.
+- Do not modify public frontend pages.
+- Do not apply design changes.
+- Do not add people or organizations.
+- Do not add regional permissions.
+- Do not install unrelated packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected changed file:
+
+- app/Filament/Resources/MediaItemResource.php
+
+Possible command:
+
+- php artisan storage:link
+
+Expected behavior:
+
+- In /admin/media-items, admins can upload a file for a media item.
+- The uploaded file is stored on the public disk.
+- The file path is saved into media_items.file_path.
+- external_url remains available for external media.
+- Existing media item editing still works.
+- Existing media links relation manager still works.
+
+7. Test steps
+
+Run:
+
+php artisan storage:link
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/media-items
+
+Create or edit a media item.
+
+Upload a small test image or PDF.
+
+Expected:
+- Upload succeeds
+- file_path is saved
+- The media item can be saved
+- The media item can be opened again
+- The uploaded file path is still present
+
+Check in tinker if needed:
+
+App\Models\MediaItem::latest()->first()?->file_path;
+
+Expected:
+A path such as media-items/example-file.jpg or similar.
+
+Check browser/network:
+
+Expected:
+- no CSS or JS errors
+- no localhost asset URLs
+- no mixed-content errors
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
