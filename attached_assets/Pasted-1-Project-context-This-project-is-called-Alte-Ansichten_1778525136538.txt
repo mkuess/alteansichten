@@ -1,0 +1,170 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend first so entries can be maintained properly in Filament.
+The public frontend will be handled later.
+
+Places already exist.
+Media items and media links already exist.
+Now the project needs the QR code data structure for places.
+
+QR codes are only for places in the first MVP.
+
+The Claude backend UI mockup is saved as a later design reference.
+Do not apply the custom design yet.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+
+Media links can be managed from the MediaItem edit page.
+
+No QR code table exists yet.
+
+3. Exact task
+
+Create the qr_codes database table and the QrCode model.
+
+Do not generate actual QR images yet in this task.
+
+4. What Replit should do
+
+- Create a migration for a qr_codes table.
+- Create an app/Models/QrCode.php model.
+- Add the relationships:
+  - QrCode belongs to Place
+  - Place has one QrCode
+- Make place_id unique because each place should have only one QR code record.
+- Add fields for code, target URL, image paths, scan count, and last scan timestamp.
+- Keep the model simple and Laravel-standard.
+- Run the migration.
+- Verify that the qr_codes table exists.
+
+5. What Replit must NOT do
+
+- Do not install a QR code package yet.
+- Do not generate QR images yet.
+- Do not create QrCodeResource yet.
+- Do not create QR redirect routes yet.
+- Do not modify public frontend pages.
+- Do not create submissions or reports yet.
+- Do not create people or organizations.
+- Do not apply the Claude admin UI design yet.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files:
+
+- database/migrations/xxxx_xx_xx_xxxxxx_create_qr_codes_table.php
+- app/Models/QrCode.php
+- app/Models/Place.php updated with qrCode relationship
+
+Expected qr_codes table fields:
+
+- id
+- place_id unique foreign key referencing places.id
+- code unique string
+- target_url string
+- png_path nullable string
+- svg_path nullable string
+- scan_count unsigned integer, default 0
+- last_scanned_at nullable timestamp
+- timestamps
+
+The model should allow mass assignment for the relevant fields.
+
+7. Test steps
+
+Run:
+
+php artisan migrate
+
+Expected:
+create_qr_codes_table runs successfully.
+
+Run:
+
+php artisan tinker
+
+Then check:
+
+Schema::hasTable('qr_codes');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('qr_codes', 'place_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('qr_codes', 'code');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('qr_codes', 'target_url');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('qr_codes', 'scan_count');
+
+Expected:
+true
+
+Finally run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
