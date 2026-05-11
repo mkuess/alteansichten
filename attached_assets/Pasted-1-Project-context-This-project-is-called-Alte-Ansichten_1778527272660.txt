@@ -1,0 +1,159 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend first so entries can be maintained properly in Filament.
+The public frontend and final backend design will be handled later.
+
+Places already exist.
+The qr_codes table and QrCode model already exist.
+QR codes are only for places in the first MVP.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+- qr_codes
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+
+Media links can be managed from the MediaItem edit page.
+
+The QrCode model exists.
+QrCode belongs to Place.
+Place has one QrCode.
+
+No QrCodeResource exists yet.
+
+3. Exact task
+
+Create a simple Filament QrCodeResource for managing QR code records in the admin panel.
+
+Do not generate actual QR images yet in this task.
+
+4. What Replit should do
+
+- Create a Filament Resource for the QrCode model.
+- Place it in the admin navigation under a “System” navigation group.
+- Use the label “QR-Codes”.
+- Add a practical form with these fields:
+  - place_id as a searchable select field showing the place title
+  - code
+  - target_url
+  - png_path
+  - svg_path
+  - scan_count
+  - last_scanned_at
+- Add a simple table with these columns:
+  - place title
+  - code
+  - target_url
+  - scan_count
+  - last_scanned_at
+  - created_at
+- Make code, target_url, png_path, and svg_path searchable if practical.
+- Keep the resource standard Filament 3.
+- Verify that the QrCodeResource appears in the admin panel.
+- Verify that a QR code record can be manually created and edited.
+
+5. What Replit must NOT do
+
+- Do not install a QR code package yet.
+- Do not generate QR images yet.
+- Do not create a QR redirect route yet.
+- Do not modify public frontend pages.
+- Do not create submissions or reports yet.
+- Do not create people or organizations.
+- Do not apply or further adjust the Claude admin UI design yet.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/QrCodeResource.php
+- app/Filament/Resources/QrCodeResource/Pages/CreateQrCode.php
+- app/Filament/Resources/QrCodeResource/Pages/EditQrCode.php
+- app/Filament/Resources/QrCodeResource/Pages/ListQrCodes.php
+
+Expected behavior:
+
+- “QR-Codes” appears in the Filament admin navigation under “System”.
+- Admin users can create, edit, and list QR code records.
+- The place relation is shown clearly.
+- The resource uses standard Filament CRUD behavior.
+- No actual QR image generation is required yet.
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource QrCode
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- QrCodeResource is visible in the navigation as “QR-Codes”.
+- The create page opens.
+- Create one test QR code manually, for example:
+  - place: use an existing place
+  - code: test-place-001
+  - target_url: /orte/test-place-001
+  - scan_count: 0
+- Save the record.
+- Open it for editing.
+- Save without changes.
+
+Also check routes:
+
+php artisan route:list --path=admin/qr-codes
+
+Expected:
+index, create, and edit routes for the QrCodeResource are registered.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
