@@ -5,10 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\QrCodeResource\Pages;
 use App\Models\Place;
 use App\Models\QrCode;
+use App\Services\QrCodeService;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -110,6 +112,19 @@ class QrCodeResource extends Resource
                     ->sortable(),
             ])
             ->actions([
+                Action::make('generateImages')
+                    ->label('QR-Bilder generieren')
+                    ->icon('heroicon-o-photo')
+                    ->color('success')
+                    ->action(function (QrCode $record) {
+                        app(QrCodeService::class)->generateImages($record);
+
+                        Notification::make()
+                            ->title('QR-Bilder erfolgreich generiert')
+                            ->success()
+                            ->send();
+                    }),
+
                 Action::make('openQrUrl')
                     ->label('QR-URL öffnen')
                     ->icon('heroicon-o-arrow-top-right-on-square')

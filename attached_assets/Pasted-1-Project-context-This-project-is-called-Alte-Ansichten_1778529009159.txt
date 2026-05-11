@@ -1,0 +1,158 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+QR code records already exist.
+QR code records can be created from places.
+The public redirect route /qr/{code} exists and increments scan_count.
+The QrCodeResource now shows a copyable QR redirect URL and an “Open QR URL” action.
+
+Now the backend should generate actual QR image files for existing QR code records.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+
+Existing QR functionality:
+
+- QR records can be created from PlaceResource
+- GET /qr/{code} redirects to target_url
+- scan_count increments
+- last_scanned_at updates
+- /admin/qr-codes shows a copyable QR redirect URL
+- /admin/qr-codes has an action to open the QR URL
+
+Existing related files:
+
+- app/Models/QrCode.php
+- app/Services/QrCodeService.php
+- app/Filament/Resources/QrCodeResource.php
+- app/Http/Controllers/QrRedirectController.php
+- routes/web.php
+
+3. Exact task
+
+Add backend QR image generation for existing QrCode records.
+
+Generate PNG and SVG files and store their paths in the existing qr_codes table fields:
+
+- png_path
+- svg_path
+
+4. What Replit should do
+
+- Choose a simple Laravel-compatible QR code package.
+- Prefer a stable, commonly used package that can generate PNG and SVG QR codes.
+- Install only the required package.
+- Add QR image generation to the existing QR code service or create a small dedicated service if cleaner.
+- Generate QR images from the full QR redirect URL:
+  - url('/qr/' . $qrCode->code)
+- Store generated files in Laravel storage, for example:
+  - storage/app/public/qr-codes/{code}.png
+  - storage/app/public/qr-codes/{code}.svg
+- Update the QrCode record:
+  - png_path
+  - svg_path
+- Ensure the public storage link exists if needed:
+  - php artisan storage:link
+- Add an action to QrCodeResource:
+  - “QR-Bilder generieren”
+- The action should generate or refresh PNG and SVG files for that QR code.
+- Show a success notification after generation.
+- Keep existing QR redirect behavior unchanged.
+
+5. What Replit must NOT do
+
+- Do not change the qr_codes table structure.
+- Do not create new QR tables.
+- Do not create analytics tables.
+- Do not store IP addresses for QR scans.
+- Do not modify public frontend pages.
+- Do not apply design changes.
+- Do not add regional permissions.
+- Do not install unrelated packages.
+- Do not generate QR codes automatically for all records unless explicitly asked.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Possible changed files:
+
+- composer.json
+- composer.lock
+- app/Services/QrCodeService.php
+- app/Filament/Resources/QrCodeResource.php
+
+Possible new files/directories after generation:
+
+- storage/app/public/qr-codes/{code}.png
+- storage/app/public/qr-codes/{code}.svg
+- public/storage symlink if not already present
+
+Expected behavior:
+
+- In /admin/qr-codes, an admin can trigger “QR-Bilder generieren”.
+- PNG and SVG files are created for the selected QR code.
+- png_path and svg_path are saved on the QrCode record.
+- Existing QR redirect URL still works.
+- Existing scan_count behavior still works.
+
+7. Test steps
+
+Run:
+
+composer install
+
+Run, if needed:
+
+php artisan storage:link
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/qr-codes
+
+Choose an existing QR code.
+
+Run:
+
+QR-Bilder generieren
+
+Expected:
+- Success notification appears
+- png_path is filled
+- svg_path is filled
+- PNG file exists in storage
+- SVG file exists in storage
+
+Check in tinker if needed:
+
+$qr = App\Models\QrCode::first();
+$qr->png_path;
+$qr->svg_path;
+
+Expected:
+Both contain stored file paths.
+
+Open:
+
+/qr/{existing-code}
+
+Expected:
+Redirect and scan counting still work.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
