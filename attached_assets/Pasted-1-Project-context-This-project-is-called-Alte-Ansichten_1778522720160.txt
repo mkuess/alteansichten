@@ -1,0 +1,188 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The first MVP needs places / locations as the core content entity.
+Places will later belong to municipalities and categories, have public profile pages, media, QR codes, submissions, and map coordinates.
+
+This task only creates the places table and the Place model.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+
+The categories table contains 12 seeded place categories.
+No places, media, QR codes, submissions, reports, people, organizations, or Filament Resources exist yet.
+
+3. Exact task
+
+Create the places database table and the Place model.
+
+Do not create a PlaceSeeder yet in this task.
+
+4. What Replit should do
+
+- Create a migration for a places table.
+- Create an app/Models/Place.php model.
+- Add the relationships:
+  - Place belongs to Municipality
+  - Place belongs to Category
+  - Municipality has many Places
+  - Category has many Places
+- Use SoftDeletes for places.
+- Add fields needed for future public place pages, map display, QR codes, and moderation.
+- Keep the model simple and Laravel-standard.
+- Run the migration.
+- Verify that the places table exists.
+
+5. What Replit must NOT do
+
+- Do not create a PlaceSeeder yet.
+- Do not seed places yet.
+- Do not create media tables yet.
+- Do not create QR code tables yet.
+- Do not create Filament Resources yet.
+- Do not create public pages yet.
+- Do not add submissions, reports, people, or organizations.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not modify the existing role system.
+- Do not continue with Task 011 or later tasks.
+
+6. Expected files / changes
+
+Expected files:
+
+- database/migrations/xxxx_xx_xx_xxxxxx_create_places_table.php
+- app/Models/Place.php
+- app/Models/Municipality.php updated with places relationship
+- app/Models/Category.php updated with places relationship
+
+Expected places table fields:
+
+- id
+- municipality_id nullable foreign key referencing municipalities.id
+- category_id nullable foreign key referencing categories.id
+- title
+- slug
+- summary nullable text
+- story nullable long text
+- street nullable
+- house_number nullable
+- postal_code nullable, max length 20
+- address_text nullable
+- latitude nullable decimal, precision suitable for coordinates
+- longitude nullable decimal, precision suitable for coordinates
+- location_precision nullable string
+- location_note nullable
+- period_from nullable unsigned small integer
+- period_to nullable unsigned small integer
+- approximate_date_text nullable
+- status string, default draft
+- visibility string, default public
+- internal_reference_code nullable, max length 50
+- timestamps
+- soft deletes
+
+Expected status values for future use:
+
+- draft
+- pending
+- published
+- archived
+- rejected
+
+Expected visibility values for future use:
+
+- public
+- unlisted
+- private
+
+For now, keep status and visibility as simple string fields, not PHP enums.
+
+The model should use SoftDeletes and allow mass assignment for the relevant fields.
+
+7. Test steps
+
+Run:
+
+php artisan migrate
+
+Expected:
+create_places_table runs successfully.
+
+Run:
+
+php artisan tinker
+
+Then check:
+
+Schema::hasTable('places');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('places', 'municipality_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('places', 'category_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('places', 'deleted_at');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('places', 'latitude');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('places', 'visibility');
+
+Expected:
+true
+
+Finally run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
