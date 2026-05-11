@@ -45,4 +45,9 @@ class Municipality extends Model
     {
         return $this->hasMany(Place::class);
     }
+
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(Submission::class);
+    }
 }

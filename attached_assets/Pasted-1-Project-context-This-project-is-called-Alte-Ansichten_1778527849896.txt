@@ -1,0 +1,213 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+The backend already supports regions, categories, places, media, media links, and QR code records.
+
+Now the project needs user submissions so external users can later submit historical material for moderation.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+- media_links
+- qr_codes
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+
+Media links can be managed from the MediaItem edit page.
+QR code records can be managed in the backend.
+
+No submissions table exists yet.
+
+3. Exact task
+
+Create the submissions database table and the Submission model.
+
+Do not create the public submission form yet in this task.
+Do not create SubmissionResource yet in this task.
+
+4. What Replit should do
+
+- Create a migration for a submissions table.
+- Create an app/Models/Submission.php model.
+- Add optional relationships:
+  - Submission belongs to Place via place_id
+  - Submission belongs to Municipality via municipality_id
+  - Submission belongs to User as reviewedBy via reviewed_by_user_id
+- Add matching relationships where simple and appropriate:
+  - Place has many Submissions
+  - Municipality has many Submissions
+- Use SoftDeletes for submissions.
+- Add fields needed for later public submissions and admin moderation.
+- Keep the model simple and Laravel-standard.
+- Run the migration.
+- Verify that the submissions table exists.
+
+5. What Replit must NOT do
+
+- Do not create SubmissionResource yet.
+- Do not create a public submission form yet.
+- Do not add file upload handling yet.
+- Do not create submission attachments yet.
+- Do not send emails yet.
+- Do not create notification logic yet.
+- Do not create reports yet.
+- Do not create people or organizations.
+- Do not modify public frontend pages.
+- Do not apply any new design changes.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files:
+
+- database/migrations/xxxx_xx_xx_xxxxxx_create_submissions_table.php
+- app/Models/Submission.php
+- app/Models/Place.php updated with submissions relationship if simple
+- app/Models/Municipality.php updated with submissions relationship if simple
+
+Expected submissions table fields:
+
+- id
+- place_id nullable foreign key referencing places.id
+- municipality_id nullable foreign key referencing municipalities.id
+- submitted_by_name nullable string
+- submitted_by_email nullable string
+- submitted_by_phone nullable string
+- title string
+- message nullable long text
+- material_type nullable string
+- source_note nullable text
+- rights_confirmation boolean, default false
+- rights_note nullable text
+- status string, default pending
+- review_note nullable text
+- reviewed_by_user_id nullable foreign key referencing users.id
+- reviewed_at nullable timestamp
+- ip_address nullable string, max length 45
+- user_agent nullable text
+- timestamps
+- soft deletes
+
+Expected future status values:
+
+- pending
+- in_review
+- accepted
+- rejected
+- archived
+
+Expected future material_type values:
+
+- image
+- document
+- story
+- correction
+- location_hint
+- other
+
+For now, keep these as simple string fields, not PHP enums.
+
+The model should use SoftDeletes and allow mass assignment for the relevant fields.
+
+7. Test steps
+
+Run:
+
+php artisan migrate
+
+Expected:
+create_submissions_table runs successfully.
+
+Run:
+
+php artisan tinker
+
+Then check:
+
+Schema::hasTable('submissions');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('submissions', 'place_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('submissions', 'municipality_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('submissions', 'rights_confirmation');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('submissions', 'reviewed_by_user_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('submissions', 'deleted_at');
+
+Expected:
+true
+
+Finally run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.

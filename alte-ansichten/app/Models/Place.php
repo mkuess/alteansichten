@@ -64,4 +64,9 @@ class Place extends Model
     {
         return $this->hasOne(QrCode::class);
     }
+
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(Submission::class);
+    }
 }
