@@ -2,81 +2,347 @@
 
 @config '../../../../tailwind.filament.config.js';
 
-/* ── Alte Ansichten warm palette ── */
+/* ═══════════════════════════════════════════════════
+   Alte Ansichten — Custom Filament Theme  v2
+   Warm archive palette
+   ═══════════════════════════════════════════════════ */
 
-/* Overall page background */
+/* ── Palette tokens ── */
+:root {
+    --aa-bg:           #f3f1ec;
+    --aa-sidebar-bg:   #ede9e1;
+    --aa-border:       #d8d3c9;
+    --aa-border-card:  #e2ddd6;
+    --aa-text-dark:    #1c1a17;
+    --aa-text-body:    #2e2b26;
+    --aa-text-muted:   #7a7671;
+    --aa-text-label:   #8e8880;
+    --aa-green-light:  #dce8d4;
+    --aa-hover:        #e5e0d7;
+}
+
+/* ═══════════════════════════════════════════════════
+   BODY + LAYOUT
+   ═══════════════════════════════════════════════════ */
+
 body,
 .fi-body {
-    background-color: #f3f1ec !important;
+    background-color: var(--aa-bg) !important;
+    color: var(--aa-text-body) !important;
 }
 
-/* Sidebar */
-.fi-sidebar {
-    background-color: #ede9e1 !important;
-    border-right: 1px solid #d8d3c9 !important;
+.fi-layout {
+    background-color: var(--aa-bg) !important;
 }
 
-.fi-sidebar-header {
-    background-color: #ede9e1 !important;
-    border-bottom: 1px solid #d8d3c9 !important;
-}
-
-/* Main content wrapper */
 .fi-main-ctn,
 .fi-main {
-    background-color: #f3f1ec !important;
+    background-color: var(--aa-bg) !important;
 }
 
-/* Topbar */
-.fi-topbar,
-header.fi-topbar {
-    background-color: #f3f1ec !important;
-    border-bottom: 1px solid #d8d3c9 !important;
+/* ═══════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════ */
+
+/* Sidebar — overrides bg-white AND lg:bg-transparent */
+.fi-sidebar {
+    background-color: var(--aa-sidebar-bg) !important;
+    border-right: 1px solid var(--aa-border) !important;
+    box-shadow: none !important;
 }
 
-/* Nav group labels */
+/* Mobile open-state: restore shadow for overlay effect */
+.fi-sidebar.fi-sidebar-open {
+    box-shadow: 0 8px 32px rgba(28, 26, 23, 0.14) !important;
+}
+
+/* Sidebar header — logo area */
+.fi-sidebar-header {
+    background-color: var(--aa-sidebar-bg) !important;
+    border-bottom: 1px solid var(--aa-border) !important;
+    /* remove Filament ring */
+    box-shadow: none !important;
+}
+
+/* Sidebar nav vertical rhythm */
+.fi-sidebar-nav {
+    padding-top: 1rem !important;
+    padding-bottom: 1.5rem !important;
+    gap: 1.5rem !important;
+}
+
+/* Nav groups list */
+.fi-sidebar-nav-groups {
+    gap: 1.5rem !important;
+}
+
+/* ── Group labels (INHALTE / REGIONEN / SYSTEM) ── */
 .fi-sidebar-group-label {
-    color: #8a8278 !important;
-    letter-spacing: 0.06em;
-    font-size: 0.65rem;
-    font-weight: 600;
+    font-size: 0.625rem !important;        /* 10px */
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    color: var(--aa-text-label) !important;
+    padding-left: 0.625rem !important;
 }
 
-/* Nav items — default state */
+/* Group button row (the clickable group header) */
+.fi-sidebar-group-button {
+    padding-top: 0.125rem !important;
+    padding-bottom: 0.125rem !important;
+    border-radius: 6px !important;
+}
+
+/* ── Nav items ── */
 .fi-sidebar-item-button {
-    color: #2e2b26 !important;
+    border-radius: 8px !important;
 }
 
+/* Default item hover */
 .fi-sidebar-item-button:hover {
-    background-color: #e3dfd7 !important;
+    background-color: var(--aa-hover) !important;
 }
 
-/* Panels / sections background */
-.fi-section,
-.fi-card {
+/* Default item icon */
+.fi-sidebar-item-icon {
+    color: var(--aa-text-muted) !important;
+}
+
+/* Default item label */
+.fi-sidebar-item-label {
+    color: var(--aa-text-body) !important;
+    font-size: 0.8125rem !important;
+}
+
+/* ACTIVE item — button background (overrides bg-gray-100) */
+.fi-sidebar-item.fi-active .fi-sidebar-item-button,
+.fi-sidebar-item.fi-sidebar-item-active .fi-sidebar-item-button {
+    background-color: var(--aa-green-light) !important;
+}
+
+/* Active item hover */
+.fi-sidebar-item.fi-active .fi-sidebar-item-button:hover {
+    background-color: #d2e0c9 !important;
+}
+
+/* Active item label — heavier weight */
+.fi-sidebar-item.fi-active .fi-sidebar-item-label {
+    font-weight: 600 !important;
+}
+
+/* Active item — grouped border dot */
+.fi-sidebar-item.fi-active .fi-sidebar-item-grouped-border > div:last-child {
+    background-color: var(--aa-green-light) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   TOPBAR
+   ═══════════════════════════════════════════════════ */
+
+.fi-topbar {
+    background-color: var(--aa-bg) !important;
+}
+
+/* The nav inside fi-topbar has no fi- class; we target it via parent */
+.fi-topbar nav {
+    background-color: var(--aa-bg) !important;
+    border-bottom: 1px solid var(--aa-border) !important;
+    box-shadow: none !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   PAGE HEADER
+   ═══════════════════════════════════════════════════ */
+
+.fi-header-heading {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.15 !important;
+    color: var(--aa-text-dark) !important;
+}
+
+@media (min-width: 640px) {
+    .fi-header-heading {
+        font-size: 2rem !important;
+    }
+}
+
+.fi-header-subheading {
+    color: var(--aa-text-muted) !important;
+    font-size: 0.9375rem !important;
+}
+
+/* Breadcrumbs */
+.fi-breadcrumbs-item-label {
+    color: var(--aa-text-muted) !important;
+    font-size: 0.75rem !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   SECTIONS  (form panels, card containers)
+   ═══════════════════════════════════════════════════ */
+
+/* fi-section: overrides rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 */
+.fi-section {
     background-color: #ffffff !important;
-    border: 1px solid #e0dbd3 !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--aa-border-card) !important;
+    box-shadow: 0 1px 4px rgba(28, 26, 23, 0.05) !important;
 }
 
-/* Widgets */
-.fi-wi-stats-overview-stat {
-    background-color: #ffffff !important;
-    border: 1px solid #e0dbd3 !important;
+.fi-section-header {
+    border-bottom-color: var(--aa-border-card) !important;
 }
 
-/* Tables */
+.fi-section-content-ctn {
+    border-top-color: var(--aa-border-card) !important;
+}
+
+.fi-section-footer {
+    border-top-color: var(--aa-border-card) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   TABLES
+   ═══════════════════════════════════════════════════ */
+
+/* fi-ta-ctn: overrides rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 */
 .fi-ta-ctn {
     background-color: #ffffff !important;
-    border: 1px solid #e0dbd3 !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--aa-border-card) !important;
+    box-shadow: 0 1px 4px rgba(28, 26, 23, 0.05) !important;
 }
 
-/* Input fields */
+/* Override the divide-y divide-gray-200 border color */
+.fi-ta-ctn > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--aa-border-card) !important;
+}
+
+/* Table header */
+.fi-ta-header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid var(--aa-border-card) !important;
+}
+
+.fi-ta-header-heading {
+    color: var(--aa-text-dark) !important;
+    font-weight: 600 !important;
+}
+
+.fi-ta-header-description {
+    color: var(--aa-text-muted) !important;
+}
+
+/* Column header cells */
+.fi-ta-header-ctn {
+    background-color: #faf8f4 !important;
+    border-bottom: 1px solid var(--aa-border-card) !important;
+}
+
+.fi-ta-header-cell-label {
+    color: var(--aa-text-label) !important;
+    font-size: 0.6875rem !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+}
+
+/* Row hover */
+.fi-ta-row:hover td {
+    background-color: #faf8f4 !important;
+}
+
+/* Pagination */
+.fi-ta-pagination {
+    border-top: 1px solid var(--aa-border-card) !important;
+    background-color: #faf8f4 !important;
+}
+
+/* Empty state */
+.fi-ta-empty-state-icon {
+    color: var(--aa-text-muted) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   FORM INPUTS
+   ═══════════════════════════════════════════════════ */
+
 .fi-input,
-input[type="text"],
-input[type="email"],
-input[type="password"],
-textarea,
-select {
+.fi-input-wrp input,
+.fi-input-wrp textarea,
+.fi-input-wrp select {
     background-color: #faf9f6 !important;
-    border-color: #d8d3c9 !important;
+    border-color: var(--aa-border) !important;
+    color: var(--aa-text-body) !important;
+}
+
+.fi-input-wrp {
+    border-color: var(--aa-border) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   WIDGETS  (dashboard stats)
+   ═══════════════════════════════════════════════════ */
+
+/* Stats overview wrapper */
+.fi-wi-stats-overview {
+    gap: 1rem !important;
+}
+
+/* Individual stat card */
+.fi-wi-stats-overview-stat {
+    background-color: #ffffff !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--aa-border-card) !important;
+    box-shadow: 0 1px 4px rgba(28, 26, 23, 0.05) !important;
+}
+
+.fi-wi-stats-overview-stat-label {
+    color: var(--aa-text-muted) !important;
+    font-size: 0.6875rem !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+}
+
+.fi-wi-stats-overview-stat-value {
+    color: var(--aa-text-dark) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+}
+
+/* Account widget (user info block) */
+.fi-wi-account {
+    background-color: var(--aa-sidebar-bg) !important;
+    border-top: 1px solid var(--aa-border) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   MODALS
+   ═══════════════════════════════════════════════════ */
+
+.fi-modal-window {
+    background-color: #ffffff !important;
+    border: 1px solid var(--aa-border-card) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 16px 40px rgba(28, 26, 23, 0.14) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   LOGIN PAGE  (simple layout)
+   ═══════════════════════════════════════════════════ */
+
+.fi-simple-layout {
+    background-color: var(--aa-bg) !important;
+}
+
+.fi-simple-main {
+    background-color: var(--aa-bg) !important;
+}
+
+/* Login card */
+.fi-simple-page .fi-section {
+    box-shadow: 0 2px 16px rgba(28, 26, 23, 0.08) !important;
 }

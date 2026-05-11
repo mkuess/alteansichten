@@ -1,0 +1,193 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The backend should visually follow the existing Claude backend mockup more closely.
+The current Filament theme is too generic and only lightly customized.
+
+The intended visual direction is:
+- calm archive-style admin interface
+- warm beige/off-white background
+- strong “Alte Ansichten” identity
+- dark AA logo block
+- clear left sidebar
+- card-like dashboard/content areas
+- calm muted green accents
+- typography closer to the mockup
+- less generic Filament appearance
+
+The Claude mockup is a visual reference only.
+Do not copy the standalone JavaScript/HTML app into Laravel.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament CSS and JavaScript load correctly.
+A first custom Filament theme exists.
+
+The current backend is usable, but visually it does not yet match the Claude mockup closely enough.
+
+Existing backend resources:
+
+- Länder
+- Bundesländer
+- Bezirke
+- Gemeinden
+- Kategorien
+- Standorte
+- Medien
+- QR-Codes
+
+3. Exact task
+
+Adjust the existing Filament admin theme so it looks much closer to the provided Claude backend mockup.
+
+This is a visual refinement task only.
+Do not add new backend features.
+
+4. What Replit should do
+
+- Review the existing Claude mockup/reference file or screenshots if available in the project.
+- Improve the Filament theme to better match the mockup.
+
+Focus especially on:
+
+Branding:
+- Keep the dark square “AA” logo mark.
+- Make the logo area closer to the mockup:
+  - compact dark rounded square
+  - “Alte Ansichten” text beside it
+  - small subtitle “Backend · Filament 3”
+- Use a more archive-like serif style for the “Alte Ansichten” brand if practical.
+
+Sidebar:
+- Make the sidebar closer to the mockup:
+  - warmer beige background
+  - clearer section spacing
+  - calmer group labels
+  - active item with soft muted green background
+  - less generic Filament look
+- Navigation should feel like the mockup:
+  - Dashboard
+  - Inhalte
+  - Regionen
+  - System
+
+Main area:
+- Use a warmer main background.
+- Use more generous spacing.
+- Make cards/tables/forms feel calmer and more card-like.
+- Add subtle borders and rounded corners similar to the mockup.
+- Avoid harsh white/gray contrast.
+
+Typography:
+- Make headings closer to the mockup:
+  - stronger, calmer, more editorial
+  - avoid default generic admin look
+- Keep body text readable and accessible.
+
+Colors:
+- Background: warm off-white / archive paper tone.
+- Sidebar: slightly darker warm beige.
+- Text: dark neutral.
+- Accent: muted sage green.
+- Borders: warm beige/gray.
+- Avoid bright blue default Filament accents.
+
+Accessibility:
+- Keep sufficient contrast.
+- Keep focus states visible.
+- Keep all Filament interactions working.
+- Do not hide labels or reduce usability.
+
+5. What Replit must NOT do
+
+- Do not copy the standalone Claude HTML/JavaScript file directly into Laravel.
+- Do not replace Filament with a custom JavaScript app.
+- Do not build fake static mockup pages.
+- Do not remove existing Filament Resources.
+- Do not create new database tables.
+- Do not create new backend features.
+- Do not change migrations.
+- Do not break CRUD pages.
+- Do not hardcode Replit paths.
+- Do not change the app to /__mockup.
+- Do not continue with QR generation, submissions, reports, or other backend tasks.
+
+6. Expected files / changes
+
+Possible files to update:
+
+- resources/css/filament/admin/theme.css
+- app/Providers/Filament/AdminPanelProvider.php
+- tailwind.config.js if required
+- vite.config.js only if required
+- package.json only if required for the existing Filament theme build
+
+Expected result:
+
+- The backend looks visibly closer to the Claude mockup.
+- The sidebar, branding, colors, spacing, and cards feel like the reference.
+- The result should no longer look like plain recolored Filament.
+- Existing resources still work:
+  - /admin/places
+  - /admin/media-items
+  - /admin/categories
+  - /admin/municipalities
+  - /admin/qr-codes
+
+7. Test steps
+
+Run:
+
+npm run build
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin
+
+Check visually:
+- Branding looks closer to the mockup.
+- Sidebar looks closer to the mockup.
+- Active navigation item uses muted green.
+- Main background is warm and calm.
+- Cards and tables have subtle warm borders and rounded corners.
+- The dashboard no longer looks like generic Filament.
+
+Open:
+
+/admin/places
+
+Check:
+- Table/form pages are still readable.
+- Buttons, filters, and actions still work.
+
+Open:
+
+/admin/media-items
+
+Check:
+- Resource page still works.
+- Relation manager remains accessible.
+
+Check browser console/network:
+- no CSS or JS 404 errors
+- no localhost asset URLs
+- no mixed-content errors
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
