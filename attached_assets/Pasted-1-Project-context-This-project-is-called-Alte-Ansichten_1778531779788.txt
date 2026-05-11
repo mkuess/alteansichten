@@ -1,0 +1,151 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 / Filament 3 project running in Replit.
+
+The correct Replit development URL must include port 8000:
+
+https://...janeway.replit.dev:8000
+
+The admin panel works when :8000 is manually added to URLs.
+
+However, Filament-generated sidebar/menu links still appear without :8000. When those links are clicked, the browser opens the portless URL and Replit returns 502.
+
+2. Current state
+
+APP_URL was intended to be set to:
+
+https://...janeway.replit.dev:8000
+
+ASSET_URL was intended to be set to:
+
+https://...janeway.replit.dev:8000
+
+But in the actual browser, generated admin links still appear as:
+
+https://...janeway.replit.dev/admin/categories
+
+instead of:
+
+https://...janeway.replit.dev:8000/admin/categories
+
+When I manually add :8000, the page works.
+
+3. Exact task
+
+Fix Filament/Laravel URL generation so all admin navigation links include :8000 in Replit.
+
+4. What Replit should do
+
+- Inspect the rendered HTML source of /admin when opened with the :8000 URL.
+- Check the actual href values of sidebar/menu links.
+- Confirm whether they include :8000 or not.
+- Run in tinker:
+
+config('app.url');
+url('/admin/categories');
+route('filament.admin.resources.categories.index');
+
+- Confirm whether each generated URL includes :8000.
+- Check whether config cache still contains an old APP_URL.
+- Run:
+  php artisan optimize:clear
+  php artisan config:clear
+  php artisan route:clear
+  php artisan view:clear
+- Restart the Laravel server after clearing caches.
+- Check .env and confirm:
+  APP_URL has :8000
+  ASSET_URL has :8000
+- Check whether there is another environment source overriding APP_URL.
+- Check Replit secrets/environment variables for APP_URL or ASSET_URL overrides.
+- Check config/app.php and any Filament panel provider customization that may force a different URL.
+- If Laravel’s url() still returns no-port URLs, fix the environment/config source causing that.
+- Make the admin navigation links generate same-origin URLs with :8000.
+
+5. What Replit must NOT do
+
+- Do not remove :8000 from APP_URL.
+- Do not change APP_URL back to the portless URL.
+- Do not delete data.
+- Do not reset migrations.
+- Do not reinstall Laravel or Filament.
+- Do not remove existing resources.
+- Do not apply design changes.
+- Do not add new features.
+- Do not move the app to /__mockup.
+- Do not hardcode the URL in every resource file.
+- Prefer fixing the central environment/config issue.
+
+6. Expected files / changes
+
+Possible changed files or settings:
+
+- .env
+- Replit environment variables/secrets if they override .env
+- config/app.php only if necessary
+- app/Providers/Filament/AdminPanelProvider.php only if necessary
+
+Expected result:
+
+- Opening /admin with :8000 shows links that also include :8000.
+- Sidebar links such as categories, places, media-items, qr-codes, submissions, content-reports all include :8000.
+- Clicking sidebar links works without manually editing the URL.
+- Logout also works and redirects to a :8000 URL.
+- Filament CSS/JS still load correctly.
+
+7. Test steps
+
+Run:
+
+php artisan optimize:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+Then run tinker checks:
+
+config('app.url');
+
+Expected:
+The URL includes :8000.
+
+url('/admin/categories');
+
+Expected:
+The URL includes :8000.
+
+route('filament.admin.resources.categories.index');
+
+Expected:
+The URL includes :8000.
+
+Open:
+
+https://...janeway.replit.dev:8000/admin
+
+Inspect sidebar link hrefs.
+
+Expected:
+All admin hrefs include :8000.
+
+Click:
+
+- Kategorien
+- Standorte
+- Medien
+- QR-Codes
+- Einreichungen
+- Meldungen
+
+Expected:
+Each opens with :8000 and no 502.
+
+Click logout.
+
+Expected:
+Logout works and redirects to /admin/login with :8000.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
