@@ -1,0 +1,158 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The admin backend is being built step by step with simple Filament Resources.
+
+The region structure is:
+
+- countries
+- states
+- districts
+- municipalities
+
+CountryResource and StateResource already exist.
+This task only creates the DistrictResource.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+
+Seeders exist for:
+
+- countries
+- states
+- districts
+- categories
+
+The countries table contains Austria.
+The states table contains the 9 Austrian federal states.
+The districts table contains the initial practical set of 11 districts.
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+
+Both are visible under the “Regionen” navigation group.
+
+No DistrictResource exists yet.
+
+3. Exact task
+
+Create a simple Filament DistrictResource for managing districts in the admin panel.
+
+4. What Replit should do
+
+- Create a Filament Resource for the District model.
+- Place it in the admin navigation under the same “Regionen” navigation group.
+- Use the label “Bezirke”.
+- Add a simple form with these fields:
+  - state_id as a select field showing the state name
+  - name
+  - slug
+  - code
+  - status
+- Add a simple table with these columns:
+  - state name
+  - name
+  - slug
+  - code
+  - status
+  - created_at
+- Make name and slug searchable.
+- Make state and status filterable if simple to implement.
+- Keep the resource standard Filament 3.
+- Verify that the DistrictResource appears in the admin panel.
+- Verify that the existing 11 districts are visible and editable.
+
+5. What Replit must NOT do
+
+- Do not create MunicipalityResource yet.
+- Do not create CategoryResource yet.
+- Do not create PlaceResource yet.
+- Do not apply the Claude UI design yet.
+- Do not create custom dashboard widgets yet.
+- Do not modify the public frontend.
+- Do not create new database tables.
+- Do not add municipality seeders.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not continue with Task 014 or later tasks.
+
+6. Expected files / changes
+
+Expected files may include:
+
+- app/Filament/Resources/DistrictResource.php
+- app/Filament/Resources/DistrictResource/Pages/CreateDistrict.php
+- app/Filament/Resources/DistrictResource/Pages/EditDistrict.php
+- app/Filament/Resources/DistrictResource/Pages/ListDistricts.php
+
+Expected behavior:
+
+- “Bezirke” appears in the Filament admin navigation under “Regionen”.
+- The existing 11 districts are visible.
+- Admin users can create, edit, and list districts.
+- The state relation is shown clearly.
+- The resource uses standard Filament CRUD behavior.
+
+7. Test steps
+
+Run:
+
+php artisan make:filament-resource District
+
+If already created by another command, do not duplicate it.
+
+Run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+Open:
+
+/admin
+
+Log in as the local admin user.
+
+Check:
+
+- DistrictResource is visible in the navigation as “Bezirke”.
+- The 11 seeded districts appear in the list.
+- The state relation is shown correctly.
+- One district can be opened for editing.
+- Saving without changes works.
+
+Also check routes:
+
+php artisan route:list --path=admin/districts
+
+Expected:
+index, create, and edit routes for the DistrictResource are registered.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
