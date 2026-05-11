@@ -1,0 +1,200 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build the backend first so entries can be maintained properly in Filament.
+The public frontend will be handled later.
+
+Media items already exist.
+Now the project needs media_links so one media item can be connected to places and municipalities.
+
+For the first MVP, media_links should only support:
+- place
+- municipality
+
+People and organizations are not part of the first MVP yet.
+
+The Claude backend UI mockup is saved as a later design reference.
+Do not apply the custom design yet.
+
+Replit is only the development environment.
+The project must remain standalone and deployable later on my own Linux VM at spaceship.com.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+A local admin user exists.
+Simple global roles exist:
+
+- admin
+- editor
+- user
+
+The following tables and models already exist:
+
+- countries
+- states
+- districts
+- municipalities
+- categories
+- places
+- media_items
+
+Existing Filament Resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+
+The media_items table exists.
+The MediaItem model exists.
+Place has a primaryMediaItems() relationship.
+
+No media_links table exists yet.
+
+3. Exact task
+
+Create the media_links database table and the MediaLink model.
+
+4. What Replit should do
+
+- Create a migration for a media_links table.
+- Create an app/Models/MediaLink.php model.
+- Add the relationship:
+  - MediaLink belongs to MediaItem
+  - MediaItem has many MediaLinks
+- Add simple relationship helpers where appropriate.
+- Keep linkable_type and linkable_id as simple polymorphic-style fields.
+- For the first MVP, only allow future usage with:
+  - place
+  - municipality
+- Add fields for relationship type, primary flag, ordering, and optional period.
+- Make the model Laravel-standard and simple.
+- Run the migration.
+- Verify that the media_links table exists.
+
+5. What Replit must NOT do
+
+- Do not create MediaItemResource yet.
+- Do not create upload handling yet.
+- Do not create media UI in Filament yet.
+- Do not create people or organizations.
+- Do not support person or organization media links yet.
+- Do not install extra packages.
+- Do not install Intervention Image yet.
+- Do not create thumbnail generation yet.
+- Do not create QR code tables yet.
+- Do not create submissions or reports yet.
+- Do not modify the public frontend.
+- Do not apply the Claude admin UI design yet.
+- Do not add regional permissions.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected files:
+
+- database/migrations/xxxx_xx_xx_xxxxxx_create_media_links_table.php
+- app/Models/MediaLink.php
+- app/Models/MediaItem.php updated with mediaLinks relationship
+
+Expected media_links table fields:
+
+- id
+- media_item_id foreign key referencing media_items.id
+- linkable_type string
+- linkable_id unsigned big integer
+- relationship_type nullable string
+- is_primary boolean, default false
+- sort_order unsigned integer, default 0
+- period_from nullable unsigned small integer
+- period_to nullable unsigned small integer
+- timestamps
+
+Recommended indexes:
+
+- media_item_id
+- linkable_type + linkable_id
+- media_item_id + is_primary
+
+Expected future linkable_type values for MVP:
+
+- place
+- municipality
+
+Expected future relationship_type examples:
+
+- main_subject
+- panorama_of
+- shows_detail
+- related
+- document_about
+- source_for
+
+For now, keep these as simple string fields, not PHP enums.
+
+The model should allow mass assignment for the relevant fields.
+
+7. Test steps
+
+Run:
+
+php artisan migrate
+
+Expected:
+create_media_links_table runs successfully.
+
+Run:
+
+php artisan tinker
+
+Then check:
+
+Schema::hasTable('media_links');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('media_links', 'media_item_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('media_links', 'linkable_type');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('media_links', 'linkable_id');
+
+Expected:
+true
+
+Check:
+
+Schema::hasColumn('media_links', 'is_primary');
+
+Expected:
+true
+
+Finally run:
+
+php artisan test
+
+Expected:
+All existing tests pass.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
