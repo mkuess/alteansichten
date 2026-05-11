@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PlaceResource\Pages;
 use App\Filament\Resources\PlaceResource\RelationManagers\ContentReportsRelationManager;
+use App\Filament\Resources\PlaceResource\RelationManagers\MediaLinksRelationManager;
 use App\Filament\Resources\PlaceResource\RelationManagers\QrCodeRelationManager;
 use App\Filament\Resources\PlaceResource\RelationManagers\SubmissionsRelationManager;
 use App\Models\Category;
@@ -259,6 +260,7 @@ class PlaceResource extends Resource
     {
         return [
             QrCodeRelationManager::class,
+            MediaLinksRelationManager::class,
             SubmissionsRelationManager::class,
             ContentReportsRelationManager::class,
         ];

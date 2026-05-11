@@ -74,4 +74,10 @@ class Place extends Model
     {
         return $this->hasMany(ContentReport::class);
     }
+
+    public function placeMediaLinks(): HasMany
+    {
+        return $this->hasMany(MediaLink::class, 'linkable_id')
+            ->where('linkable_type', 'place');
+    }
 }

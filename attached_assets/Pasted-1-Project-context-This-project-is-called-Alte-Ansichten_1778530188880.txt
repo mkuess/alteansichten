@@ -1,0 +1,159 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+Places are the central content entity.
+Media items can already be uploaded and managed.
+Media links connect media items to places or municipalities.
+
+The Place edit page already shows QR code information, submissions, and content reports.
+
+Now the Place edit page should also show media linked to this place.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+
+Existing backend resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+- SubmissionResource
+- ContentReportResource
+
+Existing functionality:
+
+- Places can be managed
+- Media items can be managed
+- Media upload works
+- Image previews work in MediaItemResource
+- media_links table exists
+- Media links can connect media_items to places or municipalities
+- Media links can already be managed from the MediaItem edit page
+- Place edit page shows QR code information, submissions, and reports
+
+3. Exact task
+
+Add a simple media links section or relation manager to the PlaceResource edit page so admins can see media linked to the current place.
+
+If simple and safe, allow creating a media link from the Place edit page.
+
+4. What Replit should do
+
+- Add a relation manager or read-only section to PlaceResource for media links where:
+  - linkable_type = place
+  - linkable_id = current place id
+- Show useful columns:
+  - media item title
+  - media item type
+  - media item status
+  - relationship_type
+  - is_primary
+  - sort_order
+  - period_from
+  - period_to
+  - created_at
+- If an image file is available on the linked media item, show a small preview if simple.
+- If creating links from here is simple:
+  - allow selecting an existing MediaItem
+  - automatically set linkable_type to place
+  - automatically set linkable_id to the current place id
+  - allow relationship_type, is_primary, sort_order, period_from, period_to
+- If creating links from here is not simple without risk, keep it read-only and report that clearly.
+- Keep full media editing in MediaItemResource.
+- Keep the implementation standard Filament.
+- Keep this task focused only on PlaceResource media visibility/linking.
+
+5. What Replit must NOT do
+
+- Do not change the database structure.
+- Do not create new tables.
+- Do not modify migrations.
+- Do not remove existing MediaItemResource functionality.
+- Do not remove the MediaItem edit page relation manager.
+- Do not create public frontend pages.
+- Do not apply design changes.
+- Do not add people or organizations.
+- Do not add regional permissions.
+- Do not install extra packages.
+- Do not create automatic publishing logic.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected changed file:
+
+- app/Filament/Resources/PlaceResource.php
+
+Possible new file:
+
+- app/Filament/Resources/PlaceResource/RelationManagers/MediaLinksRelationManager.php
+
+Expected behavior:
+
+- On a Place edit page, admins can see media linked to this place.
+- Linked media items show enough context to identify them.
+- Existing media upload and media item editing still work.
+- Existing MediaItemResource MediaLinksRelationManager still works.
+- Existing QR code, submissions, and reports sections on Place edit page still work.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/places
+
+Open an existing place for editing.
+
+Check:
+
+- The existing place form still works.
+- QR code information is still visible.
+- Submissions tab still works.
+- Reports tab still works.
+- Media links section/tab is visible.
+- If a media item is already linked to this place, it appears.
+- If creating links from this page was implemented, create one link:
+  - select an existing media item
+  - relationship_type: main_subject
+  - is_primary: true
+  - sort_order: 1
+- Save and verify the link appears.
+
+Then open:
+
+/admin/media-items
+
+Check:
+- The same media item still works.
+- Its media links relation manager still works.
+
+Check browser/network:
+
+Expected:
+- no CSS or JS errors
+- no localhost asset URLs
+- no mixed-content errors
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
