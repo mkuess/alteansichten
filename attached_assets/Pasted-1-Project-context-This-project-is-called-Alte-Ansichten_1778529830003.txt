@@ -1,0 +1,131 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 and Filament 3 project for a historical archive platform.
+
+The current priority is to build backend functionality first so entries can be maintained properly in Filament.
+Design refinement and public frontend work will be handled later.
+
+Media upload now exists.
+Admins can upload images and PDFs to media items.
+Now the backend should show simple previews for uploaded media files.
+
+2. Current state
+
+Laravel 11 is installed and working.
+Filament 3 is installed and available at /admin.
+Filament assets load correctly.
+
+Existing backend resources:
+
+- CountryResource
+- StateResource
+- DistrictResource
+- MunicipalityResource
+- CategoryResource
+- PlaceResource
+- MediaItemResource
+- QrCodeResource
+- SubmissionResource
+- ContentReportResource
+
+Existing media functionality:
+
+- media_items table exists
+- MediaItemResource exists
+- file_path uses Filament FileUpload
+- uploads are stored on the public disk in media-items/
+- images and PDFs are allowed
+- external_url remains available
+- media links can be managed from the MediaItem edit page
+
+3. Exact task
+
+Improve MediaItemResource so uploaded image files are visible as previews in the backend.
+
+Do not add image processing or thumbnail generation yet.
+
+4. What Replit should do
+
+- Update MediaItemResource.
+- In the media item table, show a small image preview column when file_path points to an image.
+- In the edit/create form, keep the FileUpload field preview enabled if possible.
+- Make uploaded file paths openable if practical.
+- For PDFs, show the file path or a simple “PDF” indicator instead of an image preview.
+- Keep external_url visible and editable.
+- Use the existing public storage path:
+  - /storage/{file_path}
+- Keep this simple and standard Filament.
+- Do not create thumbnails.
+- Do not install image processing packages.
+
+5. What Replit must NOT do
+
+- Do not change the media_items table structure.
+- Do not create new media tables.
+- Do not install Intervention Image.
+- Do not generate thumbnails.
+- Do not modify public frontend pages.
+- Do not apply design changes.
+- Do not add people or organizations.
+- Do not add regional permissions.
+- Do not install unrelated packages.
+- Do not continue with the next task.
+
+6. Expected files / changes
+
+Expected changed file:
+
+- app/Filament/Resources/MediaItemResource.php
+
+Optional changed file only if useful:
+
+- app/Models/MediaItem.php
+
+Expected behavior:
+
+- In /admin/media-items, uploaded images show a small preview.
+- PDF uploads do not break the table.
+- File paths remain stored in media_items.file_path.
+- External URLs remain usable.
+- Existing media links relation manager still works.
+
+7. Test steps
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/media-items
+
+Create or edit a media item.
+
+Upload a small JPG or PNG.
+
+Expected:
+- Upload succeeds.
+- The media item saves.
+- The list view shows a small preview image.
+- Editing the media item still shows the uploaded file.
+
+Upload or use a PDF media item.
+
+Expected:
+- PDF does not break the table.
+- PDF file path or indicator is visible.
+
+Check browser/network:
+
+Expected:
+- no CSS or JS errors
+- no localhost asset URLs
+- no mixed-content errors
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.

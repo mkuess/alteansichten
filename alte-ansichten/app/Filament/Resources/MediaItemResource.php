@@ -13,6 +13,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -168,6 +169,16 @@ class MediaItemResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('file_path')
+                    ->label('Vorschau')
+                    ->disk('public')
+                    ->height(48)
+                    ->width(64)
+                    ->defaultImageUrl(null)
+                    ->extraImgAttributes(['class' => 'object-cover rounded'])
+                    ->visibility('public')
+                    ->checkFileExistence(false),
+
                 TextColumn::make('title')
                     ->label('Titel')
                     ->searchable()
