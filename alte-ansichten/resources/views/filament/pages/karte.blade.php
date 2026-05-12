@@ -1,10 +1,14 @@
 <x-filament-panels::page>
 
-{{-- Hide any residual heading container on this page only --}}
+{{-- Strip all surrounding chrome padding for this page only --}}
 <style>
     .fi-header { display: none !important; }
     .fi-page-header { display: none !important; }
     .fi-simple-page-header { display: none !important; }
+    .fi-main { padding-left: 0 !important; padding-right: 0 !important; padding-bottom: 0 !important; }
+    .fi-page > section { padding-top: 0 !important; padding-bottom: 0 !important; gap: 0 !important; }
+    .fi-page > section > div { gap: 0 !important; }
+    .fi-page > section > div > div { gap: 0 !important; }
 </style>
 
 <script>
@@ -110,14 +114,14 @@ window.karteApp = function(placesData) {
 {{-- Outer wrapper: position relative so the panel can float over the map --}}
 <div
     x-data="karteApp({{ Js::from($mapData) }})"
-    class="relative overflow-hidden rounded-xl"
-    style="height: calc(100vh - 4rem);"
+    class="relative overflow-hidden"
+    style="height: calc(100vh - 3.5rem); width: 100%;"
 >
     {{-- Map fills the full space --}}
     <div wire:ignore style="position: absolute; inset: 0; z-index: 0;">
         <div
             x-ref="mapEl"
-            style="width: 100%; height: 100%; border-radius: 0.75rem;"
+            style="width: 100%; height: 100%;"
         ></div>
     </div>
 

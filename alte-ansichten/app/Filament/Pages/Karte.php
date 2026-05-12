@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Place;
 use Filament\Pages\Page;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Storage;
 
 class Karte extends Page
@@ -19,6 +20,11 @@ class Karte extends Page
     protected static string $view = 'filament.pages.karte';
 
     protected static ?string $title = 'Karte';
+
+    public function getMaxContentWidth(): MaxWidth|string|null
+    {
+        return MaxWidth::Full;
+    }
 
     public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
     {
