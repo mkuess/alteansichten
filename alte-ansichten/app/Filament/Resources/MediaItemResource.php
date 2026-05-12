@@ -4,14 +4,18 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MediaItemResource\Pages;
 use App\Filament\Resources\MediaItemResource\RelationManagers\MediaLinksRelationManager;
+use App\Models\District;
 use App\Models\MediaItem;
+use App\Models\Municipality;
 use App\Models\Place;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -21,17 +25,11 @@ use Filament\Tables\Table;
 class MediaItemResource extends Resource
 {
     protected static ?string $model = MediaItem::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-photo';
-
     protected static ?string $navigationGroup = 'Inhalte';
-
     protected static ?string $navigationLabel = 'Medien';
-
     protected static ?string $modelLabel = 'Medienelement';
-
     protected static ?string $pluralModelLabel = 'Medien';
-
     protected static ?int $navigationSort = 3;
 
     public static function getNavigationBadge(): ?string
@@ -39,52 +37,118 @@ class MediaItemResource extends Resource
         return (string) static::getModel()::count();
     }
 
-        public static function form(Form $form): Form
+    public static function form(Form $form): Form
     {
+        // Build grouped options: Standorte / Gemeinden / Bezirke
+        $places = Place::with('municipality')
+            ->orderBy('title')
+            ->get()
+            ->map(fn($p) => [
+                'value' => 'place:' . $p->id,
+                'label' => $p->title . ($p->municipality ? ' (' . $p->municipality->name . ')' : ''),
+            ]);
+
+        $municipalities = Municipality::orderBy('name')
+            ->get(['id', 'name'])
+            ->map(fn($m) => [
+                'value' => 'municipality:' . $m->id,
+                'label' => $m->name,
+            ]);
+
+        $districts = District::orderBy('name')
+            ->get(['id', 'name'])
+            ->map(fn($d) => [
+                'value' => 'district:' . $d->id,
+                'label' => $d->name,
+            ]);
+
+        $groupedOptions = [];
+        if ($places->isNotEmpty()) {
+            foreach ($places as $p) {
+                $groupedOptions['Standorte'][$p['value']] = $p['label'];
+            }
+        }
+        if ($municipalities->isNotEmpty()) {
+            foreach ($municipalities as $m) {
+                $groupedOptions['Gemeinden'][$m['value']] = $m['label'];
+            }
+        }
+        if ($districts->isNotEmpty()) {
+            foreach ($districts as $d) {
+                $groupedOptions['Bezirke'][$d['value']] = $d['label'];
+            }
+        }
+
         return $form->schema([
-            Section::make('Basisdaten')
+
+            Section::make('Hauptbezug')
+                ->description('Wem gehört dieses Medium hauptsächlich?')
                 ->schema([
-                    Select::make('primary_place_id')
-                        ->label('Primärer Standort')
-                        ->options(Place::pluck('title', 'id'))
+                    Select::make('primary_context')
+                        ->label('Standort / Gemeinde / Bezirk')
+                        ->options($groupedOptions)
                         ->searchable()
-                        ->nullable(),
+                        ->nullable()
+                        ->placeholder('Standort, Gemeinde oder Bezirk wählen…')
+                        ->afterStateHydrated(function (Set $set, $state, $record) {
+                            if (!$record) return;
+                            if ($record->primary_place_id)
+                                $set('primary_context', 'place:' . $record->primary_place_id);
+                            elseif ($record->primary_municipality_id)
+                                $set('primary_context', 'municipality:' . $record->primary_municipality_id);
+                            elseif ($record->primary_district_id)
+                                $set('primary_context', 'district:' . $record->primary_district_id);
+                        })
+                        ->dehydrated(false) // nicht direkt speichern
+                        ->live(),
+
+                    Hidden::make('primary_place_id'),
+                    Hidden::make('primary_municipality_id'),
+                    Hidden::make('primary_district_id'),
 
                     Select::make('type')
                         ->label('Typ')
                         ->options([
-                            'image'            => 'Bild',
-                            'document'         => 'Dokument',
+                            'image'             => 'Bild / Foto',
+                            'document'          => 'Dokument',
                             'newspaper_article' => 'Zeitungsartikel',
-                            'external_link'    => 'Externer Link',
-                            'audio'            => 'Audio',
-                            'video'            => 'Video',
-                            'other'            => 'Sonstiges',
+                            'external_link'     => 'Externer Link',
+                            'audio'             => 'Audio',
+                            'video'             => 'Video',
+                            'other'             => 'Sonstiges',
                         ])
                         ->default('image')
                         ->required(),
 
-                    TextInput::make('title')
-                        ->label('Titel')
-                        ->required()
-                        ->maxLength(255),
+                    Select::make('status')
+                        ->label('Status')
+                        ->options([
+                            'pending'  => 'Ausstehend',
+                            'approved' => 'Freigegeben',
+                            'rejected' => 'Abgelehnt',
+                            'hidden'   => 'Versteckt',
+                        ])
+                        ->default('pending')
+                        ->required(),
+                ]),
 
-                    TextInput::make('slug')
-                        ->label('Slug')
-                        ->maxLength(255)
-                        ->unique(ignoreRecord: true),
+            Section::make('Details')
+                ->schema([
+                    TextInput::make('year')
+                        ->label('Jahr')
+                        ->numeric()
+                        ->minValue(1800)
+                        ->maxValue(2100),
+
+                    TextInput::make('date_text')
+                        ->label('Ungefähres Datum')
+                        ->placeholder('z.B. um 1935, zwischen 1920–1930')
+                        ->helperText('Nur ausfüllen wenn das genaue Jahr unbekannt ist')
+                        ->maxLength(255),
 
                     Textarea::make('description')
                         ->label('Beschreibung')
-                        ->rows(4),
-
-                    TextInput::make('year')
-                        ->label('Jahr')
-                        ->numeric(),
-
-                    TextInput::make('date_text')
-                        ->label('Datumsangabe (Text)')
-                        ->maxLength(255),
+                        ->rows(3),
                 ]),
 
             Section::make('Datei oder externer Link')
@@ -124,50 +188,47 @@ class MediaItemResource extends Resource
                         ->default('needs_review')
                         ->required(),
 
-                    Textarea::make('rights_note')
-                        ->label('Rechtehinweis')
-                        ->rows(3),
-
                     Textarea::make('source_note')
                         ->label('Quellenangabe')
-                        ->rows(3),
-                ]),
+                        ->placeholder('z.B. Privatarchiv Familie Huber, Gemeindearchiv Mödling')
+                        ->rows(2),
 
-            Section::make('Standort und Veröffentlichung')
-                ->schema([
-                    Select::make('location_status')
-                        ->label('Standortstatus')
-                        ->options([
-                            'exact_place'       => 'Exakter Standort',
-                            'approximate_area'  => 'Ungefähre Gegend',
-                            'municipality_only' => 'Nur Gemeinde',
-                            'unknown'           => 'Unbekannt',
-                            'multiple_places'   => 'Mehrere Standorte',
-                            'not_location_based' => 'Kein Standortbezug',
-                        ])
-                        ->default('unknown')
-                        ->required(),
-
-                    TextInput::make('location_note')
-                        ->label('Standorthinweis')
-                        ->maxLength(255),
-
-                    Select::make('status')
-                        ->label('Status')
-                        ->options([
-                            'pending'  => 'Ausstehend',
-                            'approved' => 'Freigegeben',
-                            'rejected' => 'Abgelehnt',
-                            'hidden'   => 'Versteckt',
-                        ])
-                        ->default('pending')
-                        ->required(),
-
-                    TextInput::make('internal_reference_code')
-                        ->label('Interne Referenz')
-                        ->maxLength(50),
+                    Textarea::make('rights_note')
+                        ->label('Rechtehinweis')
+                        ->rows(2),
                 ]),
         ]);
+    }
+
+    // Beim Speichern primary_context aufdröseln
+    public static function mutateFormDataBeforeCreate(array $data): array
+    {
+        return static::resolveContext($data);
+    }
+
+    public static function mutateFormDataBeforeSave(array $data): array
+    {
+        return static::resolveContext($data);
+    }
+
+    private static function resolveContext(array $data): array
+    {
+        $data['primary_place_id']        = null;
+        $data['primary_municipality_id'] = null;
+        $data['primary_district_id']     = null;
+
+        if (!empty($data['primary_context'])) {
+            [$type, $id] = explode(':', $data['primary_context'], 2);
+            match ($type) {
+                'place'        => $data['primary_place_id']        = $id,
+                'municipality' => $data['primary_municipality_id'] = $id,
+                'district'     => $data['primary_district_id']     = $id,
+                default        => null,
+            };
+        }
+
+        unset($data['primary_context']);
+        return $data;
     }
 
     public static function table(Table $table): Table
@@ -181,7 +242,6 @@ class MediaItemResource extends Resource
                     ->width(64)
                     ->defaultImageUrl(null)
                     ->extraImgAttributes(['class' => 'object-cover rounded'])
-                    ->visibility('public')
                     ->checkFileExistence(false),
 
                 TextColumn::make('title')
@@ -193,9 +253,9 @@ class MediaItemResource extends Resource
                     ->label('Typ')
                     ->badge(),
 
-                TextColumn::make('primaryPlace.title')
-                    ->label('Standort')
-                    ->sortable(),
+                TextColumn::make('primary_context_label')
+                    ->label('Hauptbezug')
+                    ->getStateUsing(fn ($record) => $record->primary_context_label),
 
                 TextColumn::make('year')
                     ->label('Jahr')
@@ -205,16 +265,10 @@ class MediaItemResource extends Resource
                     ->label('Rechtsstatus')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'public_domain'      => 'success',
-                        'permission_granted' => 'success',
-                        'needs_review'       => 'warning',
-                        'unknown'            => 'gray',
-                        default              => 'info',
+                        'public_domain', 'permission_granted' => 'success',
+                        'needs_review'                        => 'warning',
+                        default                               => 'gray',
                     }),
-
-                TextColumn::make('location_status')
-                    ->label('Standortstatus')
-                    ->badge(),
 
                 TextColumn::make('status')
                     ->label('Status')
@@ -245,6 +299,15 @@ class MediaItemResource extends Resource
                         'other'             => 'Sonstiges',
                     ]),
 
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'pending'  => 'Ausstehend',
+                        'approved' => 'Freigegeben',
+                        'rejected' => 'Abgelehnt',
+                        'hidden'   => 'Versteckt',
+                    ]),
+
                 SelectFilter::make('rights_status')
                     ->label('Rechtsstatus')
                     ->options([
@@ -255,26 +318,6 @@ class MediaItemResource extends Resource
                         'public_domain'      => 'Gemeinfrei',
                         'unknown'            => 'Unbekannt',
                         'needs_review'       => 'Prüfung erforderlich',
-                    ]),
-
-                SelectFilter::make('location_status')
-                    ->label('Standortstatus')
-                    ->options([
-                        'exact_place'        => 'Exakter Standort',
-                        'approximate_area'   => 'Ungefähre Gegend',
-                        'municipality_only'  => 'Nur Gemeinde',
-                        'unknown'            => 'Unbekannt',
-                        'multiple_places'    => 'Mehrere Standorte',
-                        'not_location_based' => 'Kein Standortbezug',
-                    ]),
-
-                SelectFilter::make('status')
-                    ->label('Status')
-                    ->options([
-                        'pending'  => 'Ausstehend',
-                        'approved' => 'Freigegeben',
-                        'rejected' => 'Abgelehnt',
-                        'hidden'   => 'Versteckt',
                     ]),
             ]);
     }

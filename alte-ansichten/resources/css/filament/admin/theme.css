@@ -59,19 +59,29 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
 
 .fi-sidebar-item-badge {
   font-family: 'JetBrains Mono', monospace !important;
-  font-size: 10px !important; font-weight: 500 !important;
-  background: rgba(0,0,0,0.07) !important; color: var(--ink-3) !important;
-  border-radius: 999px !important; padding: 0.1rem 0.5rem !important;
-  min-width: 1.5rem !important; text-align: center !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  background: rgba(0,0,0,0.06) !important;
+  color: var(--ink-3) !important;
+  border-radius: 999px !important;
+  padding: 0.15rem 0.55rem !important;
+  min-width: 1.6rem !important;
+  text-align: center !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.6 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 .fi-sidebar-item-active .fi-sidebar-item-badge,
 .fi-sidebar-item-button[aria-current="page"] .fi-sidebar-item-badge {
-  background: rgba(107,127,86,0.15) !important; color: var(--accent-ink) !important;
+  background: rgba(107, 127, 86, 0.15) !important;
+  color: var(--accent-ink) !important;
 }
 .fi-sidebar-item-icon svg { width: 1.0625rem !important; height: 1.0625rem !important; color: var(--ink-3) !important; }
 
 /* ── Topbar / Header ── */
-.fi-topbar, .fi-topbar-nav, .fi-header { background: var(--bg) !important; border-bottom: 0px solid var(--line) !important; box-shadow: none !important; }
+.fi-topbar, .fi-topbar-nav, .fi-header { background: var(--bg) !important; border-bottom: none !important; box-shadow: none !important; }
 .fi-header-heading { font-family: 'Newsreader', Georgia, serif !important; font-size: 2rem !important; font-weight: 400 !important; color: var(--ink) !important; }
 
 /* ── Cards / Sections / Tables / Modals ── */
@@ -265,4 +275,42 @@ a.fi-sidebar-item-button,
 .fi-header-heading + hr,
 .fi-page .fi-header + hr {
   display: none !important;
+}
+
+
+/* ── Inputs: dünner Rahmen wie File-Upload ── */
+.fi-input-wrp,
+.fi-fo-field-wrp .fi-input-wrp {
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  ring: none !important;
+}
+.fi-input-wrp:focus-within {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-bg) !important;
+}
+
+/* Remove Filament's default ring/shadow on inputs */
+.fi-input,
+.fi-textarea,
+.fi-select-input {
+  box-shadow: none !important;
+  outline: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Ensure wrapper has the visible border, not the input itself */
+[class*="fi-fo-"] input,
+[class*="fi-fo-"] textarea,
+[class*="fi-fo-"] select {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Remove thick ring that appears on focus */
+*:focus {
+  --tw-ring-shadow: none !important;
+  --tw-ring-offset-shadow: none !important;
 }
