@@ -1,0 +1,147 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 / Filament 3 project.
+
+The current issue is on the MediaItem create page, not only during the upload itself.
+
+The Laravel log shows:
+
+Undefined array key 0
+at vendor/laravel/framework/src/Illuminate/View/Concerns/ManagesComponents.php:124
+
+The stack trace points to:
+
+App\Filament\Resources\MediaItemResource\Pages\CreateMediaItem
+
+2. Current state
+
+The admin backend is working again.
+The media upload still fails.
+The log now shows that /admin/media-items/create has a view/rendering error.
+
+Relevant log evidence:
+
+- Illuminate\View\ViewException
+- Undefined array key 0
+- MediaItemResource\Pages\CreateMediaItem
+- Livewire / Blade rendering stack
+
+This likely means MediaItemResource has a malformed Filament form schema, section, grid, tabs, placeholder, FileUpload configuration, or Blade component array.
+
+3. Exact task
+
+Fix the MediaItemResource form rendering error first.
+
+Do not work on proxy, APP_URL, ASSET_URL, CSRF, or signed upload URLs in this task.
+
+4. What Replit should do
+
+- Inspect app/Filament/Resources/MediaItemResource.php.
+- Review the form() schema carefully.
+- Look for malformed Filament components, especially:
+  - Section::make()
+  - Grid::make()
+  - Tabs::make()
+  - Tabs\Tab::make()
+  - Fieldset::make()
+  - Placeholder::make()
+  - FileUpload::make('file_path')
+  - any custom preview HTML
+  - any ->schema() calls
+  - any ->columns() calls
+  - any empty arrays passed incorrectly
+  - any associative arrays where Filament expects component arrays
+- Simplify the MediaItemResource form temporarily if needed.
+- Make sure every schema contains only valid Filament form components.
+- Keep the FileUpload field simple:
+  FileUpload::make('file_path')
+      ->label('Datei hochladen')
+      ->disk('public')
+      ->directory('media-items')
+      ->acceptedFileTypes([
+          'image/jpeg',
+          'image/png',
+          'image/webp',
+          'application/pdf',
+      ])
+      ->maxSize(10240)
+- Keep external_url as a normal TextInput or URL field.
+- Remove any risky custom preview logic from the create form.
+- Keep image previews only if they do not break rendering.
+- Clear view/cache after the fix.
+
+5. What Replit must NOT do
+
+- Do not change APP_URL.
+- Do not change ASSET_URL.
+- Do not change session settings.
+- Do not exclude Livewire upload route from CSRF.
+- Do not change TrustProxies.
+- Do not reset migrations.
+- Do not delete data.
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not apply design changes.
+- Do not add new features.
+- Do not modify unrelated resources.
+
+6. Expected files / changes
+
+Expected changed file:
+
+- app/Filament/Resources/MediaItemResource.php
+
+Expected result:
+
+- /admin/media-items/create opens without ViewException.
+- No “Undefined array key 0” appears in the Laravel log.
+- The create form is visible.
+- The FileUpload field is visible.
+- Existing MediaItem list page still works.
+- Existing media link relation manager still works.
+
+7. Test steps
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan view:clear
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/media-items/create
+
+Expected:
+The page loads without error.
+
+Check log:
+
+tail -n 80 storage/logs/laravel.log
+
+Expected:
+No new Undefined array key 0 error.
+
+Then attempt a small JPG upload under 500 KB.
+
+If upload still fails, report only:
+- upload request URL
+- HTTP status code
+- response body
+- new Laravel log entry if any
+
+Do not attempt URL/proxy/session fixes in this task.
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.

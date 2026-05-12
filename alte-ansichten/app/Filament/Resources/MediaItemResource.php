@@ -15,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\ImageColumn;
@@ -99,7 +100,21 @@ class MediaItemResource extends Resource
                             elseif ($record->primary_district_id)
                                 $set('primary_context', 'district:' . $record->primary_district_id);
                         })
-                        ->dehydrated(false) // nicht direkt speichern
+                        ->afterStateUpdated(function (Set $set, $state) {
+                            $set('primary_place_id', null);
+                            $set('primary_municipality_id', null);
+                            $set('primary_district_id', null);
+                            if (filled($state)) {
+                                [$type, $id] = explode(':', $state, 2);
+                                match ($type) {
+                                    'place'        => $set('primary_place_id', $id),
+                                    'municipality' => $set('primary_municipality_id', $id),
+                                    'district'     => $set('primary_district_id', $id),
+                                    default        => null,
+                                };
+                            }
+                        })
+                        ->dehydrated(false)
                         ->live(),
 
                     Hidden::make('primary_place_id'),
@@ -163,8 +178,7 @@ class MediaItemResource extends Resource
                             'image/webp',
                             'application/pdf',
                         ])
-                        ->maxSize(10240)
-                        ->nullable(),
+                        ->maxSize(10240),
 
                     TextInput::make('external_url')
                         ->label('Externe URL')
