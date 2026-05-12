@@ -2,6 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\LatestSubmissionsWidget;
+use App\Filament\Widgets\MaintenanceAlertsWidget;
+use App\Filament\Widgets\StatsOverviewWidget;
+use App\Filament\Widgets\TopMunicipalitiesWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -32,8 +36,11 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('2.5rem')
             ->colors([
                 'primary' => Color::hex('#6b7f56'),
+                'gray'    => Color::hex('#8a857b'),
             ])
+            ->font('Geist')
             ->viteTheme('resources/css/filament/admin/theme.css')
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -42,7 +49,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                StatsOverviewWidget::class,
+                LatestSubmissionsWidget::class,
+                TopMunicipalitiesWidget::class,
+                MaintenanceAlertsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -1,252 +1,278 @@
+/* ─── Google Fonts — must be first @import ──────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @import '/vendor/filament/filament/resources/css/theme.css';
 
 @config '../../../../tailwind.filament.config.js';
 
-/* ═══════════════════════════════════════════════════
-   Alte Ansichten — Custom Filament Theme  v2
-   Warm archive palette
-   ═══════════════════════════════════════════════════ */
-
-/* ── Palette tokens ── */
+/* ─── Palette tokens ────────────────────────────────────────────────────────── */
 :root {
-    --aa-bg:           #f3f1ec;
-    --aa-sidebar-bg:   #ede9e1;
-    --aa-border:       #d8d3c9;
-    --aa-border-card:  #e2ddd6;
-    --aa-text-dark:    #1c1a17;
-    --aa-text-body:    #2e2b26;
-    --aa-text-muted:   #7a7671;
-    --aa-text-label:   #8e8880;
-    --aa-green-light:  #dce8d4;
-    --aa-hover:        #e5e0d7;
+    --bg:          #f3f1ec;
+    --panel:       #ebe7dd;
+    --card:        #ffffff;
+    --ink:         #1c1a17;
+    --ink-2:       #45413a;
+    --ink-3:       #8a857b;
+    --line:        #d8d2c4;
+    --line-2:      #ece8de;
+    --accent:      #6b7f56;
+    --accent-bg:   #e8ede0;
+    --accent-ink:  #3f5234;
+    --amber:       #c08a3e;
+    --amber-bg:    #f3e7cf;
+    --rose:        #b86f5c;
+    --rose-bg:     #f3ddd4;
+
+    /* legacy aliases kept for backward compatibility */
+    --aa-bg:           var(--bg);
+    --aa-sidebar-bg:   var(--panel);
+    --aa-border:       var(--line);
+    --aa-border-card:  var(--line-2);
+    --aa-text-dark:    var(--ink);
+    --aa-text-body:    var(--ink-2);
+    --aa-text-muted:   var(--ink-3);
+    --aa-text-label:   var(--ink-3);
+    --aa-green-light:  var(--accent-bg);
+    --aa-hover:        #e8e3da;
 }
 
-/* ═══════════════════════════════════════════════════
-   BODY + LAYOUT
-   ═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY  — font families
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-body,
-.fi-body {
-    background-color: var(--aa-bg) !important;
-    color: var(--aa-text-body) !important;
+html, body, .fi-body {
+    font-family: 'Geist', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg) !important;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.fi-layout {
-    background-color: var(--aa-bg) !important;
+/* Headings — Newsreader serif */
+.fi-header-heading,
+.fi-section-header-heading,
+.fi-modal-heading,
+.fi-wi-stats-overview-stat-value,
+.fi-page-heading,
+.aa-heading {
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.01em;
 }
 
+.fi-header-heading {
+    font-size: 1.875rem !important;
+    line-height: 1.15 !important;
+    color: var(--ink) !important;
+}
+
+@media (min-width: 640px) {
+    .fi-header-heading { font-size: 2.125rem !important; }
+}
+
+.fi-header-subheading {
+    color: var(--ink-3) !important;
+    font-size: 0.9375rem !important;
+}
+
+/* Mono — references, codes, IDs */
+.fi-badge,
+.font-mono,
+code,
+.aa-mono {
+    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.fi-layout,
 .fi-main-ctn,
 .fi-main {
-    background-color: var(--aa-bg) !important;
+    background-color: var(--bg) !important;
 }
 
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════════════════
    SIDEBAR
-   ═══════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Sidebar — overrides bg-white AND lg:bg-transparent */
 .fi-sidebar {
-    background-color: var(--aa-sidebar-bg) !important;
-    border-right: 1px solid var(--aa-border) !important;
+    background-color: var(--panel) !important;
+    border-right: 1px solid var(--line) !important;
     box-shadow: none !important;
 }
 
-/* Mobile open-state: restore shadow for overlay effect */
 .fi-sidebar.fi-sidebar-open {
     box-shadow: 0 8px 32px rgba(28, 26, 23, 0.14) !important;
 }
 
-/* Sidebar header — logo area */
 .fi-sidebar-header {
-    background-color: var(--aa-sidebar-bg) !important;
-    border-bottom: 1px solid var(--aa-border) !important;
-    /* remove Filament ring */
+    background-color: var(--panel) !important;
+    border-bottom: 1px solid var(--line) !important;
     box-shadow: none !important;
 }
 
-/* Sidebar nav vertical rhythm */
 .fi-sidebar-nav {
     padding-top: 1rem !important;
     padding-bottom: 1.5rem !important;
     gap: 1.5rem !important;
 }
 
-/* Nav groups list */
 .fi-sidebar-nav-groups {
-    gap: 1.5rem !important;
+    gap: 1.25rem !important;
 }
 
-/* ── Group labels (INHALTE / REGIONEN / SYSTEM) ── */
+/* Group labels */
 .fi-sidebar-group-label {
-    font-size: 0.625rem !important;        /* 10px */
-    font-weight: 700 !important;
-    letter-spacing: 0.1em !important;
+    font-size: 0.6875rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
-    color: var(--aa-text-label) !important;
+    color: var(--ink-3) !important;
     padding-left: 0.625rem !important;
 }
 
-/* Group button row (the clickable group header) */
 .fi-sidebar-group-button {
     padding-top: 0.125rem !important;
     padding-bottom: 0.125rem !important;
     border-radius: 6px !important;
 }
 
-/* ── Nav items ── */
+/* Nav items */
 .fi-sidebar-item-button {
-    border-radius: 8px !important;
+    border-radius: 10px !important;
 }
 
-/* Default item hover */
 .fi-sidebar-item-button:hover {
     background-color: var(--aa-hover) !important;
 }
 
-/* Default item icon */
 .fi-sidebar-item-icon {
-    color: var(--aa-text-muted) !important;
+    color: var(--ink-3) !important;
 }
 
-/* Default item label */
 .fi-sidebar-item-label {
-    color: var(--aa-text-body) !important;
+    color: var(--ink-2) !important;
     font-size: 0.8125rem !important;
 }
 
-/* ACTIVE item — button background (overrides bg-gray-100) */
+/* Active state */
 .fi-sidebar-item.fi-active .fi-sidebar-item-button,
 .fi-sidebar-item.fi-sidebar-item-active .fi-sidebar-item-button {
-    background-color: var(--aa-green-light) !important;
+    background-color: var(--accent-bg) !important;
 }
 
-/* Active item hover */
 .fi-sidebar-item.fi-active .fi-sidebar-item-button:hover {
-    background-color: #d2e0c9 !important;
+    background-color: #dce6d5 !important;
 }
 
-/* Active item label — heavier weight */
 .fi-sidebar-item.fi-active .fi-sidebar-item-label {
+    color: var(--accent-ink) !important;
     font-weight: 600 !important;
 }
 
-/* Active item — grouped border dot */
-.fi-sidebar-item.fi-active .fi-sidebar-item-grouped-border > div:last-child {
-    background-color: var(--aa-green-light) !important;
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+    color: var(--accent) !important;
 }
 
-/* ═══════════════════════════════════════════════════
-   TOPBAR
-   ═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOP BAR
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 .fi-topbar {
-    background-color: var(--aa-bg) !important;
+    background-color: var(--bg) !important;
 }
 
-/* The nav inside fi-topbar has no fi- class; we target it via parent */
 .fi-topbar nav {
-    background-color: var(--aa-bg) !important;
-    border-bottom: 1px solid var(--aa-border) !important;
+    background-color: var(--bg) !important;
+    border-bottom: 1px solid var(--line) !important;
     box-shadow: none !important;
 }
 
-/* ═══════════════════════════════════════════════════
-   PAGE HEADER
-   ═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════════════
+   BREADCRUMBS
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-.fi-header-heading {
-    font-size: 1.75rem !important;
-    font-weight: 700 !important;
-    letter-spacing: -0.025em !important;
-    line-height: 1.15 !important;
-    color: var(--aa-text-dark) !important;
-}
-
-@media (min-width: 640px) {
-    .fi-header-heading {
-        font-size: 2rem !important;
-    }
-}
-
-.fi-header-subheading {
-    color: var(--aa-text-muted) !important;
-    font-size: 0.9375rem !important;
-}
-
-/* Breadcrumbs */
 .fi-breadcrumbs-item-label {
-    color: var(--aa-text-muted) !important;
+    color: var(--ink-3) !important;
     font-size: 0.75rem !important;
 }
 
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════════════════
    SECTIONS  (form panels, card containers)
-   ═══════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* fi-section: overrides rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 */
 .fi-section {
-    background-color: #ffffff !important;
-    border-radius: 10px !important;
-    border: 1px solid var(--aa-border-card) !important;
-    box-shadow: 0 1px 4px rgba(28, 26, 23, 0.05) !important;
+    background-color: var(--card) !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) !important;
 }
 
 .fi-section-header {
-    border-bottom-color: var(--aa-border-card) !important;
+    border-bottom-color: var(--line-2) !important;
 }
 
 .fi-section-content-ctn {
-    border-top-color: var(--aa-border-card) !important;
+    border-top-color: var(--line-2) !important;
 }
 
 .fi-section-footer {
-    border-top-color: var(--aa-border-card) !important;
+    border-top-color: var(--line-2) !important;
 }
 
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════════════════
    TABLES
-   ═══════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* fi-ta-ctn: overrides rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 */
 .fi-ta-ctn {
-    background-color: #ffffff !important;
-    border-radius: 10px !important;
-    border: 1px solid var(--aa-border-card) !important;
-    box-shadow: 0 1px 4px rgba(28, 26, 23, 0.05) !important;
+    background-color: var(--card) !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) !important;
 }
 
-/* Override the divide-y divide-gray-200 border color */
 .fi-ta-ctn > :not([hidden]) ~ :not([hidden]) {
-    border-color: var(--aa-border-card) !important;
+    border-color: var(--line-2) !important;
 }
 
-/* Table header */
 .fi-ta-header {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid var(--aa-border-card) !important;
+    background-color: var(--card) !important;
+    border-bottom: 1px solid var(--line-2) !important;
 }
 
 .fi-ta-header-heading {
-    color: var(--aa-text-dark) !important;
-    font-weight: 600 !important;
+    font-family: 'Newsreader', Georgia, serif !important;
+    font-weight: 400 !important;
+    color: var(--ink) !important;
 }
 
 .fi-ta-header-description {
-    color: var(--aa-text-muted) !important;
+    color: var(--ink-3) !important;
 }
 
-/* Column header cells */
+/* Column header row */
 .fi-ta-header-ctn {
     background-color: #faf8f4 !important;
-    border-bottom: 1px solid var(--aa-border-card) !important;
+    border-bottom: 1px solid var(--line-2) !important;
 }
 
+/* Column header labels */
 .fi-ta-header-cell-label {
-    color: var(--aa-text-label) !important;
+    color: var(--ink-3) !important;
     font-size: 0.6875rem !important;
-    letter-spacing: 0.06em !important;
-    text-transform: uppercase !important;
     font-weight: 600 !important;
+    letter-spacing: 0.07em !important;
+    text-transform: uppercase !important;
+}
+
+/* Cell padding */
+.fi-ta-cell {
+    padding-top: 0.875rem !important;
+    padding-bottom: 0.875rem !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
 }
 
 /* Row hover */
@@ -256,93 +282,164 @@ body,
 
 /* Pagination */
 .fi-ta-pagination {
-    border-top: 1px solid var(--aa-border-card) !important;
+    border-top: 1px solid var(--line-2) !important;
     background-color: #faf8f4 !important;
 }
 
 /* Empty state */
 .fi-ta-empty-state-icon {
-    color: var(--aa-text-muted) !important;
+    color: var(--ink-3) !important;
 }
 
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════════════════
+   BADGES  — pill style, mono font
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.fi-badge {
+    border-radius: 999px !important;
+    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+    font-size: 0.6875rem !important;
+    letter-spacing: 0.01em !important;
+    font-weight: 500 !important;
+    padding-top: 0.2rem !important;
+    padding-bottom: 0.2rem !important;
+    padding-left: 0.55rem !important;
+    padding-right: 0.55rem !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.fi-btn {
+    border-radius: 8px !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+}
+
+.fi-btn-color-primary {
+    background-color: var(--ink) !important;
+    color: #f6f4ef !important;
+    border: none !important;
+}
+
+.fi-btn-color-primary:hover {
+    background-color: #2a2620 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    FORM INPUTS
-   ═══════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 .fi-input,
+.fi-select-input,
 .fi-input-wrp input,
 .fi-input-wrp textarea,
 .fi-input-wrp select {
     background-color: #faf9f6 !important;
-    border-color: var(--aa-border) !important;
-    color: var(--aa-text-body) !important;
+    border-color: var(--line) !important;
+    border-radius: 8px !important;
+    color: var(--ink-2) !important;
 }
 
 .fi-input-wrp {
-    border-color: var(--aa-border) !important;
+    border-color: var(--line) !important;
+    border-radius: 8px !important;
 }
 
-/* ═══════════════════════════════════════════════════
-   WIDGETS  (dashboard stats)
-   ═══════════════════════════════════════════════════ */
+.fi-input:focus,
+.fi-select-input:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px var(--accent-bg) !important;
+    outline: none !important;
+}
 
-/* Stats overview wrapper */
+/* ═══════════════════════════════════════════════════════════════════════════
+   WIDGETS  (dashboard stats overview)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 .fi-wi-stats-overview {
     gap: 1rem !important;
 }
 
-/* Individual stat card */
 .fi-wi-stats-overview-stat {
-    background-color: #ffffff !important;
-    border-radius: 10px !important;
-    border: 1px solid var(--aa-border-card) !important;
-    box-shadow: 0 1px 4px rgba(28, 26, 23, 0.05) !important;
+    background-color: var(--card) !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--line) !important;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) !important;
 }
 
 .fi-wi-stats-overview-stat-label {
-    color: var(--aa-text-muted) !important;
+    color: var(--ink-3) !important;
     font-size: 0.6875rem !important;
-    letter-spacing: 0.06em !important;
+    letter-spacing: 0.07em !important;
     text-transform: uppercase !important;
     font-weight: 600 !important;
 }
 
 .fi-wi-stats-overview-stat-value {
-    color: var(--aa-text-dark) !important;
-    font-weight: 700 !important;
+    font-family: 'Newsreader', Georgia, serif !important;
+    font-weight: 400 !important;
+    font-size: 2.25rem !important;
     letter-spacing: -0.02em !important;
+    color: var(--ink) !important;
 }
 
-/* Account widget (user info block) */
+.fi-wi-stats-overview-stat-description {
+    color: var(--ink-3) !important;
+    font-size: 0.75rem !important;
+}
+
+/* Account widget (sidebar footer) */
 .fi-wi-account {
-    background-color: var(--aa-sidebar-bg) !important;
-    border-top: 1px solid var(--aa-border) !important;
+    background-color: var(--panel) !important;
+    border-top: 1px solid var(--line) !important;
 }
 
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════════════════
    MODALS
-   ═══════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 .fi-modal-window {
-    background-color: #ffffff !important;
-    border: 1px solid var(--aa-border-card) !important;
+    background-color: var(--card) !important;
+    border: 1px solid var(--line) !important;
     border-radius: 12px !important;
-    box-shadow: 0 16px 40px rgba(28, 26, 23, 0.14) !important;
+    box-shadow: 0 16px 40px rgba(28, 26, 23, 0.12) !important;
 }
 
-/* ═══════════════════════════════════════════════════
-   LOGIN PAGE  (simple layout)
-   ═══════════════════════════════════════════════════ */
-
-.fi-simple-layout {
-    background-color: var(--aa-bg) !important;
+.fi-modal-heading {
+    font-family: 'Newsreader', Georgia, serif !important;
+    font-weight: 400 !important;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOGIN  (simple layout)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.fi-simple-layout,
 .fi-simple-main {
-    background-color: var(--aa-bg) !important;
+    background-color: var(--bg) !important;
 }
 
-/* Login card */
 .fi-simple-page .fi-section {
     box-shadow: 0 2px 16px rgba(28, 26, 23, 0.08) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PRIMARY COLOR OVERRIDES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+[class*="text-primary-600"],
+[class*="text-primary-500"] {
+    color: var(--accent) !important;
+}
+
+[class*="bg-primary-600"],
+[class*="bg-primary-500"] {
+    background-color: var(--accent) !important;
+}
+
+[class*="ring-primary-600"],
+[class*="ring-primary-500"] {
+    --tw-ring-color: var(--accent-bg) !important;
 }
