@@ -137,3 +137,68 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
+
+/* ── TIGHT SIDEBAR SPACING — override Filament defaults ── */
+
+/* Remove all gap between nav groups */
+nav.fi-sidebar-nav,
+.fi-sidebar-nav {
+  gap: 0 !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+/* Group wrapper — minimal top margin only */
+.fi-sidebar-group {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Group label row */
+.fi-sidebar-group-label {
+  margin-bottom: 0.125rem !important;
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.125rem !important;
+  min-height: unset !important;
+}
+
+/* Each nav item — no margin, tight padding */
+.fi-sidebar-item {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.fi-sidebar-item-button {
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.375rem !important;
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+  min-height: unset !important;
+  height: auto !important;
+}
+
+/* Remove any extra spacing Filament adds between sections */
+.fi-sidebar-nav > * + * {
+  margin-top: 0 !important;
+}
+
+/* Dashboard item (ungrouped) */
+.fi-sidebar > div > nav > ul > li:first-child {
+  margin-bottom: 0 !important;
+}
+
+/* Collapsible group button */
+.fi-sidebar-group > button {
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.125rem !important;
+  min-height: unset !important;
+}
+
+/* Items list inside each group */
+.fi-sidebar-group-items {
+  gap: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
