@@ -16,6 +16,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
@@ -53,7 +54,16 @@ class PlaceResource extends Resource
                         ->label('Gemeinde')
                         ->options(Municipality::pluck('name', 'id'))
                         ->searchable()
-                        ->nullable(),
+                        ->nullable()
+                        ->live()
+                        ->afterStateUpdated(function (Set $set, $state) {
+                            if ($state) {
+                                $municipality = Municipality::find($state);
+                                if ($municipality && $municipality->postal_code) {
+                                    $set('postal_code', $municipality->postal_code);
+                                }
+                            }
+                        }),
 
                     Select::make('category_id')
                         ->label('Kategorie')
@@ -66,12 +76,6 @@ class PlaceResource extends Resource
                         ->required()
                         ->maxLength(255),
 
-                    TextInput::make('slug')
-                        ->label('Slug')
-                        ->required()
-                        ->maxLength(255)
-                        ->unique(ignoreRecord: true),
-
                     TextInput::make('summary')
                         ->label('Kurzbeschreibung')
                         ->maxLength(255),
@@ -79,18 +83,6 @@ class PlaceResource extends Resource
                     Textarea::make('story')
                         ->label('Geschichte / Beschreibung')
                         ->rows(6),
-
-                    TextInput::make('period_from')
-                        ->label('Zeitraum von (Jahr)')
-                        ->numeric(),
-
-                    TextInput::make('period_to')
-                        ->label('Zeitraum bis (Jahr)')
-                        ->numeric(),
-
-                    TextInput::make('approximate_date_text')
-                        ->label('Ungefähre Datumsangabe')
-                        ->maxLength(255),
                 ]),
 
             Section::make('Adresse')
@@ -105,29 +97,11 @@ class PlaceResource extends Resource
 
                     TextInput::make('postal_code')
                         ->label('Postleitzahl')
-                        ->maxLength(20),
+                        ->maxLength(20)
+                        ->helperText('Wird automatisch aus der Gemeinde übernommen, kann manuell angepasst werden.'),
 
                     TextInput::make('address_text')
                         ->label('Adresse (Freitext)')
-                        ->maxLength(255),
-                ]),
-
-            Section::make('Koordinaten')
-                ->schema([
-                    TextInput::make('latitude')
-                        ->label('Breitengrad')
-                        ->numeric(),
-
-                    TextInput::make('longitude')
-                        ->label('Längengrad')
-                        ->numeric(),
-
-                    TextInput::make('location_precision')
-                        ->label('Koordinaten-Genauigkeit')
-                        ->maxLength(255),
-
-                    TextInput::make('location_note')
-                        ->label('Standorthinweis')
                         ->maxLength(255),
                 ]),
 

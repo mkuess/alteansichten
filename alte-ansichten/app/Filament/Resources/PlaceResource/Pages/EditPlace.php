@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Str;
 
 class EditPlace extends EditRecord
 {
@@ -38,5 +39,14 @@ class EditPlace extends EditRecord
 
             DeleteAction::make(),
         ];
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (empty($this->record->slug)) {
+            $data['slug'] = Str::slug($data['title'] ?? '');
+        }
+
+        return $data;
     }
 }

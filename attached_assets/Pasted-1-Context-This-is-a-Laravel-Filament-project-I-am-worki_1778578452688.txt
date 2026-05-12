@@ -1,0 +1,57 @@
+1. Context
+This is a Laravel/Filament project. I am working on the admin form for creating places at /admin/places/create.
+
+2. Problem
+The current place create form contains several unnecessary fields and repeated inputs. This makes the form more complicated than needed.
+
+3. Goal
+Simplify the Place create/edit form so it only asks for information that is actually needed for a place.
+
+4. Required changes
+Please adjust the Place form as follows:
+
+- Remove the visible slug input from the form.
+- Generate the slug automatically from the place name when saving.
+- Remove period/date-related fields from the Place form. Time periods are relevant for media items, not for places.
+- Remove the approximate date field from the Place form.
+- In the address block, do not require manually entering the postal code if a municipality has already been selected.
+- If a municipality is selected, automatically use the postal code from that municipality where possible.
+- Remove the coordinate accuracy field from the Place form.
+- Remove the location hint / standorthinweis field from the Place form.
+
+5. Coordinates
+For latitude and longitude:
+- Do not require manual latitude/longitude input in the create form.
+- Keep the database fields if they already exist.
+- If an address is available, coordinates should be generated after saving the place.
+- If automatic geocoding is not already safely implemented, do not invent a complex solution now.
+- In that case, leave latitude/longitude empty for now and prepare the form so the fields are not required from the user.
+
+6. Safety
+Do not change the database schema unless absolutely necessary.
+Do not delete existing database columns.
+Do not remove fields from the model/database.
+Only simplify the Filament form UI and saving behavior.
+Do not change media item forms.
+Do not change navigation, sidebar, dashboard, theme, upload logic, CSS, or unrelated resources.
+
+7. Expected result
+The Place create/edit form should be simpler:
+- name
+- municipality
+- address details where needed
+- no manual slug field
+- no date/period fields
+- no required postal code duplication when municipality already provides it
+- no manual coordinate accuracy/location hint fields
+- no required latitude/longitude input
+
+8. Stop condition
+After the change, stop and summarize:
+- which file was changed
+- which fields were removed from the Place form
+- how the slug is generated
+- how the postal code is handled
+- whether latitude/longitude are still stored but no longer required manually
+
+Please stop afterward and do not implement any further steps without being asked.
