@@ -30,7 +30,7 @@
     {{-- Existing stored file preview --}}
     <template x-if="filePath && !preview">
         <div class="flex items-center gap-3">
-            <img :src="'/storage/' + filePath" class="h-20 w-20 rounded object-cover border border-gray-200 dark:border-gray-700" alt="">
+            <img :src="'/storage/' + filePath" class="w-52 h-auto rounded object-contain border border-gray-200 dark:border-gray-700" alt="">
             <div class="text-sm text-gray-600 dark:text-gray-400" x-text="filePath"></div>
             <button type="button" @click="clear()" class="text-danger-600 hover:text-danger-700 text-sm font-medium">Entfernen</button>
         </div>
@@ -39,7 +39,7 @@
     {{-- Live preview after selecting a new file --}}
     <template x-if="preview">
         <div class="flex items-center gap-3">
-            <img :src="preview" class="h-20 w-20 rounded object-cover border border-gray-200 dark:border-gray-700" alt="">
+            <img :src="preview" class="w-52 h-auto rounded object-contain border border-gray-200 dark:border-gray-700" alt="">
             <span x-show="uploading" class="text-sm text-gray-500 dark:text-gray-400">Wird gespeichert…</span>
             <span x-show="!uploading && filePath" class="text-sm text-success-600">Bereit zum Speichern</span>
             <button type="button" @click="clear()" class="text-danger-600 hover:text-danger-700 text-sm font-medium">Entfernen</button>
