@@ -1,0 +1,194 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 / Filament 3 project running in Replit.
+
+The Filament backend is currently styled and working.
+Media upload still fails.
+
+The confirmed upload root cause is:
+
+Livewire signed upload URLs are generated with APP_URL including :8000.
+However, Replit’s proxy sends the request to Laravel without :8000 in the Host header.
+Therefore Laravel reconstructs a different URL and Livewire signature validation fails with HTTP 401.
+
+2. Current state
+
+Current settings:
+
+APP_URL includes :8000
+ASSET_URL includes :8000
+
+This keeps admin UI/navigation mostly working, but breaks Livewire uploads.
+
+Confirmed upload failure:
+
+- Upload endpoint: /livewire/upload-file
+- HTTP status: 401
+- Cause: request()->hasValidSignature() fails in Livewire FileUploadController
+
+The required test is now to remove :8000 from APP_URL and ASSET_URL and verify all affected areas.
+
+3. Exact task
+
+Perform a controlled environment URL switch:
+
+Change APP_URL and ASSET_URL to the Replit external HTTPS URL without :8000.
+
+Then verify all of these together:
+
+- Filament styling
+- admin navigation
+- logout
+- media upload
+
+Do not add features.
+
+4. What Replit should do
+
+- Save/report current APP_URL and ASSET_URL before changing them.
+- Change:
+
+APP_URL=https://673da689-dfff-44c6-ae3e-cc4bcc751bcb-00-fwsieclc3p1p.janeway.replit.dev
+ASSET_URL=https://673da689-dfff-44c6-ae3e-cc4bcc751bcb-00-fwsieclc3p1p.janeway.replit.dev
+
+without :8000.
+
+- Clear caches:
+
+php artisan optimize:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+- Republish/build assets if needed:
+
+php artisan filament:assets
+npm run build
+
+- Restart the Laravel server.
+
+- Verify generated URLs in tinker:
+
+config('app.url');
+url('/admin/categories');
+url('/livewire/upload-file');
+
+- Verify browser behavior, not only curl.
+
+5. What Replit must NOT do
+
+- Do not add new features.
+- Do not change database migrations.
+- Do not reset the database.
+- Do not delete uploaded files.
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not apply design changes.
+- Do not move the app to /__mockup.
+- Do not add debug routes permanently.
+- Do not leave temporary diagnostic files behind.
+
+6. Expected result
+
+With APP_URL and ASSET_URL without :8000:
+
+- /admin/login is styled
+- /admin is styled
+- /admin/categories loads
+- /admin/places loads
+- /admin/media-items loads
+- logout works
+- /admin/media-items/create upload succeeds
+- uploaded file is stored
+- media item can be saved
+
+7. Test steps
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open the external browser URL without :8000:
+
+/admin/login
+
+Expected:
+Styled login page.
+
+Log in and test:
+
+/admin
+/admin/categories
+/admin/places
+/admin/media-items
+/admin/qr-codes
+
+Expected:
+All pages load and remain styled.
+
+Click sidebar navigation links.
+
+Expected:
+No 502.
+
+Click logout.
+
+Expected:
+Logout works and returns to /admin/login.
+
+Log in again.
+
+Open:
+
+/admin/media-items/create
+
+Upload a JPG under 500 KB.
+
+Expected:
+Upload succeeds.
+
+Save the media item.
+
+Expected:
+Media item saves and file_path is stored.
+
+Check:
+
+storage/app/public/media-items
+
+Expected:
+Uploaded file exists.
+
+Check browser network:
+
+Expected:
+- /livewire/upload-file returns 200
+- no 401
+- no 419
+- no 502
+- CSS/JS assets return 200
+
+8. If this breaks admin navigation or styling
+
+If removing :8000 fixes uploads but breaks navigation/styling, stop and report clearly:
+
+- what works
+- what breaks
+- exact failing URL
+- exact HTTP status
+- rendered admin link href
+- rendered CSS/JS URLs
+
+Do not attempt another broad fix.
+
+9. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
