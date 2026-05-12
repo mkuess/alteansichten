@@ -1,0 +1,80 @@
+1. Context
+This is a Laravel/Filament project running on Replit.
+
+After the last change related to redirecting the landing page to the admin login and/or fixing the :8000 URL behavior, the Filament admin design is broken.
+
+The admin page now renders as mostly unstyled plain HTML:
+- no proper Filament layout
+- huge icons
+- missing styling
+- sidebar/design broken
+
+2. Problem
+This looks like Filament CSS/JS assets are no longer loading correctly.
+
+3. Goal
+Restore the existing Filament admin styling by fixing the asset/URL/config issue only.
+
+4. Requirements
+- Do not redesign the admin UI.
+- Do not change the theme.
+- Do not change Filament resources.
+- Do not change PlaceResource.
+- Do not change MediaItemResource.
+- Do not change map page.
+- Do not change upload logic.
+- Do not change geocoding.
+- Do not change database schema.
+- Do not refactor unrelated files.
+- Only fix why Filament CSS/JS assets are not loading.
+
+5. Please diagnose first
+Before changing anything, inspect:
+- browser/HTML generated asset URLs if possible
+- .env APP_URL
+- routes/web.php
+- Filament panel provider configuration
+- Vite configuration if relevant
+- public/build or Filament assets paths
+- whether CSS/JS requests return 404, wrong host, wrong port, or mixed URLs
+- whether the last redirect/port fix caused assets to be generated with the wrong URL
+
+6. Technical checks
+Please check whether these commands are needed and safe:
+- php artisan optimize:clear
+- php artisan filament:assets
+- php artisan view:clear
+- php artisan route:clear
+- php artisan config:clear
+
+Run only safe cache/asset rebuild commands.
+Do not delete database data.
+Do not run destructive commands.
+Do not remove database volumes.
+
+7. Important
+The goal is:
+- /admin should load without manually adding :8000 if possible
+- Filament CSS and JS must load correctly
+- existing admin design should return exactly as before
+
+If there is a conflict between the :8000 fix and Filament asset loading, explain the cause before making bigger changes.
+
+8. Expected result
+After the fix:
+- /admin loads with the normal Filament design
+- sidebar is styled normally
+- icons are normal size
+- forms/tables/pages look like before
+- assets load successfully
+- no database or resource logic is changed
+
+9. Stop condition
+After the fix, stop and summarize:
+- what caused the broken styling
+- which files/settings were changed
+- whether assets/cache were rebuilt
+- whether APP_URL was changed
+- confirmation that no resources, forms, map, upload, geocoding, theme redesign, or database schema were changed
+
+Please stop afterward and do not implement any further steps without being asked.
