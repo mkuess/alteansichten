@@ -107,7 +107,7 @@ class PlaceResource extends Resource
                 ]),
 
             Section::make('Koordinaten / genaue Position')
-                ->description('Optional. Nützlich für Orte ohne klare Straßenadresse, z. B. Brücken, Denkmäler oder historische Stätten.')
+                ->description('Optional. Nützlich für Orte ohne klare Straßenadresse, z. B. Brücken, Denkmäler oder historische Stätten. Sind beide Felder leer, werden die Koordinaten beim Speichern automatisch aus der Adresse ermittelt.')
                 ->schema([
                     ViewField::make('map_preview')
                         ->label('Kartenansicht')

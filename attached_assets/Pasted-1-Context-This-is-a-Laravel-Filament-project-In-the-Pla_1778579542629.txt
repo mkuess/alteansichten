@@ -1,0 +1,58 @@
+1. Context
+This is a Laravel/Filament project. In the Place form, a Leaflet map preview with draggable marker was added above the latitude/longitude fields.
+
+2. Problem
+The map is broken. The JavaScript/Leaflet code is rendered visibly as plain text in the form instead of being executed. The map container is empty.
+
+This means the map preview is currently being escaped/rendered incorrectly.
+
+3. Goal
+Fix only the map preview rendering so the Leaflet map displays properly and the JavaScript is not shown as text.
+
+4. Requirements
+- Do not change the coordinate save logic.
+- Do not change latitude/longitude field names or database fields.
+- Do not change geocoding logic.
+- Do not change the address fields.
+- Do not redesign the form.
+- Do not change navigation, sidebar, dashboard, theme, CSS, upload logic, media item forms, or unrelated files.
+- Do not add a new map feature.
+- Only fix the broken map preview rendering.
+
+5. Technical direction
+Please inspect:
+- app/Filament/Resources/PlaceResource.php
+- resources/views/filament/resources/place-resource/map-picker.blade.php
+
+The issue is likely caused by JavaScript being passed through a Filament component in a way that escapes it.
+
+Fix it by rendering the map through a proper Blade view / ViewField so the HTML and script are output correctly.
+
+Use safe Blade output:
+- HTML structure should render normally
+- JavaScript should be inside a proper <script> block
+- do not display JavaScript as plain text
+- avoid using Placeholder content if it escapes the script
+
+If Filament requires it, use ViewField::make(...)->view(...) or another correct Filament-compatible approach for custom HTML/JS.
+
+6. Expected result
+When editing a Place with latitude and longitude:
+- the JavaScript code must no longer be visible as text
+- the map should display in the map container
+- the marker should appear at the stored coordinates
+- dragging the marker should still update the latitude and longitude fields
+
+7. Safety
+Before changing anything, identify exactly why the JavaScript is being rendered as text.
+Only change the map preview/view rendering code.
+Do not touch unrelated functionality.
+
+8. Stop condition
+After the fix, stop and summarize:
+- what caused the JavaScript to render as text
+- which file was changed
+- how the map is now rendered correctly
+- confirmation that latitude/longitude save logic was not changed
+
+Please stop afterward and do not implement any further steps without being asked.
