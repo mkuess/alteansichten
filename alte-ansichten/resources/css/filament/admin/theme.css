@@ -5,12 +5,21 @@
 @config 'tailwind.config.js';
 
 :root, .dark {
-  --bg: #f3f1ec; --panel: #eae6dc; --card: #ffffff;
-  --ink: #1c1a17; --ink-2: #45413a; --ink-3: #8a857b;
-  --line: #d8d2c4; --line-2: #ece8de;
-  --accent: #6b7f56; --accent-bg: #e8ede0; --accent-ink: #3f5234;
-  --amber: #c08a3e; --amber-bg: #f3e7cf;
-  --rose: #b86f5c; --rose-bg: #f3ddd4;
+  --bg:         #f7f6f3;
+  --panel:      #f0ede6;
+  --card:       #ffffff;
+  --ink:        #1c1a17;
+  --ink-2:      #45413a;
+  --ink-3:      #8a857b;
+  --line:       #e2ddd4;
+  --line-2:     #ece8de;
+  --accent:     #6b7f56;
+  --accent-bg:  #edf2e8;
+  --accent-ink: #3f5234;
+  --amber:      #c08a3e;
+  --amber-bg:   #f3e7cf;
+  --rose:       #b86f5c;
+  --rose-bg:    #f3ddd4;
 }
 
 html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
@@ -25,32 +34,40 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
   border-right: 1px solid var(--line) !important;
   width: 280px !important;
 }
-.fi-sidebar-nav { background: var(--panel) !important; padding: 0 0.75rem !important; }
+.fi-sidebar-nav { background: var(--panel) !important; padding: 0 0.625rem !important; gap: 0 !important; }
 .fi-sidebar-header { background: var(--panel) !important; border-bottom: 0 !important; box-shadow: none !important; padding: 1.1rem 1rem !important; }
 .fi-brand-name { font-family: 'Newsreader', Georgia, serif !important; font-size: 1.1rem !important; font-weight: 400 !important; color: var(--ink) !important; }
 
-.fi-sidebar-group { margin-top: 1.25rem !important; }
-.fi-sidebar-group:first-child { margin-top: 0.5rem !important; }
+.fi-sidebar-group { margin-top: 0.75rem !important; padding-top: 0 !important; }
+.fi-sidebar-group:first-child { margin-top: 0.25rem !important; }
 .fi-sidebar-group-label, .fi-sidebar-group > button > span {
   font-size: 10.5px !important; letter-spacing: .07em !important;
   text-transform: uppercase !important; color: var(--ink-3) !important; font-weight: 600 !important;
+  padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; margin-bottom: 0.125rem !important;
 }
-.fi-sidebar-item-button { border-radius: 10px !important; padding: 0.5rem 0.75rem !important; transition: background 0.1s !important; }
+.fi-sidebar-item { margin-bottom: 0 !important; }
+.fi-sidebar-item-button { border-radius: 8px !important; padding: 0.4rem 0.625rem !important; transition: background 0.1s !important; }
 .fi-sidebar-item-button:hover { background: var(--line-2) !important; }
 .fi-sidebar-item-active .fi-sidebar-item-button,
-.fi-sidebar-item-button[aria-current="page"] { background: var(--accent-bg) !important; color: var(--accent-ink) !important; }
+.fi-sidebar-item-button[aria-current="page"] {
+  background: var(--accent-bg) !important; color: var(--accent-ink) !important; font-weight: 600 !important;
+}
 .fi-sidebar-item-active .fi-sidebar-item-icon svg,
-.fi-sidebar-item-button[aria-current="page"] svg { color: var(--accent) !important; }
+.fi-sidebar-item-button[aria-current="page"] svg { color: var(--accent) !important; opacity: 1 !important; }
 .fi-sidebar-item-label { font-size: 0.8125rem !important; font-weight: 500 !important; color: var(--ink-2) !important; }
 .fi-sidebar-item-active .fi-sidebar-item-label { color: var(--accent-ink) !important; }
 
 .fi-sidebar-item-badge {
   font-family: 'JetBrains Mono', monospace !important;
-  font-size: 10.5px !important; font-weight: 500 !important;
-  background: var(--line-2) !important; color: var(--ink-3) !important;
-  border-radius: 999px !important; padding: 0.1rem 0.45rem !important;
+  font-size: 10px !important; font-weight: 500 !important;
+  background: rgba(0,0,0,0.07) !important; color: var(--ink-3) !important;
+  border-radius: 999px !important; padding: 0.1rem 0.5rem !important;
+  min-width: 1.5rem !important; text-align: center !important;
 }
-.fi-sidebar-item-active .fi-sidebar-item-badge { background: rgba(107,127,86,.18) !important; color: var(--accent-ink) !important; }
+.fi-sidebar-item-active .fi-sidebar-item-badge,
+.fi-sidebar-item-button[aria-current="page"] .fi-sidebar-item-badge {
+  background: rgba(107,127,86,0.15) !important; color: var(--accent-ink) !important;
+}
 .fi-sidebar-item-icon svg { width: 1.0625rem !important; height: 1.0625rem !important; color: var(--ink-3) !important; }
 
 /* ── Topbar / Header ── */
@@ -104,8 +121,16 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
 .fi-link, [class*="text-primary-600"], [class*="text-primary-500"] { color: var(--accent) !important; }
 .font-mono, [class*="font-mono"] { font-family: 'JetBrains Mono', monospace !important; }
 
-/* ── Account widget ── */
+/* ── Account widget / user card ── */
 .fi-wi-account { background: var(--panel) !important; border-top: 1px solid var(--line) !important; }
+.fi-sidebar .fi-wi-account,
+.fi-sidebar [class*="account"] {
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  margin: 0.5rem 0 0.25rem 0 !important;
+  padding: 0.5rem 0.75rem !important;
+}
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }

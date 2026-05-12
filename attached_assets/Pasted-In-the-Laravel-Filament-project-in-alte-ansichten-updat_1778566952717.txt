@@ -1,0 +1,100 @@
+In the Laravel Filament project in alte-ansichten/, update the file 
+resources/css/filament/admin/theme.css
+
+Make these specific changes to match the target design (lighter, cleaner, 
+with tighter spacing between navigation groups):
+
+1. COLORS — Replace the current :root variables with these lighter values:
+
+:root, .dark {
+  --bg:         #f7f6f3;
+  --panel:      #f0ede6;
+  --card:       #ffffff;
+  --ink:        #1c1a17;
+  --ink-2:      #45413a;
+  --ink-3:      #8a857b;
+  --line:       #e2ddd4;
+  --line-2:     #ece8de;
+  --accent:     #6b7f56;
+  --accent-bg:  #edf2e8;
+  --accent-ink: #3f5234;
+  --amber:      #c08a3e;
+  --amber-bg:   #f3e7cf;
+  --rose:       #b86f5c;
+  --rose-bg:    #f3ddd4;
+}
+
+2. SIDEBAR SPACING — Replace or add these rules to reduce the large gaps 
+between navigation groups:
+
+.fi-sidebar-nav {
+  padding: 0 0.625rem !important;
+  gap: 0 !important;
+}
+.fi-sidebar-group {
+  margin-top: 0.75rem !important;
+  padding-top: 0 !important;
+}
+.fi-sidebar-group:first-child {
+  margin-top: 0.25rem !important;
+}
+.fi-sidebar-group-label,
+.fi-sidebar-group > button > span {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  margin-bottom: 0.125rem !important;
+}
+.fi-sidebar-item {
+  margin-bottom: 0 !important;
+}
+.fi-sidebar-item-button {
+  padding: 0.4rem 0.625rem !important;
+  border-radius: 8px !important;
+}
+
+3. BADGE PILLS — Make them rounder and lighter:
+
+.fi-sidebar-item-badge {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  background: rgba(0,0,0,0.07) !important;
+  color: var(--ink-3) !important;
+  border-radius: 999px !important;
+  padding: 0.1rem 0.5rem !important;
+  min-width: 1.5rem !important;
+  text-align: center !important;
+}
+.fi-sidebar-item-active .fi-sidebar-item-badge,
+.fi-sidebar-item-button[aria-current="page"] .fi-sidebar-item-badge {
+  background: rgba(107,127,86,0.15) !important;
+  color: var(--accent-ink) !important;
+}
+
+4. USER CARD — Make it white with a clean border:
+
+.fi-sidebar .fi-wi-account,
+.fi-sidebar [class*="account"] {
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  margin: 0.5rem 0 0.25rem 0 !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
+5. ACTIVE NAV ITEM — Stronger green highlight:
+
+.fi-sidebar-item-active .fi-sidebar-item-button,
+.fi-sidebar-item-button[aria-current="page"] {
+  background: var(--accent-bg) !important;
+  color: var(--accent-ink) !important;
+  font-weight: 600 !important;
+}
+.fi-sidebar-item-active .fi-sidebar-item-icon svg,
+.fi-sidebar-item-button[aria-current="page"] svg {
+  color: var(--accent) !important;
+  opacity: 1 !important;
+}
+
+After updating the CSS, run:
+npm run build && php artisan optimize:clear && php artisan view:clear
