@@ -1,0 +1,82 @@
+1. Context
+This is a Laravel/Filament project for the “Alte Ansichten” admin backend.
+
+The backend already has Filament resources for places, media, categories, regions, and a custom map page.
+
+2. Goal
+Add a simple user management area to the Filament admin backend so I can create additional users who can log in.
+
+3. Requirements
+Create a Filament resource for users.
+
+The admin should be able to:
+- view users
+- create users
+- edit users
+- delete or deactivate users if a safe status field already exists
+- set name
+- set email
+- set password when creating a user
+- optionally change password when editing a user
+- see when the user was created
+
+4. Password handling
+- Passwords must be hashed correctly.
+- Never store plain text passwords.
+- On create, password should be required.
+- On edit, password should be optional:
+  - if left empty, keep the existing password unchanged
+  - if filled, hash and update the password
+
+5. Access
+- Newly created users should be able to log in to the Filament admin panel.
+- Use the existing Laravel users table and authentication setup if available.
+- Do not create a separate admin_users table unless the project already uses one.
+
+6. Roles and permissions
+For now, keep it simple.
+- Do not install a complex permissions package unless it is already present.
+- Do not add Spatie permissions now unless already installed and used.
+- If the user model already has a role field, show it.
+- If no role field exists, do not add a full role system now.
+- A simple later step can add roles like Admin, Editor, Moderator.
+
+7. Safety
+Before changing code, inspect:
+- existing User model
+- users table migration
+- Filament panel provider/auth configuration
+- whether all users can currently access Filament
+- whether any admin access restriction already exists
+
+Do not change:
+- database schema unless absolutely necessary
+- existing resources
+- media upload logic
+- map page
+- geocoding
+- admin theme/sidebar styling
+- dashboard widgets
+- public frontend
+
+If a database schema change seems necessary, stop and explain before implementing.
+
+8. Expected result
+In the Filament admin menu, there should be a new item, for example:
+“Benutzer”
+
+There I can:
+- create a new user with name, email, and password
+- save the user
+- log in with that new user account
+
+9. Stop condition
+After implementation, stop and summarize:
+- which files were created
+- which files were changed
+- whether the existing users table was used
+- how passwords are hashed
+- whether new users can access the admin panel
+- confirmation that no unrelated resources, upload logic, map, geocoding, schema, or theme code was changed
+
+Please stop afterward and do not implement any further steps without being asked.
