@@ -1,0 +1,180 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 / Filament 3 project running in Replit.
+
+The Filament backend is currently styled and working again.
+Do not break the admin UI.
+
+Media uploads should happen through MediaItemResource, not directly through PlaceResource.
+
+Important Replit environment note:
+Do not change APP_URL or ASSET_URL in this task.
+Do not change design files in this task.
+
+2. Current state
+
+The backend currently works visually again.
+
+Existing media setup:
+
+- MediaItemResource exists
+- media_items table exists
+- file_path column exists
+- FileUpload field exists in MediaItemResource
+- uploads should be stored on the public disk in media-items/
+- public storage symlink exists or should be checked
+
+The previous upload fix attempt caused broader problems, so this time the task must be diagnostic-first and minimal.
+
+3. Exact task
+
+Diagnose the MediaItem upload failure and apply only the smallest safe fix.
+
+Do not change URLs, design, or unrelated Filament resources.
+
+4. What Replit should do
+
+First, reproduce the upload failure in the browser:
+
+- Open /admin/media-items/create
+- Try uploading a very small JPG under 500 KB
+
+Then inspect:
+
+- Browser Network request for the failed upload
+- exact request URL
+- exact HTTP status code
+- response body
+- Laravel log after the upload attempt
+- Replit server console after the upload attempt
+
+Also check:
+
+- whether the upload request URL is same-origin with the admin page
+- whether the upload request includes the expected port/origin currently used by the working admin UI
+- whether the request fails before Laravel or inside Laravel
+
+Run these checks:
+
+php artisan optimize:clear
+
+php artisan test
+
+Check PHP/Laravel values:
+
+php -r "echo 'upload_max_filesize=' . ini_get('upload_max_filesize') . PHP_EOL; echo 'post_max_size=' . ini_get('post_max_size') . PHP_EOL; echo 'memory_limit=' . ini_get('memory_limit') . PHP_EOL;"
+
+Check directories:
+
+- storage/app
+- storage/app/public
+- storage/app/public/media-items
+- storage/app/livewire-tmp
+- storage/framework/cache
+- storage/framework/sessions
+- storage/framework/views
+
+Make sure Laravel can write to:
+
+- storage/app/livewire-tmp
+- storage/app/public/media-items
+
+If a directory is missing, create it.
+If permissions are wrong, fix permissions.
+
+5. Allowed fixes
+
+Only apply one of these if confirmed by evidence:
+
+- If the upload fails because storage/app/livewire-tmp is missing, create it.
+- If the upload fails because storage/app/public/media-items is missing, create it.
+- If the upload fails because storage permissions are wrong, fix permissions.
+- If the upload fails because PHP upload_max_filesize/post_max_size is too low, add the minimal local PHP configuration needed for the Replit dev server and explain how it works.
+- If the upload fails with 419 CSRF, report this clearly and stop before changing CSRF behavior.
+- If the upload fails with 401 signed URL mismatch, report this clearly and stop before changing APP_URL/ASSET_URL.
+- If the upload fails because Replit proxy/iframe blocks the upload, report this clearly and stop before changing the app.
+
+6. What Replit must NOT do
+
+- Do not change APP_URL.
+- Do not change ASSET_URL.
+- Do not change SESSION_DOMAIN.
+- Do not change SESSION_SECURE_COOKIE.
+- Do not change SESSION_SAME_SITE.
+- Do not exclude Livewire upload routes from CSRF in this task.
+- Do not change TrustProxies in this task.
+- Do not add debug routes unless absolutely necessary, and remove them before stopping.
+- Do not modify design files.
+- Do not modify PlaceResource.
+- Do not change database migrations.
+- Do not reset the database.
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not install new packages.
+- Do not continue with other features.
+
+7. Expected result
+
+Replit should report:
+
+- failed upload request URL
+- failed upload HTTP status code
+- response body or Laravel exception
+- whether Laravel received the request
+- exact root cause
+- exact minimal fix applied, if safe
+
+If the safe fix is only directory/permission/PHP limit related, apply it.
+
+If the fix would require URL/session/CSRF/proxy changes, stop and report instead of changing it.
+
+8. Test steps
+
+After any safe fix, test in the browser, not only curl:
+
+Open:
+
+/admin/media-items/create
+
+Upload a small JPG under 500 KB.
+
+Expected:
+Upload succeeds.
+
+Save the media item.
+
+Expected:
+Media item saves.
+
+Check:
+
+storage/app/public/media-items
+
+Expected:
+Uploaded file exists.
+
+Check in tinker:
+
+App\Models\MediaItem::latest()->first()?->file_path;
+
+Expected:
+A path like media-items/filename.jpg.
+
+Open:
+
+/storage/{file_path}
+
+Expected:
+File is publicly reachable.
+
+Also confirm:
+
+- /admin remains styled
+- /admin/categories still loads
+- /admin/places still loads
+- no APP_URL or ASSET_URL changes were made
+
+9. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
