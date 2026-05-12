@@ -1,17 +1,47 @@
+In the Laravel Filament project in alte-ansichten/, make two changes to the 
+categories page:
+
+## 1. Remove the horizontal line under the page title
+
+The line comes from Filament's default page header. Add this CSS to the 
+bottom of resources/css/filament/admin/theme.css:
+
+/* Remove header divider line on category page and all custom pages */
+.fi-page-header {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+.fi-header-heading + hr,
+.fi-page .fi-header + hr {
+  display: none !important;
+}
+
+Then run: npm run build
+
+## 2. Add a search field next to the "+ Kategorie" button
+
+Open resources/views/filament/resources/category-resource/pages/list-categories.blade.php
+
+Replace the entire file with this version that adds a live search input 
+using Alpine.js (already included in Filament):
+
 <x-filament-panels::page>
 
-    <div style="display: flex; align-items: center; justify-content: space-between;
+    <div style="display: flex; align-items: center; justify-content: space-between; 
                 margin-bottom: 1.25rem; gap: 1rem;">
         <p style="color: var(--ink-3); font-size: 0.8125rem; margin: 0;">
             {{ $categories->count() }} Standort-Kategorien · in Phase 1.1 als Seeder gepflegt
         </p>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
             <div style="position: relative;">
-                <x-heroicon-o-magnifying-glass style="position: absolute; left: 0.625rem;
-                    top: 50%; transform: translateY(-50%); width: 0.875rem; height: 0.875rem;
+                <x-heroicon-o-magnifying-glass style="position: absolute; left: 0.625rem; 
+                    top: 50%; transform: translateY(-50%); width: 0.875rem; height: 0.875rem; 
                     color: var(--ink-3);" />
-                <input
+                <input 
                     type="text"
+                    x-data
+                    x-model="$store.catSearch"
+                    x-init="Alpine.store('catSearch', '')"
                     placeholder="Kategorie suchen…"
                     style="padding: 0.4rem 0.75rem 0.4rem 2rem; border: 1px solid var(--line);
                            border-radius: 8px; background: var(--card); font-size: 0.8125rem;
@@ -19,16 +49,16 @@
                            font-family: 'Geist', system-ui, sans-serif;"
                     onfocus="this.style.borderColor='var(--accent)'"
                     onblur="this.style.borderColor='var(--line)'"
-                    oninput="filterCategories(this.value)"
                 />
             </div>
         </div>
     </div>
 
-    <div id="cat-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;">
+    <div x-data="{ search: '' }" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;">
         @foreach($categories as $cat)
             <a href="{{ route('filament.admin.resources.categories.edit', $cat) }}"
-               data-name="{{ strtolower($cat->name) }}"
+               x-show="search === '' || '{{ strtolower($cat->name) }}'.includes(search.toLowerCase())"
+               x-data
                style="display: flex; align-items: center; gap: 0.75rem;
                       background: var(--card); border: 1px solid var(--line);
                       border-radius: 12px; padding: 0.75rem 1rem;
@@ -67,13 +97,22 @@
     </div>
 
     <script>
-        function filterCategories(val) {
-            const q = val.toLowerCase();
-            document.querySelectorAll('#cat-grid a[data-name]').forEach(function(card) {
-                const name = card.getAttribute('data-name') || '';
-                card.style.display = name.includes(q) ? 'flex' : 'none';
-            });
-        }
+        document.addEventListener('alpine:init', () => {
+            const input = document.querySelector('input[placeholder="Kategorie suchen…"]');
+            const cards = document.querySelectorAll('[onmouseover]');
+            if (input) {
+                input.addEventListener('input', function() {
+                    const val = this.value.toLowerCase();
+                    cards.forEach(card => {
+                        const name = card.querySelector('div > div')?.textContent?.toLowerCase() || '';
+                        card.style.display = name.includes(val) ? 'flex' : 'none';
+                    });
+                });
+            }
+        });
     </script>
 
 </x-filament-panels::page>
+
+After saving run:
+php artisan view:clear && php artisan optimize:clear

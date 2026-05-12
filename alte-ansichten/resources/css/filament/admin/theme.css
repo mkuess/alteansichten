@@ -256,3 +256,13 @@ a.fi-sidebar-item-button,
   padding-left: 0.625rem !important;
   padding-right: 0.625rem !important;
 }
+
+/* ── Remove header divider line on custom pages ── */
+.fi-page-header {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+.fi-header-heading + hr,
+.fi-page .fi-header + hr {
+  display: none !important;
+}
