@@ -125,7 +125,7 @@ class PlaceResource extends Resource
                         ->rules(['nullable', 'numeric', 'between:-180,180'])
                         ->placeholder('z. B. 13.0550'),
                 ])
-                ->collapsed(),
+                ->collapsed(fn ($record) => ! ($record?->latitude && $record?->longitude)),
 
             Section::make('Veröffentlichung')
                 ->schema([
