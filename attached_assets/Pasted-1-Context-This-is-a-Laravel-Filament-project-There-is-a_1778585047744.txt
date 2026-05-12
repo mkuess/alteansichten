@@ -1,0 +1,56 @@
+1. Context
+This is a Laravel/Filament project. There is a custom admin page “Karte” with a Leaflet map.
+
+2. Problem
+The map still does not use the full available content area. It is centered in a limited-width content container with large empty margins around it.
+
+3. Goal
+Make the map page use the full available Filament content area, from the left content edge next to the sidebar to the right edge of the viewport, and as much vertical height as possible.
+
+4. Requirements
+- Only adjust the custom “Karte” page layout.
+- Remove or bypass the max-width limitation for this page only.
+- The map should fill the available width of the main content area.
+- The map should use most of the visible viewport height.
+- Keep the sidebar unchanged.
+- Keep the map markers unchanged.
+- Keep the slide-in detail panel unchanged.
+- Do not change place/media loading logic.
+- Do not change database schema.
+- Do not change forms, upload logic, geocoding, dashboard, or global admin theme.
+
+5. Technical direction
+Inspect the custom Filament page class and Blade view for the map page.
+
+For this page only:
+- Override the Filament page max content width if applicable.
+- In Filament this may be done with something like getMaxContentWidth() returning MaxWidth::Full, depending on the project version.
+- Also check whether the Blade view has wrapper classes like max-w-..., mx-auto, container, or fixed width classes and remove them for this page.
+- Make the map wrapper use width: 100%.
+- Use a viewport-based height, for example calc(100vh - admin topbar spacing).
+- After resizing, call Leaflet map.invalidateSize() so the tiles fill the new area.
+
+6. Expected result
+Opening /admin/karte should show:
+- no large empty margins around the map
+- the map uses the full available admin content width
+- the map uses most of the visible height
+- markers and slide-in panel still work
+
+7. Safety
+Do not touch:
+- PlaceResource
+- MediaItemResource
+- upload handling
+- geocoding
+- existing form fields
+- global CSS/theme unless there is absolutely no page-local alternative
+
+8. Stop condition
+After the fix, stop and summarize:
+- which file was changed
+- whether the Filament max content width was overridden
+- which wrapper/container classes were changed
+- confirmation that map data, markers, slide-in panel, forms, upload, geocoding, schema, and global theme were not changed
+
+Please stop afterward and do not implement any further steps without being asked.

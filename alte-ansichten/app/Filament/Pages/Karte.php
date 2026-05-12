@@ -61,9 +61,10 @@ class Karte extends Page
                 'house_number' => $place->house_number,
                 'postal_code'  => $place->postal_code,
                 'address_text' => $place->address_text,
-                'media_count'  => count($media),
-                'media'        => $media,
-                'edit_url'     => route('filament.admin.resources.places.edit', $place),
+                'media_count'       => count($media),
+                'media'             => $media,
+                'edit_url'          => route('filament.admin.resources.places.edit', $place),
+                'create_media_url'  => route('filament.admin.resources.media-items.create') . '?place_id=' . $place->id,
             ];
         })->values()->all();
 

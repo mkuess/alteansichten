@@ -174,8 +174,8 @@ window.karteApp = function(placesData) {
                 <p class="text-xs font-mono text-gray-600 dark:text-gray-400" x-text="selected?.lat?.toFixed(6) + ', ' + selected?.lng?.toFixed(6)"></p>
             </div>
 
-            {{-- Edit link --}}
-            <div>
+            {{-- Action links --}}
+            <div class="flex flex-wrap gap-x-4 gap-y-2">
                 <a
                     :href="selected?.edit_url"
                     class="inline-flex items-center gap-1 text-xs text-primary-600 dark:text-primary-400 hover:underline"
@@ -184,6 +184,15 @@ window.karteApp = function(placesData) {
                         <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
                     </svg>
                     Standort bearbeiten
+                </a>
+                <a
+                    :href="selected?.create_media_url"
+                    class="inline-flex items-center gap-1 text-xs text-primary-600 dark:text-primary-400 hover:underline"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                    </svg>
+                    Medium hinzufügen
                 </a>
             </div>
 

@@ -9,6 +9,17 @@ class CreateMediaItem extends CreateRecord
 {
     protected static string $resource = MediaItemResource::class;
 
+    public function mount(): void
+    {
+        parent::mount();
+
+        $placeId = request()->query('place_id');
+
+        if (filled($placeId) && is_numeric($placeId)) {
+            $this->data['primary_context'] = 'place:' . (int) $placeId;
+        }
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         return $this->resolvePrimaryContext($data);
