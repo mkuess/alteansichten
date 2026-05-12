@@ -8,8 +8,8 @@ use App\Models\District;
 use App\Models\MediaItem;
 use App\Models\Municipality;
 use App\Models\Place;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\ViewField;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -168,12 +168,9 @@ class MediaItemResource extends Resource
 
             Section::make('Datei oder externer Link')
                 ->schema([
-                    FileUpload::make('file_path')
-                        ->label('Bilddatei hochladen')
-                        ->disk('public')
-                        ->directory('media-items')
-                        ->image()
-                        ->maxSize(10240),
+                    ViewField::make('file_path')
+                        ->label('Bilddatei')
+                        ->view('filament.resources.media-item-resource.file-upload-native'),
 
                     TextInput::make('external_url')
                         ->label('Externe URL')

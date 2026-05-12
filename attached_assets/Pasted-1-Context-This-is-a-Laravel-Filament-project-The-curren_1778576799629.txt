@@ -1,0 +1,55 @@
+1. Context
+This is a Laravel/Filament project. The current media form uses Filament FileUpload, which shows the FilePond/Livewire upload UI and tries to upload the image immediately before the form is submitted.
+
+2. Problem
+I do not want this FilePond/Livewire live upload behavior right now. It causes upload errors and adds complexity. I want the simplest possible file selection field.
+
+3. Goal
+Replace the current Filament FileUpload component with a simple native HTML file input, where the image is only uploaded/processed when the form is submitted.
+
+4. Requirements
+- Remove the Filament FileUpload component for this field.
+- Do not use FilePond.
+- Do not use Livewire temporary upload behavior for this field if avoidable.
+- Show a simple native file picker input for selecting one image file.
+- The selected image should be processed only when the record is saved/submitted.
+- Store the final file path in the existing database column.
+- Only allow image files.
+- Keep the existing external URL field unchanged.
+- Do not change the page layout, navigation, sidebar, dashboard, cards, colors, fonts, theme, CSS, or unrelated resources.
+- Do not refactor unrelated code.
+
+5. Technical direction
+Use the simplest Laravel-compatible approach:
+- Add a native file input field in the relevant Filament form/view if needed.
+- Handle the uploaded file during form submission/save.
+- Store the file under a simple public storage path, for example media-items/.
+- Save only the stored relative path into the existing file_path database field.
+
+If Filament forms do not support this cleanly with a native input in the current resource, create the smallest possible custom form handling solution only for this upload field. Do not redesign the resource.
+
+6. Safety
+Before changing anything, identify exactly which file currently defines the media file field.
+Only change the minimum necessary code.
+Do not touch unrelated UI files.
+Do not touch theme files.
+Do not touch navigation/sidebar files.
+Do not change dashboard widgets.
+Do not change global CSS.
+Do not change any database schema unless absolutely required. If a schema change seems required, stop and explain first.
+
+7. Expected result
+The form should show a basic browser file selection field, not the FilePond upload UI.
+The upload should not start immediately after selecting a file.
+The image should only be saved when I submit/save the form.
+The existing design must remain unchanged.
+
+8. Stop condition
+After the change, stop and summarize:
+- which file was changed
+- which field was changed
+- whether FileUpload/FilePond was removed
+- where the uploaded image will be stored
+- which database field stores the path
+
+Please stop afterward and do not implement any further steps without being asked.
