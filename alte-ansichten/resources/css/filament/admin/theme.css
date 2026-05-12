@@ -71,7 +71,7 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
 .fi-sidebar-item-icon svg { width: 1.0625rem !important; height: 1.0625rem !important; color: var(--ink-3) !important; }
 
 /* ── Topbar / Header ── */
-.fi-topbar, .fi-topbar-nav, .fi-header { background: var(--bg) !important; border-bottom: 1px solid var(--line) !important; box-shadow: none !important; }
+.fi-topbar, .fi-topbar-nav, .fi-header { background: var(--bg) !important; border-bottom: 0px solid var(--line) !important; box-shadow: none !important; }
 .fi-header-heading { font-family: 'Newsreader', Georgia, serif !important; font-size: 2rem !important; font-weight: 400 !important; color: var(--ink) !important; }
 
 /* ── Cards / Sections / Tables / Modals ── */

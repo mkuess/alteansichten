@@ -1,0 +1,157 @@
+In the Laravel Filament project in alte-ansichten/, fix the Tailwind 
+configuration so that:
+
+1. Tailwind scans all Blade files including Filament vendor files
+2. CSS variables from theme.css are available as Tailwind classes
+3. No more inline styles needed in Blade views
+
+## Step 1 — Replace tailwind.config.js completely
+
+Replace the entire contents of tailwind.config.js with:
+
+import defaultTheme from 'tailwindcss/defaultTheme';
+
+/** @type {import('tailwindcss').Config} */
+export default {
+    content: [
+        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+        './vendor/filament/**/*.blade.php',
+        './vendor/filament/**/*.php',
+        './storage/framework/views/*.php',
+        './resources/**/*.blade.php',
+        './resources/**/*.js',
+        './resources/**/*.vue',
+        './app/Filament/**/*.php',
+    ],
+    safelist: [
+        'grid-cols-1',
+        'grid-cols-2', 
+        'grid-cols-3',
+        'grid-cols-4',
+        'sm:grid-cols-2',
+        'lg:grid-cols-4',
+        'col-span-1',
+        'col-span-2',
+        'col-span-full',
+    ],
+    theme: {
+        extend: {
+            fontFamily: {
+                sans:  ['Geist', ...defaultTheme.fontFamily.sans],
+                serif: ['Newsreader', ...defaultTheme.fontFamily.serif],
+                mono:  ['JetBrains Mono', ...defaultTheme.fontFamily.mono],
+            },
+            colors: {
+                brand: {
+                    bg:         '#f7f6f3',
+                    panel:      '#f0ede6',
+                    card:       '#ffffff',
+                    ink:        '#1c1a17',
+                    'ink-2':    '#45413a',
+                    'ink-3':    '#8a857b',
+                    line:       '#e2ddd4',
+                    'line-2':   '#ece8de',
+                    accent:     '#6b7f56',
+                    'accent-bg':'#edf2e8',
+                    'accent-ink':'#3f5234',
+                },
+            },
+            borderRadius: {
+                'card': '12px',
+                'btn':  '8px',
+                'pill': '999px',
+            },
+        },
+    },
+    plugins: [],
+};
+
+## Step 2 — Replace the category blade view with clean Tailwind classes
+
+Replace resources/views/filament/resources/category-resource/pages/list-categories.blade.php 
+with:
+
+<x-filament-panels::page>
+
+    <div class="flex items-center justify-between gap-4 mb-5">
+        <p class="text-sm" style="color: var(--ink-3);">
+            {{ $categories->count() }} Standort-Kategorien · in Phase 1.1 als Seeder gepflegt
+        </p>
+        <div class="relative" x-data="{ search: '' }">
+            <x-heroicon-o-magnifying-glass class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5" 
+                style="color: var(--ink-3);" />
+            <input
+                type="text"
+                x-model="search"
+                placeholder="Kategorie suchen…"
+                class="pl-8 pr-3 py-1.5 text-sm rounded-lg border outline-none w-48"
+                style="border-color: var(--line); background: var(--card); color: var(--ink);"
+                onfocus="this.style.borderColor='var(--accent)'"
+                onblur="this.style.borderColor='var(--line)'"
+            />
+
+            <div class="grid grid-cols-4 gap-3 mt-5" 
+                 style="position: absolute; display: contents;">
+            </div>
+        </div>
+    </div>
+
+    <div x-data="{ search: '' }">
+        <div class="relative mb-5 flex justify-end">
+            <div class="relative">
+                <x-heroicon-o-magnifying-glass class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5"
+                    style="color: var(--ink-3);" />
+                <input
+                    type="text"
+                    x-model="search"
+                    placeholder="Kategorie suchen…"
+                    class="pl-8 pr-3 py-1.5 text-sm rounded-lg border outline-none w-48"
+                    style="border-color: var(--line); background: var(--card); color: var(--ink);"
+                    onfocus="this.style.borderColor='var(--accent)'"
+                    onblur="this.style.borderColor='var(--line)'"
+                />
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;">
+            @foreach($categories as $cat)
+                <a href="{{ route('filament.admin.resources.categories.edit', $cat) }}"
+                   x-show="search === '' || '{{ strtolower($cat->name) }}'.includes(search.toLowerCase())"
+                   class="flex items-center gap-3 rounded-xl p-3 border transition-colors no-underline group"
+                   style="background: var(--card); border-color: var(--line); text-decoration: none;"
+                   onmouseover="this.style.borderColor='var(--accent)'"
+                   onmouseout="this.style.borderColor='var(--line)'">
+
+                    <div class="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center"
+                         style="background: var(--accent-bg);">
+                        @if($cat->icon)
+                            <x-dynamic-component :component="'heroicon-o-' . $cat->icon"
+                                class="w-4 h-4" style="color: var(--accent);" />
+                        @else
+                            <x-heroicon-o-map-pin class="w-4 h-4" style="color: var(--accent);" />
+                        @endif
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-medium truncate" style="color: var(--ink);">
+                            {{ $cat->name }}
+                        </div>
+                        <div class="text-xs truncate mt-0.5 font-mono" style="color: var(--ink-3);">
+                            /orte?cat={{ $cat->slug }}
+                        </div>
+                    </div>
+
+                    <span class="flex-shrink-0 text-xs font-medium font-mono rounded-full px-2 py-0.5 min-w-7 text-center"
+                          style="background: var(--accent-bg); color: var(--accent-ink);">
+                        {{ $cat->places_count }}
+                    </span>
+                </a>
+            @endforeach
+        </div>
+    </div>
+
+</x-filament-panels::page>
+
+## Step 3 — Run the build
+
+npm run build && php artisan view:clear && php artisan optimize:clear
