@@ -1,0 +1,191 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 / Filament 3 project.
+
+The current priority is backend functionality.
+Places are the central content entity.
+Images and documents should normally be managed as MediaItems and linked to places through media_links.
+
+Important Replit environment note:
+In Replit, APP_URL and ASSET_URL must include :8000.
+Do not remove :8000 in this task.
+
+2. Current state
+
+The backend has:
+
+- PlaceResource
+- MediaItemResource
+- media_items table
+- media_links table
+- Media upload in MediaItemResource
+- storage public disk
+- QR functionality
+- submissions
+- content reports
+
+After recent design-related changes, the Place create/edit page appears to have a file upload field.
+
+When trying to upload an image while creating a place, the upload fails with:
+
+“The data.file_path.[uuid] failed to upload.”
+
+Example file:
+
+526294392_10215266923224230_5123371409702911637_n.jpg
+
+3. Exact task
+
+Diagnose and fix the upload error.
+
+Also verify whether file uploads should exist directly on PlaceResource at all.
+
+The preferred MVP structure is:
+
+- Upload files in MediaItemResource
+- Link MediaItems to Places through media_links
+
+Do not add a direct image upload to places unless it is only for an existing place-specific field such as hero_image_path and is implemented safely.
+
+4. What Replit should do
+
+- Inspect PlaceResource.
+- Check whether a FileUpload field was added to PlaceResource.
+- Check which database column it writes to.
+- Verify whether the column exists on the places table.
+- If the upload field writes to file_path on PlaceResource, this is likely wrong because places do not have file_path.
+- If the field is meant for media upload, remove it from PlaceResource and keep uploads in MediaItemResource.
+- If the field is meant for hero_image_path, make sure it writes to hero_image_path and stores files correctly.
+- Inspect MediaItemResource upload configuration and make sure it still works.
+- Check Livewire upload configuration.
+- Check that storage is writable:
+  - storage/app
+  - storage/app/public
+  - storage/app/livewire-tmp if used
+- Ensure the public storage symlink exists:
+  php artisan storage:link
+- Check .env:
+  - APP_URL includes :8000
+  - ASSET_URL includes :8000
+  - FILESYSTEM_DISK=public or correct disk usage in FileUpload
+- Check browser/network behavior for the upload request:
+  - Does it go to a URL with :8000?
+  - Does it return 200, 413, 419, 422, 500, or 502?
+- Check Laravel logs for the actual upload error.
+- Fix only the confirmed cause.
+
+5. What Replit must NOT do
+
+- Do not remove :8000 from APP_URL or ASSET_URL.
+- Do not change session settings unless they are confirmed to break upload.
+- Do not reset migrations.
+- Do not delete database data.
+- Do not delete uploaded files.
+- Do not create new media tables.
+- Do not add new frontend pages.
+- Do not apply design changes.
+- Do not install unrelated packages.
+- Do not move uploads into Replit-specific paths.
+- Do not continue with new features.
+
+6. Expected files / changes
+
+Possible changed files:
+
+- app/Filament/Resources/PlaceResource.php
+- app/Filament/Resources/MediaItemResource.php
+- config/filesystems.php only if clearly needed
+- config/livewire.php only if clearly needed
+- .env only if upload-related values are wrong
+
+Expected result:
+
+Preferred:
+
+- PlaceResource does not have an incorrect file_path upload field.
+- Media uploads remain handled by MediaItemResource.
+- Admin can create a Place without upload errors.
+- Admin can upload an image in MediaItemResource.
+- MediaItem can then be linked to a Place.
+
+Alternative only if intentionally implemented:
+
+- PlaceResource hero image upload writes to hero_image_path.
+- Upload succeeds.
+- Place can be saved.
+
+7. Test steps
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan storage:link
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open the Replit app using the URL with :8000.
+
+Test 1: Place creation
+
+Open:
+
+/admin/places/create
+
+Create a place without uploading a file.
+
+Expected:
+Place saves successfully.
+
+Test 2: Media upload
+
+Open:
+
+/admin/media-items/create
+
+Upload a small JPG or PNG.
+
+Expected:
+Upload succeeds and the media item saves.
+
+Test 3: Link media to place
+
+Open the saved media item.
+
+Add a media link:
+
+- linkable_type: place
+- linkable_id: ID of the created place
+- relationship_type: main_subject
+
+Expected:
+Media link saves successfully.
+
+Test 4: If PlaceResource has a hero_image_path upload
+
+Upload a small JPG on the place form.
+
+Expected:
+Upload succeeds and saves into hero_image_path, not file_path.
+
+If upload still fails, report:
+
+- exact upload request URL
+- HTTP status code
+- Laravel log error
+- current APP_URL
+- current ASSET_URL
+- FileUpload field configuration
+- target database column
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
