@@ -1,0 +1,67 @@
+1. Context
+This is a Laravel/Filament project. In the Place create/edit form, latitude and longitude are optional fields. A map preview is shown when both coordinates are present.
+
+2. Goal
+Add the ability to manually move the map pin when the map is visible.
+
+3. Requirements
+- Keep the existing latitude and longitude fields.
+- Keep latitude and longitude as the actual stored values.
+- Make the map marker/pin draggable if both latitude and longitude are present.
+- When the pin is moved, update the latitude and longitude input fields with the new coordinates.
+- The changed coordinates should only be persisted when the user saves the form.
+- Do not add automatic geocoding.
+- Do not add address lookup.
+- Do not change the database schema.
+- Do not change upload logic.
+- Do not touch media item forms.
+- Do not change navigation, sidebar, dashboard, theme, CSS, or unrelated resources.
+
+4. UX direction
+The user should be able to:
+- see the current pin on the map
+- drag the pin to a corrected position
+- see latitude and longitude update below the map
+- save the form normally
+
+Add a short helper text near the map:
+“Pin verschieben, um die Koordinaten manuell anzupassen.”
+
+5. Important technical direction
+Use the simplest approach compatible with the current map preview implementation.
+If the current preview is only an iframe/static map and cannot support dragging, replace only that map preview section with a lightweight interactive map implementation.
+
+Preferred approach:
+- Use Leaflet only for this small map component if it is not already available.
+- Load it only on the Place form where needed.
+- Do not introduce a large frontend build/refactor.
+- Keep the implementation local to the Place form/page as much as possible.
+
+6. Safety
+Before changing code, identify:
+- where the current map preview is rendered
+- where the latitude and longitude fields are defined
+- how the form state can be updated from JavaScript or Livewire
+
+Only modify the minimum necessary files.
+
+7. Expected result
+When editing a place with existing coordinates:
+- the map appears
+- the marker is draggable
+- moving the marker updates the latitude and longitude fields
+- saving the form stores the adjusted coordinates
+
+When a place has no coordinates:
+- do not show a broken map
+- keep the form clean
+- do not require coordinates
+
+8. Stop condition
+After implementation, stop and summarize:
+- which files were changed
+- whether Leaflet or another approach was used
+- how dragging the pin updates latitude/longitude
+- confirmation that no unrelated UI, upload, media, theme, or schema code was changed
+
+Please stop afterward and do not implement any further steps without being asked.

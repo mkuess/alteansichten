@@ -1,0 +1,79 @@
+1. Context
+This is a Laravel/Filament project. In the Place create/edit form, latitude and longitude are optional. The user can also manually adjust coordinates with a draggable map pin when coordinates exist.
+
+2. Goal
+When saving a Place, automatically fill latitude and longitude from the address if both coordinates are currently empty and an address is available.
+
+3. Requirements
+- Only run geocoding if both latitude and longitude are empty.
+- Do not overwrite existing manually entered coordinates.
+- Do not overwrite coordinates adjusted with the draggable map pin.
+- Only attempt geocoding if there is enough address data available.
+- Use the selected municipality and postal code/address fields where available.
+- If geocoding fails, saving the Place must still succeed.
+- Do not make latitude or longitude required.
+- Do not change the database schema.
+- Do not add complex address lookup UI.
+- Do not change media item forms.
+- Do not change upload logic.
+- Do not change navigation, sidebar, dashboard, theme, CSS, or unrelated resources.
+
+4. Technical direction
+Please first check whether the project already has a geocoding service/helper/package or map/geocoding configuration.
+
+If a geocoding service already exists:
+- reuse it
+- keep the implementation minimal
+
+If no geocoding service exists:
+- implement the smallest possible service class for address-to-coordinates lookup
+- prefer a simple, configurable provider
+- avoid hardcoding secrets
+- keep timeout/error handling safe
+- do not block saving if the provider fails
+
+Important:
+Do not use browser-side geocoding for this.
+The geocoding should happen server-side during save.
+
+5. Save behavior
+On create and edit:
+- before saving or during save, check if latitude and longitude are empty
+- build a clean address string from the available fields
+- try to resolve coordinates
+- if successful, set latitude and longitude
+- if unsuccessful, continue saving without coordinates
+
+6. UX
+If possible, add a small quiet helper text near the coordinate section:
+“If coordinates are empty, they can be generated automatically from the address when saving.”
+
+Do not add alerts, popups, or complex UI.
+
+7. Safety
+Before changing code, identify:
+- where Place create/edit save logic is handled
+- where latitude and longitude are stored
+- which address fields are available
+- whether a geocoding service already exists
+
+Only modify the minimum necessary files.
+
+8. Expected result
+When I create or edit a Place with an address but no coordinates:
+- saving attempts to generate latitude and longitude
+- if coordinates are found, they are stored
+- if coordinates are not found, the Place still saves normally
+
+When coordinates already exist:
+- saving must not replace them
+
+9. Stop condition
+After implementation, stop and summarize:
+- which files were changed
+- which geocoding provider/service is used
+- when geocoding runs
+- confirmation that existing coordinates are not overwritten
+- confirmation that saving still works if geocoding fails
+
+Please stop afterward and do not implement any further steps without being asked.
