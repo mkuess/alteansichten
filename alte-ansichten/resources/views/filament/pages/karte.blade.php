@@ -163,6 +163,20 @@ window.karteApp = function(placesData) {
             </button>
         </div>
 
+        {{-- Large preview image (first media item with a file) --}}
+        <div
+            x-show="selected?.media?.find(function(m){ return m.thumb_url; })"
+            style="display: none;"
+        >
+            <img
+                :src="selected?.media?.find(function(m){ return m.thumb_url; })?.thumb_url"
+                :alt="selected?.title"
+                class="w-full object-cover"
+                style="height: 13rem;"
+                loading="lazy"
+            />
+        </div>
+
         {{-- Body --}}
         <div class="p-4 space-y-4" x-show="selected">
 

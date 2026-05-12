@@ -1,0 +1,73 @@
+1. Context
+This is a Laravel/Filament project. There is a custom admin page “Karte” with a Leaflet map. When clicking a marker, a right-side slide-in panel shows place details, actions, and linked media.
+
+2. Goal
+Improve the right-side info slide visually by showing one larger preview image from the linked media items.
+
+3. Placement
+In the slide-in panel, show the larger image:
+- below the top header area/title
+- below the horizontal divider line
+- above the address section
+
+4. Requirements
+- Use one image from the linked media items for this place.
+- Prefer the first linked media item that has an image/file path.
+- Show the image larger than the small media thumbnails.
+- Suggested size: full panel width, around 180–240px high.
+- Use object-fit: cover.
+- Keep rounded corners if it fits the existing style.
+- If no linked media image exists, do not show a broken image.
+- Do not change the list of linked media below.
+- Do not remove the small thumbnails in the media list.
+- Do not change marker logic.
+- Do not change map sizing.
+- Do not change place/media loading logic unless the image path is not currently available.
+- Do not change database schema.
+- Do not change media upload logic.
+- Do not change forms, geocoding, sidebar, dashboard, or global theme.
+
+5. Technical direction
+Inspect the custom map page Blade/view and the JSON data passed to the map.
+
+If the media image/file path is already included in the marker/place data:
+- reuse it.
+
+If not:
+- minimally add the required image URL/path for the first media image to the existing place data.
+- Do not refactor the whole data structure.
+
+The larger image should use a valid public URL, the same way thumbnails are currently displayed.
+
+6. UX
+The slide-in should look like this order:
+
+- place title
+- municipality/district subtitle
+- divider
+- larger preview image if available
+- address
+- coordinates
+- action links:
+  - Standort bearbeiten
+  - Medium hinzufügen
+- divider
+- linked media list
+
+7. Expected result
+When clicking a place marker with linked media that contains an image:
+- the info slide shows one larger image above the address block
+- the image fills the panel width cleanly
+- the existing media list below still appears unchanged
+
+When no image exists:
+- the slide-in simply skips the large image area
+
+8. Stop condition
+After the change, stop and summarize:
+- which file was changed
+- how the preview image is selected
+- where it is displayed in the slide-in
+- confirmation that the linked media list, map markers, upload logic, forms, schema, and global theme were not changed
+
+Please stop afterward and do not implement any further steps without being asked.
