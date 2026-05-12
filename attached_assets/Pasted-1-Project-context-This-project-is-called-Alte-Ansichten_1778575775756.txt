@@ -1,0 +1,104 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 / Filament 3 project running in Replit.
+
+The MediaItem create page now renders correctly.
+The FileUpload UI appears.
+However, uploading a small JPG still fails in the browser.
+
+The visible Filament error is:
+
+The data.file_path.[uuid] failed to upload.
+
+Example file:
+526294392_10215266923224230_5123371409702911637_n.jpg
+Size shown in browser: 95 KB
+
+This is small, so it is not a PHP upload size limit issue.
+
+2. Current state
+
+The previous rendering error on /admin/media-items/create was fixed.
+The page is styled and usable.
+The upload field appears.
+The upload starts, shows the image preview, but then fails with “Error during upload”.
+
+3. Exact task
+
+Capture the real failed Livewire upload request from the browser and fix only that confirmed cause.
+
+Do not change design.
+Do not change unrelated resources.
+Do not guess.
+
+4. What Replit should do
+
+Open the browser DevTools / Network tab if possible and reproduce the upload.
+
+Find the failed request:
+
+/livewire/upload-file
+
+Report:
+
+- Request URL
+- HTTP method
+- HTTP status code
+- Response body
+- Request headers relevant to host/origin/referer
+- Whether the URL contains :8000 or not
+- Whether the admin page itself was opened with :8000 or without :8000
+
+Also check Laravel logs immediately after the failed upload:
+
+tail -n 120 storage/logs/laravel.log
+
+Also check the server console output for the upload request.
+
+5. Important known possibilities
+
+If /livewire/upload-file returns:
+
+- 401: signed URL mismatch. Most likely APP_URL / proxy / port mismatch.
+- 419: CSRF/session mismatch.
+- 413: upload size limit.
+- 422: validation issue in FileUpload configuration.
+- 500: Laravel exception, use laravel.log.
+- 502: Replit proxy/server issue.
+
+The file is only 95 KB, so do not focus on upload_max_filesize unless the status is clearly 413.
+
+6. What Replit must NOT do
+
+- Do not change APP_URL or ASSET_URL before reporting the exact failed request.
+- Do not change CSRF handling before reporting the exact failed request.
+- Do not change TrustProxies before reporting the exact failed request.
+- Do not modify design files.
+- Do not modify PlaceResource.
+- Do not reset migrations.
+- Do not delete data.
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not add new features.
+- Do not leave debug routes behind.
+
+7. Expected result
+
+Replit must first report the exact failing upload request.
+
+Then, only after the cause is confirmed, apply the smallest fix.
+
+After the fix, verify in the browser:
+
+- /admin/media-items/create loads
+- a 95 KB JPG uploads successfully
+- media item can be saved
+- file_path is stored
+- uploaded file exists in storage/app/public/media-items
+- admin styling remains intact
+- admin navigation remains intact
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
