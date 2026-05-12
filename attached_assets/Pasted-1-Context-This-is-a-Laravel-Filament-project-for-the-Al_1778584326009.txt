@@ -1,0 +1,117 @@
+1. Context
+This is a Laravel/Filament project for the “Alte Ansichten” admin backend.
+
+The basic admin resources for Places and MediaItems already exist.
+Places can have latitude and longitude.
+MediaItems can be linked to a Place.
+
+2. Goal
+Add a new admin navigation item named “Karte” that shows an overview map of all places that already have latitude and longitude.
+
+When clicking a place marker/pin, a slide-in panel should appear on the right side showing:
+- basic place data
+- linked media items below it
+
+3. Requirements
+Create a new Filament admin page for the map overview.
+
+Navigation:
+- Add a new admin menu item: “Karte”
+- The page should be available in the Filament admin area
+- Suggested route: /admin/map or /admin/karte, depending on the project’s naming style
+
+Map:
+- Show all Places with valid latitude and longitude as pins
+- Do not show places without coordinates
+- Use the simplest stable map implementation
+- Leaflet is acceptable if already used in the project
+- Do not add geocoding
+- Do not add editing from the map yet
+- Do not add clustering yet unless absolutely necessary
+- Do not add complex filters yet
+
+Pin click:
+- When clicking a pin, show a right-side slide-in panel
+- The panel should display the selected place information, for example:
+  - name
+  - municipality
+  - district if available through municipality
+  - address if available
+  - latitude / longitude
+  - number of linked media items
+
+Linked media:
+- Below the place details, show the linked media items
+- Keep it simple:
+  - thumbnail if available
+  - title/name
+  - year/date if available
+  - status if available
+- Do not add media editing inside the slide-in yet
+- Optional: link each media item to its edit page if easy and safe
+
+4. UX direction
+The page should be practical and clean:
+- map fills most of the screen
+- slide-in appears only after clicking a marker
+- slide-in is on the right
+- slide-in can be closed
+- if a place has no linked media, show “Keine Medien verknüpft.”
+- do not redesign the whole admin theme
+- do not touch sidebar styling or global admin design
+
+5. Technical direction
+Before implementing, inspect:
+- Place model
+- MediaItem model
+- relationships between Place and MediaItem
+- existing latitude/longitude fields
+- existing media image/path fields
+- existing Leaflet usage from the Place form map
+
+Use existing relationships if available.
+If the Place model does not yet have a relationship for linked media, add the smallest appropriate relationship method based on the existing foreign key.
+
+Preferred implementation:
+- Create a custom Filament Page
+- Load places with coordinates and their linked media efficiently
+- Render map data as JSON into the Blade view
+- Use Leaflet to render markers
+- Use Alpine.js or simple JavaScript for the right-side slide-in panel if already available in Filament
+- Keep JavaScript local to this page/view
+
+6. Safety
+Do not change:
+- database schema
+- existing Place form
+- existing MediaItem form
+- upload logic
+- geocoding logic
+- draggable pin logic
+- existing dashboard widgets
+- admin sidebar styling
+- global CSS/theme unless strictly necessary for this page
+
+Do not refactor unrelated files.
+
+7. Expected result
+In the admin menu, I should see a new item “Karte”.
+
+When I open it:
+- I see a map
+- all places with coordinates are shown as pins
+- clicking a pin opens a right-side slide-in panel
+- the panel shows place details
+- below that, linked media items are listed with thumbnails where possible
+
+8. Stop condition
+After implementation, stop and summarize:
+- which files were created
+- which files were changed
+- which route/page was added
+- how places are loaded for the map
+- how linked media are loaded
+- whether Leaflet/Alpine/simple JS was used
+- confirmation that no existing forms, upload logic, geocoding logic, database schema, dashboard, or global theme were changed
+
+Please stop afterward and do not implement any further steps without being asked.
