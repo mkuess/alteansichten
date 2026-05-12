@@ -202,3 +202,57 @@ nav.fi-sidebar-nav,
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
+
+/* ── PRECISE OVERRIDES — based on actual Filament blade HTML ── */
+
+/*
+  Exact structure (from vendor blade views):
+    <nav class="fi-sidebar-nav ... gap-y-7 px-6 py-8">          ← gap-y-7 = 28 px
+      <ul class="fi-sidebar-nav-groups ... gap-y-7">            ← gap-y-7 = 28 px  (main culprit)
+        <li class="fi-sidebar-group ... gap-y-1">               ← gap-y-1 between label+items
+          <div class="fi-sidebar-group-button ... px-2 py-2">   ← group label row
+          <ul class="fi-sidebar-group-items ... gap-y-1">       ← items list
+            <li class="fi-sidebar-item">
+              <a class="fi-sidebar-item-button ... px-2 py-2">  ← item row
+*/
+
+/* nav padding + remove its own gap */
+nav.fi-sidebar-nav {
+  padding: 0.375rem 0.75rem 0.75rem !important;
+  gap: 0 !important;
+}
+
+/* THIS is the main gap culprit — the ul wrapping all groups */
+ul.fi-sidebar-nav-groups,
+.fi-sidebar-nav-groups {
+  gap: 0.25rem !important;
+}
+
+/* Each group li: tighten internal gap between label div and items ul */
+li.fi-sidebar-group,
+.fi-sidebar-group {
+  gap: 0 !important;
+}
+
+/* Group label/button row */
+.fi-sidebar-group-button {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.125rem !important;
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+}
+
+/* Items ul inside a group */
+ul.fi-sidebar-group-items,
+.fi-sidebar-group-items {
+  gap: 0 !important;
+}
+
+/* Individual item button row */
+a.fi-sidebar-item-button,
+.fi-sidebar-item-button {
+  padding-top: 0.3125rem !important;
+  padding-bottom: 0.3125rem !important;
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+}
