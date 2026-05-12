@@ -1,0 +1,117 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 / Filament 3 project running in Replit.
+
+I rolled back to an earlier checkpoint, but the Filament admin UI is still visually broken / unstyled.
+
+This likely means cached or built assets, environment values, or published Filament assets are still inconsistent after rollback.
+
+Important:
+Do not add features.
+Do not change design.
+Only restore the existing Filament styling.
+
+2. Current state
+
+After rollback, the admin UI still looks broken:
+- raw HTML appearance
+- Filament CSS not applied correctly
+- oversized icons
+- default browser styling
+
+3. Exact task
+
+Restore Filament styling after rollback by clearing caches and rebuilding/publishing assets.
+
+4. What Replit should do
+
+- Check current .env values:
+  - APP_URL
+  - ASSET_URL
+- Report them before changing anything.
+- Check rendered HTML of /admin/login:
+  - CSS asset URLs
+  - JS asset URLs
+- Check whether those asset URLs return HTTP 200.
+- Clear Laravel caches:
+  php artisan optimize:clear
+  php artisan config:clear
+  php artisan route:clear
+  php artisan view:clear
+- Republish Filament assets:
+  php artisan filament:assets
+- Rebuild frontend assets:
+  npm run build
+- Restart the Laravel server.
+- Verify that the admin UI is styled again.
+
+5. What Replit must NOT do
+
+- Do not add new features.
+- Do not modify migrations.
+- Do not reset the database.
+- Do not delete uploaded files.
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not change Resources.
+- Do not apply new design changes.
+- Do not change APP_URL or ASSET_URL unless they are clearly causing broken asset URLs.
+- Do not move the app to /__mockup.
+- Do not continue with upload fixes.
+
+6. Expected result
+
+- /admin/login is styled correctly.
+- /admin is styled correctly after login.
+- Filament CSS and JS URLs return HTTP 200.
+- No raw unstyled Filament HTML remains.
+- No localhost asset URLs.
+- No /__mockup asset URLs.
+
+7. Test steps
+
+Run:
+
+php artisan optimize:clear
+
+Run:
+
+php artisan filament:assets
+
+Run:
+
+npm run build
+
+Run:
+
+php artisan test
+
+Expected:
+All tests pass.
+
+Open:
+
+/admin/login
+
+Expected:
+Styled Filament login page.
+
+Log in and open:
+
+/admin
+
+Expected:
+Styled Filament dashboard.
+
+Check browser network:
+
+Expected:
+- CSS files HTTP 200
+- JS files HTTP 200
+- no 404
+- no mixed-content errors
+
+8. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
