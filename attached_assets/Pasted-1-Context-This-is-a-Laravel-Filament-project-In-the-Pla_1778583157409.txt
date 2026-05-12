@@ -1,0 +1,46 @@
+1. Context
+This is a Laravel/Filament project. In the Place create/edit form there is a collapsible section named “Koordinaten / genaue Position”. It contains the map preview and the latitude/longitude fields.
+
+2. Problem
+Even when latitude and longitude already exist, the section is collapsed/hidden when editing a Place. This makes it look like no coordinates are available.
+
+3. Goal
+When editing a Place that already has latitude and longitude, the “Koordinaten / genaue Position” section should be open by default.
+
+4. Requirements
+- If both latitude and longitude are present, the section should be expanded by default.
+- If latitude and longitude are empty, the section may stay collapsed by default.
+- Do not change the coordinate save logic.
+- Do not change geocoding logic.
+- Do not change the map implementation.
+- Do not change the draggable marker logic.
+- Do not change database schema.
+- Do not change upload logic.
+- Do not touch media item forms.
+- Do not change navigation, sidebar, dashboard, theme, CSS, or unrelated resources.
+
+5. Technical direction
+Inspect the Section definition for “Koordinaten / genaue Position” in the PlaceResource form.
+
+Use Filament’s section collapse/collapsed behavior so that:
+- existing records with coordinates show the section open
+- records without coordinates can remain collapsed
+
+If Filament does not support dynamic collapsed state cleanly in this version, use the simplest safe fallback:
+- keep the coordinates section always open for now
+
+6. Expected result
+When I open a Place with existing latitude and longitude:
+- the “Koordinaten / genaue Position” section is visible/open
+- the map and coordinate fields are immediately visible
+
+When I open a Place without coordinates:
+- the section can remain collapsed, or if dynamic behavior is difficult, it can be open as a fallback
+
+7. Stop condition
+After the change, stop and summarize:
+- which file was changed
+- how the section default open/closed behavior is decided
+- confirmation that no map, geocoding, save logic, database schema, or unrelated UI was changed
+
+Please stop afterward and do not implement any further steps without being asked.

@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Log;
 
 class GeocodingService
 {
-    private const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
-    private const TIMEOUT = 5;
+    // Photon (by Komoot) — uses OpenStreetMap data, no API key required.
+    // GeoJSON response: coordinates are [longitude, latitude].
+    private const PHOTON_URL = 'https://photon.komoot.io/api/';
+    private const TIMEOUT = 8;
 
     /**
      * Resolve coordinates from address parts.
@@ -27,31 +29,52 @@ class GeocodingService
         try {
             $response = Http::timeout(self::TIMEOUT)
                 ->withHeaders([
-                    'User-Agent' => 'AlteAnsichten/1.0 (historical archive; contact@example.com)',
+                    'User-Agent'      => 'AlteAnsichten/1.0',
                     'Accept-Language' => 'de,en',
                 ])
-                ->get(self::NOMINATIM_URL, [
-                    'q'      => $query,
-                    'format' => 'json',
-                    'limit'  => 1,
+                ->get(self::PHOTON_URL, [
+                    'q'     => $query,
+                    'limit' => 1,
+                    'lang'  => 'de',
                 ]);
 
             if (! $response->successful()) {
+                Log::warning('GeocodingService: HTTP error', [
+                    'query'  => $query,
+                    'status' => $response->status(),
+                ]);
                 return null;
             }
 
-            $results = $response->json();
+            $body    = $response->json();
+            $features = $body['features'] ?? [];
 
-            if (empty($results) || ! isset($results[0]['lat'], $results[0]['lon'])) {
+            if (empty($features)) {
+                Log::info('GeocodingService: no results', ['query' => $query]);
                 return null;
             }
+
+            // GeoJSON coordinates: [longitude, latitude]
+            $coords = $features[0]['geometry']['coordinates'] ?? null;
+            if (! is_array($coords) || count($coords) < 2) {
+                return null;
+            }
+
+            $lng = (float) $coords[0];
+            $lat = (float) $coords[1];
+
+            Log::info('GeocodingService: resolved', [
+                'query'     => $query,
+                'latitude'  => $lat,
+                'longitude' => $lng,
+            ]);
 
             return [
-                'latitude'  => (float) $results[0]['lat'],
-                'longitude' => (float) $results[0]['lon'],
+                'latitude'  => $lat,
+                'longitude' => $lng,
             ];
         } catch (\Throwable $e) {
-            Log::warning('GeocodingService: geocoding failed', [
+            Log::warning('GeocodingService: exception', [
                 'query'   => $query,
                 'message' => $e->getMessage(),
             ]);

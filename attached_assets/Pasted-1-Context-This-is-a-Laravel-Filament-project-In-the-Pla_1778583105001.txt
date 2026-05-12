@@ -1,0 +1,69 @@
+1. Context
+This is a Laravel/Filament project. In the Place create/edit form, latitude and longitude are optional. If both latitude and longitude are empty and an address is available, the system should try to generate coordinates automatically when saving.
+
+2. Problem
+When I enter an address and save the Place, latitude and longitude are still empty afterward. No coordinates are shown after saving.
+
+3. Goal
+Diagnose and fix only the automatic address-to-coordinates behavior on Place save.
+
+4. Requirements
+- Do not change the map preview.
+- Do not change the draggable pin behavior.
+- Do not change the coordinate input fields except if needed to show saved values correctly.
+- Do not change the database schema.
+- Do not change upload logic.
+- Do not touch media item forms.
+- Do not change navigation, sidebar, dashboard, theme, CSS, or unrelated resources.
+- Do not overwrite existing latitude/longitude values.
+- Only fill latitude/longitude automatically if both are empty.
+
+5. Please check
+- where the Place save logic currently runs
+- whether automatic geocoding is actually called on create
+- whether automatic geocoding is actually called on edit
+- whether the address string is being built correctly
+- whether municipality name and postal code are included in the geocoding query
+- whether street and house number are included if present
+- whether the geocoding provider returns a result
+- whether the returned coordinates are assigned to the correct fields: latitude and longitude
+- whether those fields are included in the data that is saved
+- whether any fillable/guarded/model issue prevents latitude/longitude from being persisted
+
+6. Debugging
+Please add only temporary or minimal logging if necessary.
+Log:
+- the final geocoding address query
+- whether the provider returned a result
+- the latitude/longitude result
+- whether the values are written before save
+
+Do not leave noisy debug UI in the admin panel.
+
+7. Expected behavior
+When I create or edit a Place with:
+- selected municipality
+- postal code
+- street
+- house number
+
+and latitude/longitude are empty:
+- saving should attempt geocoding
+- if geocoding succeeds, latitude and longitude should be stored
+- reopening the Place should show latitude and longitude
+- the map preview should appear because coordinates now exist
+
+If geocoding fails:
+- the Place should still save normally
+- there should be no broken UI
+
+8. Stop condition
+After the fix, stop and summarize:
+- whether geocoding was being called or not
+- what address string was used
+- which provider/service is used
+- why latitude/longitude were not saved before
+- which files were changed
+- confirmation that existing manually entered coordinates are not overwritten
+
+Please stop afterward and do not implement any further steps without being asked.
