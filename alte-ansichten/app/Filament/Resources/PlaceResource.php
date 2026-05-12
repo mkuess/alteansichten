@@ -196,11 +196,10 @@ class PlaceResource extends Resource
                         default    => 'gray',
                     }),
 
-                TextColumn::make('period_from')
-                    ->label('Von'),
-
-                TextColumn::make('period_to')
-                    ->label('Bis'),
+                TextColumn::make('primary_media_items_count')
+                    ->label('Medien')
+                    ->counts('primaryMediaItems')
+                    ->sortable(),
 
                 TextColumn::make('created_at')
                     ->label('Erstellt am')

@@ -1,0 +1,47 @@
+1. Context
+This is a Laravel/Filament project. I am working on the Places list page at /admin/places.
+
+2. Problem
+The Places table still shows two columns named “Von” and “Bis”. These period/date columns are not useful for places.
+
+3. Goal
+Remove the “Von” and “Bis” columns from the Places overview table and replace them with one useful column showing how many media items are linked to each place.
+
+4. Requirements
+- Remove the “Von” column from the Places table.
+- Remove the “Bis” column from the Places table.
+- Add one column showing the number of linked media items for each place.
+- Suggested German column label: “Medien”
+- The value should be a count, for example: 0, 3, 12.
+- Do not change the database schema.
+- Do not remove the underlying date fields from the database/model if they still exist.
+- Do not change the Place form unless absolutely necessary.
+- Do not touch media item forms.
+- Do not change upload logic.
+- Do not change map/geocoding logic.
+- Do not change navigation, sidebar, dashboard, theme, CSS, or unrelated resources.
+
+5. Technical direction
+Please inspect the PlaceResource table definition.
+
+Use the existing relationship between Place and MediaItem if available.
+
+If there is no relationship method yet, add the smallest appropriate relationship method to the Place model, for example a hasMany relationship, based on the existing foreign key used by media items to link to places.
+
+Prefer an efficient count column, for example using withCount / counts if appropriate for Filament.
+
+6. Expected result
+On /admin/places:
+- “Von” is no longer shown
+- “Bis” is no longer shown
+- a “Medien” column shows how many media items are linked to each place
+
+7. Stop condition
+After the change, stop and summarize:
+- which file was changed
+- which columns were removed
+- how the media count is calculated
+- whether a model relationship was added or reused
+- confirmation that no unrelated form, map, upload, theme, schema, or media form code was changed
+
+Please stop afterward and do not implement any further steps without being asked.
