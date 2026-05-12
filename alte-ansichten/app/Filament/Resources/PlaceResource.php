@@ -39,7 +39,12 @@ class PlaceResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    public static function form(Form $form): Form
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::count();
+    }
+
+        public static function form(Form $form): Form
     {
         return $form->schema([
             Section::make('Basisdaten')

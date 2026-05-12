@@ -1,4 +1,97 @@
-/* Google Fonts — must be first @import */
+I have a Laravel 11 + Filament 3 project in the `alte-ansichten/` subdirectory.
+The working directory is ~/workspace/alte-ansichten/.
+
+Please fix the following issues:
+
+---
+
+## 1. Navigation Badge Counts
+
+Add `getNavigationBadge()` to every Resource file in `app/Filament/Resources/` 
+so the count of records is shown next to each menu item in the sidebar.
+
+For each Resource, add this method inside the class:
+
+```php
+public static function getNavigationBadge(): ?string
+{
+    return (string) static::getModel()::count();
+}
+```
+
+Apply this to ALL files in app/Filament/Resources/ that are plain .php files 
+(not subdirectory Resources like PlaceResource/Pages/).
+
+---
+
+## 2. Fix Dashboard Widget Error
+
+The file `resources/views/filament/widgets/top-municipalities-widget.blade.php` 
+causes a server error. The widget class is 
+`app/Filament/Widgets/TopMunicipalitiesWidget.php` and it uses 
+`Municipality::withCount('places')`.
+
+Check if the `places` relationship exists on the Municipality model 
+(`app/Models/Municipality.php`). It should have:
+
+```php
+public function places(): HasMany
+{
+    return $this->hasMany(Place::class);
+}
+```
+
+If the relationship is missing, add it. Then clear the cache:
+```bash
+php artisan optimize:clear
+```
+
+---
+
+## 3. Sidebar User Card
+
+In Filament 3, add the logged-in user as a styled card at the top of the 
+sidebar navigation, below the brand logo.
+
+Create a custom sidebar component by publishing and overriding the Filament 
+sidebar layout. The user card should show:
+- User avatar (initials if no photo)
+- User name
+- User email or role
+- Styled with a white card background, rounded corners, subtle border
+
+Use this approach: create 
+`resources/views/vendor/filament/components/sidebar/index.blade.php` 
+by running:
+```bash
+php artisan vendor:publish --tag=filament-views
+```
+Then modify the sidebar view to include the user card after the brand logo.
+
+---
+
+## 4. Replace theme.css completely
+
+Replace the entire contents of 
+`resources/css/filament/admin/theme.css` with the following CSS.
+Create the directory if it does not exist 
+(`mkdir -p resources/css/filament/admin`).
+
+The design uses these tokens:
+- Background: #f3f1ec (warm beige)
+- Sidebar/Panel: #eae6dc (slightly darker beige)  
+- Cards: #ffffff
+- Text: #1c1a17 (warm near-black)
+- Text secondary: #45413a
+- Text muted: #8a857b
+- Border: #d8d2c4
+- Accent: #6b7f56 (sage green)
+- Accent background: #e8ede0
+- Fonts: Geist (body), Newsreader (headings/serifs), JetBrains Mono (badges/mono)
+
+Full CSS to use:
+
+```css
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @import '/vendor/filament/filament/resources/css/theme.css';
@@ -19,7 +112,6 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
   color: var(--ink) !important;
 }
 
-/* ── Sidebar ── */
 .fi-sidebar {
   background: var(--panel) !important;
   border-right: 1px solid var(--line) !important;
@@ -53,11 +145,9 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
 .fi-sidebar-item-active .fi-sidebar-item-badge { background: rgba(107,127,86,.18) !important; color: var(--accent-ink) !important; }
 .fi-sidebar-item-icon svg { width: 1.0625rem !important; height: 1.0625rem !important; color: var(--ink-3) !important; }
 
-/* ── Topbar / Header ── */
 .fi-topbar, .fi-topbar-nav, .fi-header { background: var(--bg) !important; border-bottom: 1px solid var(--line) !important; box-shadow: none !important; }
 .fi-header-heading { font-family: 'Newsreader', Georgia, serif !important; font-size: 2rem !important; font-weight: 400 !important; color: var(--ink) !important; }
 
-/* ── Cards / Sections / Tables / Modals ── */
 .fi-section, .fi-ta-ctn, .fi-wi-stats-overview-stat, .fi-modal-window {
   background: var(--card) !important; border: 1px solid var(--line) !important;
   border-radius: 12px !important; box-shadow: 0 1px 3px rgba(28,26,23,.04) !important;
@@ -66,49 +156,55 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
 .fi-section-header-heading { font-family: 'Newsreader', Georgia, serif !important; font-size: 1.05rem !important; font-weight: 400 !important; }
 .fi-section-content { padding: 1.25rem !important; }
 
-/* ── Stats ── */
 .fi-wi-stats-overview-stat-label { font-size: 10.5px !important; letter-spacing: .07em !important; text-transform: uppercase !important; color: var(--ink-3) !important; font-weight: 600 !important; }
 .fi-wi-stats-overview-stat-value { font-family: 'Newsreader', Georgia, serif !important; font-size: 2.5rem !important; font-weight: 400 !important; color: var(--ink) !important; }
 .fi-wi-stats-overview-stat-description { font-size: 0.75rem !important; color: var(--ink-3) !important; }
 
-/* ── Tables ── */
 .fi-ta-header-ctn { background: #faf8f4 !important; border-bottom: 1px solid var(--line-2) !important; }
-.fi-ta-header-cell, .fi-ta-header-cell-label { font-size: 10.5px !important; text-transform: uppercase !important; letter-spacing: .07em !important; color: var(--ink-3) !important; font-weight: 600 !important; }
+.fi-ta-header-cell { font-size: 10.5px !important; text-transform: uppercase !important; letter-spacing: .07em !important; color: var(--ink-3) !important; font-weight: 600 !important; }
 .fi-ta-row { border-color: var(--line-2) !important; }
 .fi-ta-row:hover .fi-ta-cell { background: #faf8f4 !important; }
 .fi-ta-cell { padding: 0.875rem 1.25rem !important; font-size: 0.8125rem !important; color: var(--ink-2) !important; }
 .fi-ta-pagination { border-top: 1px solid var(--line-2) !important; background: #faf8f4 !important; }
 
-/* ── Badges ── */
 .fi-badge { border-radius: 999px !important; font-family: 'JetBrains Mono', monospace !important; font-size: 10.5px !important; padding: 0.15rem 0.5rem !important; }
 
-/* ── Buttons ── */
 .fi-btn { border-radius: 8px !important; font-size: 0.8125rem !important; font-weight: 500 !important; }
 .fi-btn-color-primary { background: var(--ink) !important; color: #f6f4ef !important; border: none !important; }
 .fi-btn-color-primary:hover { background: #2a2620 !important; }
 .fi-btn-color-gray { background: #fff !important; color: var(--ink-2) !important; border: 1px solid var(--line) !important; }
 
-/* ── Inputs ── */
 .fi-input, .fi-select-input, .fi-textarea, .fi-input-wrp { border: 1px solid var(--line) !important; border-radius: 8px !important; background: #fff !important; font-size: 0.8125rem !important; }
 .fi-input:focus, .fi-select-input:focus, .fi-textarea:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-bg) !important; outline: none !important; }
 
-/* ── Modals ── */
 .fi-modal-heading { font-family: 'Newsreader', Georgia, serif !important; font-size: 1.25rem !important; font-weight: 400 !important; }
 .fi-modal-header { border-bottom: 1px solid var(--line-2) !important; }
 .fi-modal-footer { border-top: 1px solid var(--line-2) !important; background: #faf8f4 !important; }
 
-/* ── Login ── */
 .fi-simple-layout, .fi-simple-main { background: var(--bg) !important; }
 
-/* ── Links / accents ── */
 .fi-link, [class*="text-primary-600"], [class*="text-primary-500"] { color: var(--accent) !important; }
 .font-mono, [class*="font-mono"] { font-family: 'JetBrains Mono', monospace !important; }
 
-/* ── Account widget ── */
-.fi-wi-account { background: var(--panel) !important; border-top: 1px solid var(--line) !important; }
-
-/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
+```
+
+---
+
+## 5. After all changes, run:
+
+```bash
+npm run build && php artisan optimize:clear && php artisan config:clear && php artisan view:clear
+```
+
+---
+
+## Summary of what to do:
+1. Add `getNavigationBadge()` to all Resource files
+2. Verify Municipality model has `places()` HasMany relationship
+3. Publish Filament views and add user card to sidebar
+4. Replace theme.css with the CSS above
+5. Run build + clear cache

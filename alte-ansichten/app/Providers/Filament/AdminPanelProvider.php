@@ -14,6 +14,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -41,6 +42,10 @@ class AdminPanelProvider extends PanelProvider
             ->font('Geist')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->sidebarCollapsibleOnDesktop()
+            ->renderHook(
+                PanelsRenderHook::SIDEBAR_NAV_START,
+                fn () => view('filament.sidebar.user-card'),
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

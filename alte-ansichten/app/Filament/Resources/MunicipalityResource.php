@@ -32,7 +32,12 @@ class MunicipalityResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
-    public static function form(Form $form): Form
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::count();
+    }
+
+        public static function form(Form $form): Form
     {
         return $form->schema([
             Select::make('district_id')
