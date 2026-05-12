@@ -106,6 +106,30 @@ window.karteApp = function(placesData) {
         hasAddress: function(place) {
             if (!place) return false;
             return !!(place.street || place.postal_code || place.address_text);
+        },
+        lbOpen: false,
+        lbIndex: 0,
+        lbImages: function() {
+            return (this.selected ? this.selected.media : []).filter(function(m) { return !!m.thumb_url; });
+        },
+        openLightbox: function(itemId) {
+            var imgs = this.lbImages();
+            var idx = -1;
+            for (var i = 0; i < imgs.length; i++) {
+                if (imgs[i].id === itemId) { idx = i; break; }
+            }
+            if (idx >= 0) { this.lbIndex = idx; this.lbOpen = true; }
+        },
+        closeLightbox: function() {
+            this.lbOpen = false;
+        },
+        lbNext: function() {
+            var imgs = this.lbImages();
+            if (imgs.length > 1) { this.lbIndex = (this.lbIndex + 1) % imgs.length; }
+        },
+        lbPrev: function() {
+            var imgs = this.lbImages();
+            if (imgs.length > 1) { this.lbIndex = (this.lbIndex - 1 + imgs.length) % imgs.length; }
         }
     };
 };
@@ -231,7 +255,11 @@ window.karteApp = function(placesData) {
                     <template x-for="item in (selected?.media ?? [])" :key="item.id">
                         <div class="flex gap-3 items-start">
                             {{-- Thumbnail --}}
-                            <div class="flex-shrink-0 w-16 h-14 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                            <div
+                                class="flex-shrink-0 w-16 h-14 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+                                :class="item.thumb_url ? 'cursor-pointer' : ''"
+                                @click="item.thumb_url && openLightbox(item.id)"
+                            >
                                 <img
                                     x-show="item.thumb_url"
                                     :src="item.thumb_url"
@@ -267,6 +295,71 @@ window.karteApp = function(placesData) {
                 </div>
             </div>
         </div>
+    </div>
+
+    {{-- Lightbox overlay --}}
+    <div
+        x-show="lbOpen"
+        @click.self="closeLightbox()"
+        @keydown.escape.window="if(lbOpen) closeLightbox()"
+        style="display: none; position: fixed; inset: 0; z-index: 5000; background: rgba(0,0,0,0.88);"
+        class="flex items-center justify-center"
+    >
+        {{-- Close button --}}
+        <button
+            @click="closeLightbox()"
+            style="position: absolute; top: 1rem; right: 1rem; z-index: 5010; color: #fff; background: rgba(0,0,0,0.4); border-radius: 9999px; width: 2.25rem; height: 2.25rem; display: flex; align-items: center; justify-content: center;"
+            aria-label="Schließen"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+        </button>
+
+        {{-- Counter --}}
+        <div
+            x-show="lbImages().length > 1"
+            style="position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); color: #fff; font-size: 0.8rem; background: rgba(0,0,0,0.4); padding: 0.2rem 0.75rem; border-radius: 9999px;"
+            x-text="(lbIndex + 1) + ' / ' + lbImages().length"
+        ></div>
+
+        {{-- Prev button --}}
+        <button
+            x-show="lbImages().length > 1"
+            @click.stop="lbPrev()"
+            style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); z-index: 5010; color: #fff; background: rgba(0,0,0,0.4); border-radius: 9999px; width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center;"
+            aria-label="Vorheriges Bild"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+        </button>
+
+        {{-- Main image --}}
+        <img
+            :src="lbImages()[lbIndex]?.thumb_url"
+            :alt="lbImages()[lbIndex]?.title"
+            style="max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 0.5rem; box-shadow: 0 25px 60px rgba(0,0,0,0.5);"
+        />
+
+        {{-- Caption --}}
+        <div
+            x-show="lbImages()[lbIndex]?.title"
+            style="position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); color: #e5e7eb; font-size: 0.8rem; background: rgba(0,0,0,0.5); padding: 0.25rem 1rem; border-radius: 9999px; white-space: nowrap; max-width: 80vw; overflow: hidden; text-overflow: ellipsis;"
+            x-text="[lbImages()[lbIndex]?.title, lbImages()[lbIndex]?.year].filter(Boolean).join(' · ')"
+        ></div>
+
+        {{-- Next button --}}
+        <button
+            x-show="lbImages().length > 1"
+            @click.stop="lbNext()"
+            style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); z-index: 5010; color: #fff; background: rgba(0,0,0,0.4); border-radius: 9999px; width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center;"
+            aria-label="Nächstes Bild"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+            </svg>
+        </button>
     </div>
 </div>
 

@@ -1,0 +1,67 @@
+1. Context
+This is a Laravel/Filament project. There is a custom admin page “Karte” with a Leaflet map. When clicking a marker, a right-side info slide shows place details and linked media items with images/thumbnails.
+
+2. Goal
+When clicking one of the linked media images/thumbnails in the map info slide, open a lightbox gallery where I can view the media images larger and click through them.
+
+3. Requirements
+- Add a lightbox/gallery behavior for media images in the map info slide.
+- Clicking a media thumbnail/image should open a larger image overlay.
+- The gallery should include all linked media images for the selected place.
+- It should be possible to go to the next/previous image.
+- The lightbox should be closable.
+- Do not edit media from the lightbox.
+- Do not add upload functionality.
+- Do not change media save logic.
+- Do not change database schema.
+- Do not change map marker logic.
+- Do not change place/media loading logic unless image URLs are missing.
+- Do not change forms, upload logic, geocoding, sidebar, dashboard, or global theme.
+
+4. Technical direction
+Use the simplest stable implementation.
+
+Preferred:
+- Implement a lightweight local lightbox using Alpine.js/simple JavaScript if Alpine is already available in Filament.
+- Do not add a large dependency unless absolutely necessary.
+- Keep the code local to the custom map page/view.
+- Reuse the existing media image URLs already displayed in the slide-in.
+- If the full image URL differs from the thumbnail URL, use the best available image URL from the media data.
+
+5. UX
+The lightbox should:
+- open centered over the map/page
+- dim the background
+- show the selected image large
+- provide previous/next controls if more than one image exists
+- allow closing with an X button
+- ideally allow closing by clicking the dark background
+- show a simple counter, for example “2 / 5”
+- not disturb the map state or selected place panel
+
+6. Safety
+Before changing code, inspect:
+- the custom map page Blade/view
+- the JSON/media data passed to the slide-in
+- how media image URLs are currently generated
+
+Only change the minimum necessary code for the lightbox behavior.
+
+7. Expected result
+On /admin/karte:
+- click a place marker
+- the right-side panel opens
+- click a linked media thumbnail/image
+- a lightbox opens with the selected image
+- I can move through the linked media images
+- closing the lightbox returns me to the same map/panel state
+
+8. Stop condition
+After implementation, stop and summarize:
+- which file was changed
+- how the lightbox is opened
+- how the gallery image list is built
+- whether Alpine.js/simple JavaScript or another approach was used
+- confirmation that no upload, form, schema, geocoding, map marker, or global theme logic was changed
+
+Please stop afterward and do not implement any further steps without being asked.
