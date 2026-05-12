@@ -1,5 +1,12 @@
 <x-filament-panels::page>
 
+{{-- Hide any residual heading container on this page only --}}
+<style>
+    .fi-header { display: none !important; }
+    .fi-page-header { display: none !important; }
+    .fi-simple-page-header { display: none !important; }
+</style>
+
 <script>
 window.karteApp = function(placesData) {
     return {
@@ -80,6 +87,7 @@ window.karteApp = function(placesData) {
             }, 250);
         },
         addressLine: function(place) {
+            if (!place) return '';
             var parts = [];
             if (place.street) {
                 parts.push(place.street + (place.house_number ? ' ' + place.house_number : ''));
@@ -89,9 +97,10 @@ window.karteApp = function(placesData) {
             if (place.municipality) locality.push(place.municipality);
             if (locality.length) parts.push(locality.join(' '));
             if (place.address_text && !place.street) parts.push(place.address_text);
-            return parts.join(', ') || null;
+            return parts.join(', ') || '';
         },
         hasAddress: function(place) {
+            if (!place) return false;
             return !!(place.street || place.postal_code || place.address_text);
         }
     };
@@ -102,13 +111,13 @@ window.karteApp = function(placesData) {
 <div
     x-data="karteApp({{ Js::from($mapData) }})"
     class="relative overflow-hidden rounded-xl"
-    style="height: calc(100vh - 9rem);"
+    style="height: calc(100vh - 4rem);"
 >
     {{-- Map fills the full space --}}
     <div wire:ignore style="position: absolute; inset: 0; z-index: 0;">
         <div
             x-ref="mapEl"
-            style="width: 100%; height: 100%;"
+            style="width: 100%; height: 100%; border-radius: 0.75rem;"
         ></div>
     </div>
 
@@ -156,7 +165,7 @@ window.karteApp = function(placesData) {
             {{-- Address --}}
             <div x-show="selected && hasAddress(selected)">
                 <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Adresse</p>
-                <p class="text-sm text-gray-700 dark:text-gray-300" x-text="addressLine(selected)"></p>
+                <p class="text-sm text-gray-700 dark:text-gray-300" x-text="selected ? addressLine(selected) : ''"></p>
             </div>
 
             {{-- Coordinates --}}

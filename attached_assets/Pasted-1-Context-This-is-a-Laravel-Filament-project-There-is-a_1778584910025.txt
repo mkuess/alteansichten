@@ -1,0 +1,74 @@
+1. Context
+This is a Laravel/Filament project. There is a custom admin page “Karte” with place markers. When clicking a marker, a right-side info slide/panel appears with place details, linked media, and a link “Standort bearbeiten”.
+
+2. Goal
+In the map info slide, add a second link next to “Standort bearbeiten” named “Medium hinzufügen”.
+
+When clicking “Medium hinzufügen”, open the MediaItem create form and prefill the current place as the selected “Standort / Gemeinde / Bezirk”.
+
+3. Requirements
+- Add a link/button in the map info slide: “Medium hinzufügen”.
+- Place it next to or near “Standort bearbeiten”.
+- The link should go to the MediaItem create page.
+- Pass the selected place ID to the create page, for example via query parameter.
+- The MediaItem create form should read this parameter and preselect the corresponding place in the “Standort / Gemeinde / Bezirk” field.
+- Do not create the media item automatically.
+- Do not save anything until the user submits the MediaItem form.
+- Do not change the map marker logic.
+- Do not change existing media upload logic.
+- Do not change database schema.
+- Do not change geocoding logic.
+- Do not change the Place form.
+- Do not change sidebar, dashboard, global theme, or unrelated resources.
+
+4. Technical direction
+Please inspect:
+- the custom map page Blade/view where the info slide is rendered
+- MediaItemResource
+- MediaItem create page class
+- the existing “Standort / Gemeinde / Bezirk” field logic
+
+Use the existing composite field logic if possible.
+
+Suggested behavior:
+- Link target could be something like:
+  /admin/media-items/create?place_id={id}
+  or the project’s actual MediaItem create route.
+- On the MediaItem create page, detect the query parameter.
+- Set the correct initial state for the location field, for example:
+  primary_context = "place:{id}"
+- Ensure that saving still writes the correct primary_place_id using the existing save/mutate logic.
+- Do not duplicate or bypass the existing saving logic.
+
+5. UX
+The info slide should show both actions clearly:
+- Standort bearbeiten
+- Medium hinzufügen
+
+The MediaItem create form should open with the selected place already visible in the “Standort / Gemeinde / Bezirk” field so it is clear that the new medium will be linked to that place.
+
+6. Safety
+Before changing code, identify:
+- exact route name/path for MediaItem create
+- exact state value needed to preselect a place in the composite location field
+- whether current save logic already converts primary_context into primary_place_id
+
+Only change the minimum necessary files.
+
+7. Expected result
+On /admin/karte:
+- click a place marker
+- click “Medium hinzufügen”
+- MediaItem create form opens
+- “Standort / Gemeinde / Bezirk” is already filled with the selected place
+- when saving, the media item is linked to that place
+
+8. Stop condition
+After implementation, stop and summarize:
+- which files were changed
+- what URL/query parameter is used
+- how the MediaItem create form is prefilled
+- confirmation that no media item is created until the form is saved
+- confirmation that no unrelated map, upload, place, geocoding, schema, or theme logic was changed
+
+Please stop afterward and do not implement any further steps without being asked.

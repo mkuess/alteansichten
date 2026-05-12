@@ -20,6 +20,11 @@ class Karte extends Page
 
     protected static ?string $title = 'Karte';
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function getViewData(): array
     {
         $places = Place::query()

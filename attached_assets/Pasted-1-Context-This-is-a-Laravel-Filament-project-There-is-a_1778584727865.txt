@@ -1,0 +1,62 @@
+1. Context
+This is a Laravel/Filament project. There is a custom admin page “Karte” that shows a Leaflet map with place markers and a right-side detail panel.
+
+2. Problem
+The page currently shows a large heading “Karte” above the map. This wastes vertical space. The map also does not use the full available content area.
+
+3. Goal
+Remove the visible page heading and expand the map layout to use the full available admin content area as much as possible.
+
+4. Requirements
+- Remove/hide the large visible “Karte” heading from the page content.
+- Keep the sidebar navigation item “Karte”.
+- Keep the browser/page title if needed internally.
+- Make the map area wider and taller so it fills the main content area.
+- The map should use the available content width.
+- The map should use most of the available viewport height.
+- Keep the right-side slide-in/detail panel.
+- Do not change marker data.
+- Do not change place/media loading logic.
+- Do not change existing forms.
+- Do not change database schema.
+- Do not change upload logic.
+- Do not change geocoding logic.
+- Do not change the global admin theme unless strictly necessary for this page.
+
+5. Technical direction
+Only adjust the custom map page layout/view.
+
+Suggested direction:
+- Remove the page heading output in the custom Filament page if possible.
+- If Filament still reserves heading space, override the page heading method/title behavior safely for this page only.
+- Adjust the map container classes/styles so the layout fills the available content area.
+- Use a height like calc(100vh - minimal admin chrome spacing) or another stable viewport-based height.
+- Ensure the Leaflet map calls invalidateSize() after layout changes so the tiles fill the full area.
+
+6. UX
+The result should feel like a map workspace:
+- sidebar remains on the left
+- map fills the main area
+- detail panel appears on the right after clicking a marker
+- no unnecessary heading above the map
+
+7. Safety
+Do not touch:
+- PlaceResource
+- MediaItemResource
+- upload handling
+- coordinate/geocoding logic
+- dashboard
+- global CSS/theme unless there is no page-local alternative
+
+8. Expected result
+Opening the “Karte” admin page should show the map immediately, using nearly the full content area, without the large “Karte” heading above it.
+
+9. Stop condition
+After the change, stop and summarize:
+- which file was changed
+- how the heading was removed/hidden
+- how the map was expanded
+- confirmation that no marker/place/media loading logic or unrelated admin pages were changed
+
+Please stop afterward and do not implement any further steps without being asked.
