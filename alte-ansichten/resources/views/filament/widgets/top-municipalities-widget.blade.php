@@ -1,5 +1,5 @@
 <x-filament-widgets::widget>
-    <x-filament::section :heading="$this->getHeading()">
+    <x-filament::section heading="Gemeinden nach Standorten">
         @if($municipalities->isEmpty())
             <p class="text-sm" style="color: var(--ink-3)">Noch keine Gemeinden angelegt.</p>
         @else

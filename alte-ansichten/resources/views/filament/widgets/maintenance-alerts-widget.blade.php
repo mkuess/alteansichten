@@ -1,5 +1,5 @@
 <x-filament-widgets::widget>
-    <x-filament::section :heading="$this->getHeading()">
+    <x-filament::section heading="Wartungshinweise">
         <ul class="space-y-2">
             @foreach($alerts as $alert)
                 @php
