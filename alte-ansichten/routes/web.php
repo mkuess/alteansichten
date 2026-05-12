@@ -12,7 +12,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::get('/', fn () => redirect('/admin'));
+Route::get('/', function () {
+    return view('public.home');
+});
 
 Route::get('/gemeinden', function () {
     $municipalities = Municipality::with('district')
