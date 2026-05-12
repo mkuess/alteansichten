@@ -14,17 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(
             at: '*',
             headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
-                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO |
-                     \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
-                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT,
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO,
         );
-
-        // Livewire upload-file is secured by signed URL — exclude from CSRF
-        // (CSRF fails in Replit's iframe preview because session cookies are
-        // not attached to the XHR due to SameSite restrictions)
-        $middleware->validateCsrfTokens(except: [
-            'livewire/upload-file',
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
