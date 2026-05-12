@@ -18,7 +18,16 @@ window.placeMapPicker = function(lat, lng) {
         init: function() {
             var self = this;
             self.loadLeaflet(function() {
-                self.$nextTick(function() { self.initMap(); });
+                self.$nextTick(function() {
+                    self.initMap();
+                    // Fix partial tile rendering: invalidate after layout settles
+                    setTimeout(function() {
+                        if (self.map) { self.map.invalidateSize(); }
+                    }, 250);
+                    setTimeout(function() {
+                        if (self.map) { self.map.invalidateSize(); }
+                    }, 600);
+                });
             });
         },
         destroy: function() {
@@ -47,7 +56,7 @@ window.placeMapPicker = function(lat, lng) {
         },
         initMap: function() {
             var self = this;
-            if (self.map) { self.map.remove(); }
+            if (self.map) { self.map.remove(); self.map = null; }
             self.map = L.map(self.$refs.mapEl).setView([lat, lng], 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '\u00a9 OpenStreetMap contributors'
@@ -55,22 +64,52 @@ window.placeMapPicker = function(lat, lng) {
             self.marker = L.marker([lat, lng], { draggable: true }).addTo(self.map);
             self.marker.on('dragend', function(e) {
                 var pos = e.target.getLatLng();
-                self.$wire.set('data.latitude', pos.lat.toFixed(7));
-                self.$wire.set('data.longitude', pos.lng.toFixed(7));
+                var newLat = pos.lat.toFixed(7);
+                var newLng = pos.lng.toFixed(7);
+
+                // Update inputs directly — avoids a Livewire round-trip that
+                // would morph the DOM and destroy the map instance.
+                var latInput = document.querySelector('input[wire\\:model\\.live="data.latitude"], input[wire\\:model="data.latitude"]');
+                var lngInput = document.querySelector('input[wire\\:model\\.live="data.longitude"], input[wire\\:model="data.longitude"]');
+
+                if (latInput) {
+                    latInput.value = newLat;
+                    latInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    latInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                if (lngInput) {
+                    lngInput.value = newLng;
+                    lngInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    lngInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+
+                // Keep map alive after the event
+                setTimeout(function() {
+                    if (self.map) { self.map.invalidateSize(); }
+                }, 150);
             });
         }
     };
 };
 </script>
 
-<div x-data="placeMapPicker({{ $lat }}, {{ $lng }})" class="space-y-2">
+<div class="space-y-2">
     <p class="text-xs text-gray-500 dark:text-gray-400">
         Pin verschieben, um die Koordinaten manuell anzupassen.
     </p>
-    <div
-        x-ref="mapEl"
-        style="height:240px;border-radius:0.5rem;border:1px solid #d1d5db;z-index:0;"
-    ></div>
+    {{-- wire:ignore tells Livewire to never morph this element,
+         so the Leaflet instance survives any Livewire re-renders. --}}
+    <div wire:ignore>
+        <div
+            x-data="placeMapPicker({{ $lat }}, {{ $lng }})"
+            x-ref="mapWrapper"
+        >
+            <div
+                x-ref="mapEl"
+                style="height:320px;width:100%;border-radius:0.5rem;border:1px solid #d1d5db;z-index:0;"
+            ></div>
+        </div>
+    </div>
     <a
         href="{{ $osmUrl }}"
         target="_blank"

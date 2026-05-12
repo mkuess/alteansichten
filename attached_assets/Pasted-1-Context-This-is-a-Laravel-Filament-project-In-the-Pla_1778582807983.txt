@@ -1,0 +1,81 @@
+1. Context
+This is a Laravel/Filament project. In the Place create/edit form there is a Leaflet map above the latitude/longitude fields. The map is shown when latitude and longitude are present. The marker is draggable and updates the latitude/longitude fields.
+
+2. Current problems
+There are two bugs:
+
+Bug 1:
+When opening a Place edit form with existing latitude/longitude, the map only renders partially. The left part shows map tiles, but a large right part remains grey/empty.
+
+Bug 2:
+When I drag the pin, the map disappears/breaks afterward.
+
+3. Goal
+Fix only these two Leaflet map rendering issues.
+
+4. Requirements
+- Do not change the database schema.
+- Do not change the latitude/longitude field names.
+- Do not change coordinate save logic.
+- Do not change geocoding logic.
+- Do not change address fields.
+- Do not change navigation, sidebar, dashboard, theme, upload logic, media item forms, or unrelated files.
+- Do not add new map features.
+- Only stabilize the existing map preview and draggable marker behavior.
+
+5. Technical direction for Bug 1
+Leaflet likely needs a resize refresh after the Filament form section has rendered.
+
+Please add a safe map size refresh after initialization, for example:
+- call map.invalidateSize() after a short timeout
+- also call map.invalidateSize() when the Filament section is opened/visible if needed
+- make sure the map container has a fixed usable height, for example 320px
+- make sure the map container width is 100%
+
+Expected:
+The map should fill the whole preview container, not only the left part.
+
+6. Technical direction for Bug 2
+Dragging the marker probably updates Livewire state and causes the form/map component to re-render.
+
+Please stabilize the map component:
+- prevent duplicate Leaflet initialization on the same DOM element
+- clean up any existing map instance before reinitializing
+- avoid replacing the map container while dragging if possible
+- use stable unique element IDs per record/component
+- after marker dragend, update the latitude and longitude fields without breaking the map
+- after updating field values, call map.invalidateSize() again if needed
+
+If direct Livewire updates cause the map to disappear, use a safer approach:
+- update the actual latitude/longitude input values directly
+- dispatch input/change events so Filament picks up the changed values
+- do not force a full component refresh just to move the pin
+
+7. Safety
+Before changing code, inspect:
+- resources/views/filament/resources/place-resource/map-picker.blade.php
+- app/Filament/Resources/PlaceResource.php
+
+Identify exactly why:
+- the map is not invalidating size correctly
+- the map disappears after marker drag
+
+Only change the minimum necessary code in the map preview implementation.
+
+8. Expected result
+When editing a Place with coordinates:
+- the map loads across the full available width
+- no grey empty area remains
+- the pin is visible
+- dragging the pin updates latitude and longitude fields
+- the map remains visible after dragging
+- saving still stores the updated coordinates
+
+9. Stop condition
+After the fix, stop and summarize:
+- which files were changed
+- how the partial map rendering was fixed
+- how the disappearing map after drag was fixed
+- confirmation that no unrelated form fields, upload logic, media forms, theme, navigation, or database schema were changed
+
+Please stop afterward and do not implement any further steps without being asked.
