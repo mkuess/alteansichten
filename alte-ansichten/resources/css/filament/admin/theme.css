@@ -1,445 +1,124 @@
-/* ─── Google Fonts — must be first @import ──────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Google Fonts — must be first @import */
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @import '/vendor/filament/filament/resources/css/theme.css';
+@config 'tailwind.config.js';
 
-@config '../../../../tailwind.filament.config.js';
-
-/* ─── Palette tokens ────────────────────────────────────────────────────────── */
-:root {
-    --bg:          #f3f1ec;
-    --panel:       #ebe7dd;
-    --card:        #ffffff;
-    --ink:         #1c1a17;
-    --ink-2:       #45413a;
-    --ink-3:       #8a857b;
-    --line:        #d8d2c4;
-    --line-2:      #ece8de;
-    --accent:      #6b7f56;
-    --accent-bg:   #e8ede0;
-    --accent-ink:  #3f5234;
-    --amber:       #c08a3e;
-    --amber-bg:    #f3e7cf;
-    --rose:        #b86f5c;
-    --rose-bg:     #f3ddd4;
-
-    /* legacy aliases kept for backward compatibility */
-    --aa-bg:           var(--bg);
-    --aa-sidebar-bg:   var(--panel);
-    --aa-border:       var(--line);
-    --aa-border-card:  var(--line-2);
-    --aa-text-dark:    var(--ink);
-    --aa-text-body:    var(--ink-2);
-    --aa-text-muted:   var(--ink-3);
-    --aa-text-label:   var(--ink-3);
-    --aa-green-light:  var(--accent-bg);
-    --aa-hover:        #e8e3da;
+:root, .dark {
+  --bg: #f3f1ec; --panel: #ebe7dd; --card: #ffffff;
+  --ink: #1c1a17; --ink-2: #45413a; --ink-3: #8a857b;
+  --line: #d8d2c4; --line-2: #ece8de;
+  --accent: #6b7f56; --accent-bg: #e8ede0; --accent-ink: #3f5234;
+  --amber: #c08a3e; --amber-bg: #f3e7cf;
+  --rose: #b86f5c; --rose-bg: #f3ddd4;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   TYPOGRAPHY  — font families
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-html, body, .fi-body {
-    font-family: 'Geist', system-ui, -apple-system, sans-serif;
-    background-color: var(--bg) !important;
-    color: var(--ink);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+html, body, .fi-body, .fi-main, .fi-layout {
+  background: var(--bg) !important;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  color: var(--ink) !important;
 }
 
-/* Headings — Newsreader serif */
-.fi-header-heading,
-.fi-section-header-heading,
-.fi-modal-heading,
-.fi-wi-stats-overview-stat-value,
-.fi-page-heading,
-.aa-heading {
-    font-family: 'Newsreader', Georgia, 'Times New Roman', serif !important;
-    font-weight: 400 !important;
-    letter-spacing: -0.01em;
+/* ── Sidebar ── */
+.fi-sidebar, .fi-sidebar-nav { background: var(--panel) !important; border-right: 1px solid var(--line) !important; }
+.fi-sidebar-header { background: var(--panel) !important; border-bottom: 0 !important; box-shadow: none !important; }
+.fi-sidebar.fi-sidebar-open { box-shadow: 0 8px 32px rgba(28,26,23,.14) !important; }
+.fi-sidebar-group + .fi-sidebar-group { margin-top: 1.25rem; }
+.fi-sidebar-group-label,
+.fi-sidebar-group > button > span {
+  font-size: 11px !important; letter-spacing: .06em !important;
+  text-transform: uppercase !important; color: var(--ink-3) !important; font-weight: 500 !important;
 }
-
-.fi-header-heading {
-    font-size: 1.875rem !important;
-    line-height: 1.15 !important;
-    color: var(--ink) !important;
+.fi-sidebar-item-button { border-radius: 10px !important; padding: 8px 12px !important; }
+.fi-sidebar-item-button:hover { background: var(--line-2) !important; }
+.fi-sidebar-item-active .fi-sidebar-item-button,
+.fi-sidebar-item-button[aria-current="page"] {
+  background: var(--accent-bg) !important; color: var(--accent-ink) !important;
 }
+.fi-sidebar-item-active .fi-sidebar-item-icon,
+.fi-sidebar-item-button[aria-current="page"] svg { color: var(--accent) !important; }
+.fi-sidebar-item-label { font-size: 0.8125rem !important; }
 
-@media (min-width: 640px) {
-    .fi-header-heading { font-size: 2.125rem !important; }
+/* ── Topbar / Header ── */
+.fi-topbar, .fi-header { background: var(--bg) !important; border-bottom: 1px solid var(--line) !important; box-shadow: none !important; }
+
+/* ── Cards / Sections / Tables / Modals ── */
+.fi-section, .fi-ta-ctn, .fi-wi-stats-overview-stat, .fi-modal-window, .fi-fo-component-ctn {
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,.02) !important;
 }
+.fi-section-header { border-bottom-color: var(--line-2) !important; }
+.fi-section-footer, .fi-section-content-ctn { border-top-color: var(--line-2) !important; }
 
-.fi-header-subheading {
-    color: var(--ink-3) !important;
-    font-size: 0.9375rem !important;
+/* ── Headings → Newsreader serif ── */
+.fi-section-header-heading, .fi-header-heading, .fi-modal-heading,
+.fi-wi-stats-overview-stat-value, .fi-ta-header-heading {
+  font-family: 'Newsreader', Georgia, serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -.005em !important;
 }
+.fi-header-heading { font-size: 2rem !important; }
+.fi-wi-stats-overview-stat-value { font-size: 2.25rem !important; color: var(--ink) !important; }
 
-/* Mono — references, codes, IDs */
-.fi-badge,
-.font-mono,
-code,
-.aa-mono {
-    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace !important;
+/* ── Tables ── */
+.fi-ta-header-ctn { background: #faf8f4 !important; border-bottom: 1px solid var(--line-2) !important; }
+.fi-ta-header-cell-label,
+.fi-ta-header-cell {
+  font-size: 11px !important; text-transform: uppercase !important;
+  letter-spacing: .06em !important; color: var(--ink-3) !important; font-weight: 500 !important;
 }
+.fi-ta-row { border-color: var(--line-2) !important; }
+.fi-ta-row:hover td { background: #faf8f4 !important; }
+.fi-ta-cell { padding: 14px 20px !important; }
+.fi-ta-pagination { border-top: 1px solid var(--line-2) !important; background: #faf8f4 !important; }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   LAYOUT
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-layout,
-.fi-main-ctn,
-.fi-main {
-    background-color: var(--bg) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   SIDEBAR
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-sidebar {
-    background-color: var(--panel) !important;
-    border-right: 1px solid var(--line) !important;
-    box-shadow: none !important;
-}
-
-.fi-sidebar.fi-sidebar-open {
-    box-shadow: 0 8px 32px rgba(28, 26, 23, 0.14) !important;
-}
-
-.fi-sidebar-header {
-    background-color: var(--panel) !important;
-    border-bottom: 1px solid var(--line) !important;
-    box-shadow: none !important;
-}
-
-.fi-sidebar-nav {
-    padding-top: 1rem !important;
-    padding-bottom: 1.5rem !important;
-    gap: 1.5rem !important;
-}
-
-.fi-sidebar-nav-groups {
-    gap: 1.25rem !important;
-}
-
-/* Group labels */
-.fi-sidebar-group-label {
-    font-size: 0.6875rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.08em !important;
-    text-transform: uppercase !important;
-    color: var(--ink-3) !important;
-    padding-left: 0.625rem !important;
-}
-
-.fi-sidebar-group-button {
-    padding-top: 0.125rem !important;
-    padding-bottom: 0.125rem !important;
-    border-radius: 6px !important;
-}
-
-/* Nav items */
-.fi-sidebar-item-button {
-    border-radius: 10px !important;
-}
-
-.fi-sidebar-item-button:hover {
-    background-color: var(--aa-hover) !important;
-}
-
-.fi-sidebar-item-icon {
-    color: var(--ink-3) !important;
-}
-
-.fi-sidebar-item-label {
-    color: var(--ink-2) !important;
-    font-size: 0.8125rem !important;
-}
-
-/* Active state */
-.fi-sidebar-item.fi-active .fi-sidebar-item-button,
-.fi-sidebar-item.fi-sidebar-item-active .fi-sidebar-item-button {
-    background-color: var(--accent-bg) !important;
-}
-
-.fi-sidebar-item.fi-active .fi-sidebar-item-button:hover {
-    background-color: #dce6d5 !important;
-}
-
-.fi-sidebar-item.fi-active .fi-sidebar-item-label {
-    color: var(--accent-ink) !important;
-    font-weight: 600 !important;
-}
-
-.fi-sidebar-item.fi-active .fi-sidebar-item-icon {
-    color: var(--accent) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   TOP BAR
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-topbar {
-    background-color: var(--bg) !important;
-}
-
-.fi-topbar nav {
-    background-color: var(--bg) !important;
-    border-bottom: 1px solid var(--line) !important;
-    box-shadow: none !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   BREADCRUMBS
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-breadcrumbs-item-label {
-    color: var(--ink-3) !important;
-    font-size: 0.75rem !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   SECTIONS  (form panels, card containers)
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-section {
-    background-color: var(--card) !important;
-    border-radius: 12px !important;
-    border: 1px solid var(--line) !important;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) !important;
-}
-
-.fi-section-header {
-    border-bottom-color: var(--line-2) !important;
-}
-
-.fi-section-content-ctn {
-    border-top-color: var(--line-2) !important;
-}
-
-.fi-section-footer {
-    border-top-color: var(--line-2) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   TABLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-ta-ctn {
-    background-color: var(--card) !important;
-    border-radius: 12px !important;
-    border: 1px solid var(--line) !important;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) !important;
-}
-
-.fi-ta-ctn > :not([hidden]) ~ :not([hidden]) {
-    border-color: var(--line-2) !important;
-}
-
-.fi-ta-header {
-    background-color: var(--card) !important;
-    border-bottom: 1px solid var(--line-2) !important;
-}
-
-.fi-ta-header-heading {
-    font-family: 'Newsreader', Georgia, serif !important;
-    font-weight: 400 !important;
-    color: var(--ink) !important;
-}
-
-.fi-ta-header-description {
-    color: var(--ink-3) !important;
-}
-
-/* Column header row */
-.fi-ta-header-ctn {
-    background-color: #faf8f4 !important;
-    border-bottom: 1px solid var(--line-2) !important;
-}
-
-/* Column header labels */
-.fi-ta-header-cell-label {
-    color: var(--ink-3) !important;
-    font-size: 0.6875rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.07em !important;
-    text-transform: uppercase !important;
-}
-
-/* Cell padding */
-.fi-ta-cell {
-    padding-top: 0.875rem !important;
-    padding-bottom: 0.875rem !important;
-    padding-left: 1.25rem !important;
-    padding-right: 1.25rem !important;
-}
-
-/* Row hover */
-.fi-ta-row:hover td {
-    background-color: #faf8f4 !important;
-}
-
-/* Pagination */
-.fi-ta-pagination {
-    border-top: 1px solid var(--line-2) !important;
-    background-color: #faf8f4 !important;
-}
-
-/* Empty state */
-.fi-ta-empty-state-icon {
-    color: var(--ink-3) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   BADGES  — pill style, mono font
-   ═══════════════════════════════════════════════════════════════════════════ */
-
+/* ── Badges / Pills ── */
 .fi-badge {
-    border-radius: 999px !important;
-    font-family: 'JetBrains Mono', ui-monospace, monospace !important;
-    font-size: 0.6875rem !important;
-    letter-spacing: 0.01em !important;
-    font-weight: 500 !important;
-    padding-top: 0.2rem !important;
-    padding-bottom: 0.2rem !important;
-    padding-left: 0.55rem !important;
-    padding-right: 0.55rem !important;
+  border-radius: 999px !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  padding: 0.2rem 0.55rem !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   BUTTONS
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Buttons ── */
+.fi-btn { border-radius: 8px !important; font-size: 0.8125rem !important; font-weight: 500 !important; }
+.fi-btn-color-primary { background: var(--ink) !important; color: #f6f4ef !important; border: none !important; }
+.fi-btn-color-primary:hover { background: #2a2620 !important; }
+.fi-btn-color-gray { background: #fff !important; color: var(--ink-2) !important; border: 1px solid var(--line) !important; }
 
-.fi-btn {
-    border-radius: 8px !important;
-    font-size: 0.8125rem !important;
-    font-weight: 500 !important;
+/* ── Links / primary accents ── */
+.fi-link, [class*="text-primary"], .fi-color-primary { color: var(--accent) !important; }
+
+/* ── Inputs ── */
+.fi-input, .fi-select-input, .fi-textarea {
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  background: #fff !important;
 }
-
-.fi-btn-color-primary {
-    background-color: var(--ink) !important;
-    color: #f6f4ef !important;
-    border: none !important;
+.fi-input:focus, .fi-select-input:focus, .fi-textarea:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-bg) !important;
+  outline: none !important;
 }
+.fi-input-wrp { border-color: var(--line) !important; border-radius: 8px !important; }
 
-.fi-btn-color-primary:hover {
-    background-color: #2a2620 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   FORM INPUTS
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-input,
-.fi-select-input,
-.fi-input-wrp input,
-.fi-input-wrp textarea,
-.fi-input-wrp select {
-    background-color: #faf9f6 !important;
-    border-color: var(--line) !important;
-    border-radius: 8px !important;
-    color: var(--ink-2) !important;
-}
-
-.fi-input-wrp {
-    border-color: var(--line) !important;
-    border-radius: 8px !important;
-}
-
-.fi-input:focus,
-.fi-select-input:focus {
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px var(--accent-bg) !important;
-    outline: none !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   WIDGETS  (dashboard stats overview)
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-wi-stats-overview {
-    gap: 1rem !important;
-}
-
-.fi-wi-stats-overview-stat {
-    background-color: var(--card) !important;
-    border-radius: 12px !important;
-    border: 1px solid var(--line) !important;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) !important;
-}
-
+/* ── Stats overview ── */
+.fi-wi-stats-overview { gap: 1rem !important; }
 .fi-wi-stats-overview-stat-label {
-    color: var(--ink-3) !important;
-    font-size: 0.6875rem !important;
-    letter-spacing: 0.07em !important;
-    text-transform: uppercase !important;
-    font-weight: 600 !important;
+  font-size: 11px !important; letter-spacing: .06em !important;
+  text-transform: uppercase !important; color: var(--ink-3) !important; font-weight: 500 !important;
 }
+.fi-wi-stats-overview-stat-description { color: var(--ink-3) !important; font-size: 0.75rem !important; }
 
-.fi-wi-stats-overview-stat-value {
-    font-family: 'Newsreader', Georgia, serif !important;
-    font-weight: 400 !important;
-    font-size: 2.25rem !important;
-    letter-spacing: -0.02em !important;
-    color: var(--ink) !important;
-}
+/* ── Login page ── */
+.fi-simple-layout, .fi-simple-main { background: var(--bg) !important; }
+.fi-simple-page .fi-section { box-shadow: 0 2px 16px rgba(28,26,23,.08) !important; }
 
-.fi-wi-stats-overview-stat-description {
-    color: var(--ink-3) !important;
-    font-size: 0.75rem !important;
-}
+/* ── Account widget ── */
+.fi-wi-account { background: var(--panel) !important; border-top: 1px solid var(--line) !important; }
 
-/* Account widget (sidebar footer) */
-.fi-wi-account {
-    background-color: var(--panel) !important;
-    border-top: 1px solid var(--line) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   MODALS
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-modal-window {
-    background-color: var(--card) !important;
-    border: 1px solid var(--line) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 16px 40px rgba(28, 26, 23, 0.12) !important;
-}
-
-.fi-modal-heading {
-    font-family: 'Newsreader', Georgia, serif !important;
-    font-weight: 400 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   LOGIN  (simple layout)
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.fi-simple-layout,
-.fi-simple-main {
-    background-color: var(--bg) !important;
-}
-
-.fi-simple-page .fi-section {
-    box-shadow: 0 2px 16px rgba(28, 26, 23, 0.08) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   PRIMARY COLOR OVERRIDES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-[class*="text-primary-600"],
-[class*="text-primary-500"] {
-    color: var(--accent) !important;
-}
-
-[class*="bg-primary-600"],
-[class*="bg-primary-500"] {
-    background-color: var(--accent) !important;
-}
-
-[class*="ring-primary-600"],
-[class*="ring-primary-500"] {
-    --tw-ring-color: var(--accent-bg) !important;
-}
+/* ── Mono utility ── */
+.font-mono, .fi-mono { font-family: 'JetBrains Mono', ui-monospace, monospace !important; }

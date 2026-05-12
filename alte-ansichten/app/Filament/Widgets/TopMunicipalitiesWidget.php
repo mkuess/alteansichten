@@ -15,7 +15,7 @@ class TopMunicipalitiesWidget extends Widget
 
     protected int | string | array $columnSpan = 1;
 
-    public function getViewData(): array
+    protected function getViewData(): array
     {
         $municipalities = Municipality::withCount('places')
             ->orderByDesc('places_count')
