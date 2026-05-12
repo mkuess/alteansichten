@@ -1,3 +1,12 @@
+In the Laravel Filament project in alte-ansichten/, the category cards are 
+showing in a single column instead of a 4-column grid.
+
+The issue is that Tailwind is not picking up the grid classes from the blade 
+view. Fix it with inline styles instead of Tailwind grid classes.
+
+Open resources/views/filament/resources/category-resource/pages/list-categories.blade.php
+and replace the entire file content with this:
+
 <x-filament-panels::page>
     <p class="text-sm" style="color: var(--ink-3); margin-bottom: 1.25rem;">
         {{ $categories->count() }} Standort-Kategorien · in Phase 1.1 als Seeder gepflegt
@@ -42,3 +51,6 @@
         @endforeach
     </div>
 </x-filament-panels::page>
+
+After saving run:
+php artisan view:clear && php artisan optimize:clear
