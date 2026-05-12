@@ -1,0 +1,129 @@
+In the Laravel Filament project in alte-ansichten/, change the Categories 
+list view from a standard table to a custom card grid layout.
+
+The target design shows cards in a 4-column grid, each card containing:
+- A small green icon (map pin / location icon) on the left
+- Category name (bold)
+- URL slug below the name (small, muted, monospace: /orte?cat={slug})
+- A badge number on the right showing how many places use this category
+
+Do this by creating a custom List page for CategoryResource:
+
+## Step 1 — Create the custom list page
+
+Create file: app/Filament/Resources/CategoryResource/Pages/ListCategories.php
+
+```php
+<?php
+
+namespace App\Filament\Resources\CategoryResource\Pages;
+
+use App\Filament\Resources\CategoryResource;
+use App\Models\Category;
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+
+class ListCategories extends ListRecords
+{
+    protected static string $resource = CategoryResource::class;
+
+    protected static string $view = 'filament.resources.category-resource.pages.list-categories';
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            CreateAction::make()
+                ->label('+ Kategorie'),
+        ];
+    }
+
+    public function getViewData(): array
+    {
+        $categories = Category::withCount('places')
+            ->orderBy('name')
+            ->get();
+
+        return [
+            'categories' => $categories,
+            'total' => $categories->sum('places_count'),
+        ];
+    }
+}
+```
+
+## Step 2 — Create the blade view
+
+Create directory and file:
+resources/views/filament/resources/category-resource/pages/list-categories.blade.php
+
+```blade
+<x-filament-panels::page>
+    <p class="text-sm" style="color: var(--ink-3); margin-bottom: 1rem;">
+        {{ $categories->count() }} Standort-Kategorien · in Phase 1.1 als Seeder gepflegt
+    </p>
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        @foreach($categories as $cat)
+            <a href="{{ route('filament.admin.resources.categories.edit', $cat) }}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 transition"
+               style="background: var(--card); border: 1px solid var(--line);">
+
+                <div class="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center"
+                     style="background: var(--accent-bg);">
+                    <x-heroicon-o-map-pin class="w-4 h-4" style="color: var(--accent);" />
+                </div>
+
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium truncate" style="color: var(--ink);">
+                        {{ $cat->name }}
+                    </div>
+                    <div class="text-xs truncate mt-0.5"
+                         style="color: var(--ink-3); font-family: 'JetBrains Mono', monospace;">
+                        /orte?cat={{ $cat->slug }}
+                    </div>
+                </div>
+
+                <span class="flex-shrink-0 text-xs font-medium rounded-full px-2 py-0.5"
+                      style="background: var(--accent-bg); color: var(--accent-ink);
+                             font-family: 'JetBrains Mono', monospace; min-width: 1.75rem; text-align: center;">
+                    {{ $cat->places_count }}
+                </span>
+            </a>
+        @endforeach
+    </div>
+</x-filament-panels::page>
+```
+
+## Step 3 — Make sure Category model has places() relation
+
+In app/Models/Category.php, ensure this method exists:
+
+```php
+public function places(): \Illuminate\Database\Eloquent\Relations\HasMany
+{
+    return $this->hasMany(\App\Models\Place::class);
+}
+```
+
+## Step 4 — Register the custom page in CategoryResource
+
+Open app/Filament/Resources/CategoryResource.php and find the getPages() method.
+Replace it with:
+
+```php
+public static function getPages(): array
+{
+    return [
+        'index'  => Pages\ListCategories::route('/'),
+        'create' => Pages\CreateCategory::route('/create'),
+        'edit'   => Pages\EditCategory::route('/{record}/edit'),
+    ];
+}
+```
+
+Also make sure the import exists at the top:
+use App\Filament\Resources\CategoryResource\Pages;
+
+## Step 5 — Run
+
+php artisan optimize:clear && php artisan view:clear
