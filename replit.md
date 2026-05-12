@@ -57,6 +57,8 @@ Historical image and place archive called "Alte Ansichten". Will include municip
 - The workspace root contains a Node.js pnpm monorepo — do not mix Laravel files into the root.
 - `.env` is not committed to git; `.env.example` is the template.
 - When deploying to production VM, switch `DB_CONNECTION` from `sqlite` to `mysql` or `pgsql` and set the appropriate credentials.
+- `APP_URL` / `ASSET_URL` must NOT include `:8000` on Replit. The Replit proxy sends `X-Forwarded-Host` without a port; signed URLs must match the port-free public hostname. Wrong: `https://….replit.dev:8000`. Correct: `https://….replit.dev`.
+- `livewire/upload-file` is excluded from CSRF verification in `bootstrap/app.php` (it is secured by signed URL instead). This is required because the Replit iframe preview blocks session cookies on cross-origin XHRs, causing 419 errors.
 
 ## Pointers
 

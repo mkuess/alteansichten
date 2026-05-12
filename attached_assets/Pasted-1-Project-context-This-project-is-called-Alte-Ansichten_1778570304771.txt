@@ -1,0 +1,183 @@
+1. Project context
+
+This project is called “Alte Ansichten”.
+It is a Laravel 11 / Filament 3 project running in Replit.
+
+Media uploads are handled in MediaItemResource using:
+
+FileUpload::make('file_path')
+    ->disk('public')
+    ->directory('media-items')
+
+The upload still fails in the Filament form.
+
+Important Replit environment note:
+APP_URL and ASSET_URL must include :8000.
+Do not remove :8000.
+
+2. Current state
+
+Previous checks/fixes were done:
+
+- PlaceResource is clean and has no upload field
+- MediaItemResource is the correct upload location
+- storage/app/livewire-tmp or storage/app/livewire-tmp equivalent was created
+- PHP upload limits were supposedly increased
+- public/storage symlink exists
+- APP_URL and ASSET_URL include :8000
+- tests pass
+- server restarted
+
+But upload still fails with:
+
+“The data.file_path.[uuid] failed to upload.”
+
+3. Exact task
+
+Find the exact reason why Livewire / Filament file upload still fails.
+
+Do not guess. Capture the failing upload request and Laravel error.
+
+4. What Replit should do
+
+- Open /admin/media-items/create and reproduce the upload failure.
+- Inspect the browser Network request for the failed upload.
+- Identify the exact failed request URL.
+- Identify the exact HTTP status code:
+  - 401, 403, 404, 413, 419, 422, 500, 502, or other
+- Identify the response body or error message.
+- Check Laravel logs immediately after the failed upload:
+  - storage/logs/laravel.log
+- Check the Replit console/server output immediately after the failed upload.
+- Confirm the exact Livewire upload endpoint used.
+- Confirm whether the request URL includes :8000.
+- Confirm whether the request is same-origin with the current admin page.
+- Confirm whether CSRF/session cookies are sent with the request.
+- Confirm whether the request fails before Laravel receives it or inside Laravel.
+
+5. Specific technical checks
+
+Check these values in tinker or artisan output:
+
+config('app.url');
+config('filesystems.default');
+config('filesystems.disks.public.root');
+config('filesystems.disks.public.url');
+config('livewire.temporary_file_upload.disk');
+config('livewire.temporary_file_upload.directory');
+ini_get('upload_max_filesize');
+ini_get('post_max_size');
+ini_get('memory_limit');
+
+Check directory existence and permissions:
+
+storage/app
+storage/app/public
+storage/app/public/media-items
+storage/app/livewire-tmp
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+
+Check that the Laravel process user can write to:
+
+storage/app/livewire-tmp
+storage/app/public/media-items
+
+If needed, run a small write test from Laravel/PHP, for example create and delete a test file in those directories.
+
+6. What Replit may fix only after identifying the cause
+
+Depending on the confirmed cause:
+
+- If the upload request URL is missing :8000, fix URL generation centrally.
+- If the upload request is 419, fix session/cookie/CSRF configuration.
+- If the upload request is 413, fix PHP/Replit upload limits.
+- If the upload request is 500, fix the Laravel exception shown in the log.
+- If the upload request is 404, fix Livewire upload route/config.
+- If the directory is not writable, fix storage permissions.
+- If the temp upload directory is wrong, fix Livewire config.
+- If Replit proxy blocks the upload, report that clearly and provide the stable workaround.
+
+7. What Replit must NOT do
+
+- Do not remove :8000 from APP_URL or ASSET_URL.
+- Do not reset migrations.
+- Do not delete database data.
+- Do not delete existing uploaded files.
+- Do not reinstall Laravel.
+- Do not reinstall Filament.
+- Do not remove MediaItemResource.
+- Do not add new features.
+- Do not apply design changes.
+- Do not move uploads to Replit-specific application code paths.
+- Do not say it is fixed unless a real upload was tested successfully.
+
+8. Expected result
+
+Replit must report:
+
+- failing upload request URL
+- failing upload HTTP status code
+- response body or Laravel exception
+- whether Laravel received the request
+- exact root cause
+- exact fix applied
+
+Then verify with a real upload.
+
+9. Test steps
+
+Run:
+
+php artisan optimize:clear
+
+Restart Laravel server.
+
+Open the Replit app using the URL with :8000.
+
+Open:
+
+/admin/media-items/create
+
+Upload a small JPG under 500 KB first.
+
+Expected:
+Upload succeeds.
+
+Save the media item.
+
+Expected:
+Media item saves.
+
+Then upload the original JPG:
+
+526294392_10215266923224230_5123371409702911637_n.jpg
+
+Expected:
+Upload succeeds if under 10 MB.
+
+Check:
+
+storage/app/public/media-items
+
+Expected:
+Uploaded file exists.
+
+Check in tinker:
+
+App\Models\MediaItem::latest()->first()?->file_path;
+
+Expected:
+A path like media-items/filename.jpg.
+
+Open:
+
+/storage/{file_path}
+
+Expected:
+File is publicly reachable.
+
+10. Stop instruction
+
+Please stop afterward and do not implement any further steps without being asked.
