@@ -11,12 +11,14 @@ use App\Models\Category;
 use App\Models\Municipality;
 use App\Models\Place;
 use App\Services\QrCodeService;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
+use Illuminate\Support\HtmlString;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
@@ -108,6 +110,33 @@ class PlaceResource extends Resource
             Section::make('Koordinaten / genaue Position')
                 ->description('Optional. Nützlich für Orte ohne klare Straßenadresse, z. B. Brücken, Denkmäler oder historische Stätten.')
                 ->schema([
+                    Placeholder::make('map_preview')
+                        ->label('Kartenansicht')
+                        ->content(function ($record): HtmlString {
+                            if (!$record || !$record->latitude || !$record->longitude) {
+                                return new HtmlString(
+                                    '<p class="text-sm text-gray-500 dark:text-gray-400 italic">Noch keine Koordinaten hinterlegt.</p>'
+                                );
+                            }
+
+                            $lat  = (float) $record->latitude;
+                            $lng  = (float) $record->longitude;
+                            $pad  = 0.012;
+                            $bbox = ($lng - $pad) . ',' . ($lat - $pad) . ',' . ($lng + $pad) . ',' . ($lat + $pad);
+                            $osmUrl  = "https://www.openstreetmap.org/?mlat={$lat}&mlon={$lng}#map=15/{$lat}/{$lng}";
+                            $embedUrl = "https://www.openstreetmap.org/export/embed.html?bbox={$bbox}&layer=mapnik&marker={$lat},{$lng}";
+
+                            return new HtmlString(
+                                '<div class="space-y-2">' .
+                                '<iframe src="' . e($embedUrl) . '" ' .
+                                'width="100%" height="220" style="border:1px solid #d1d5db;border-radius:0.5rem;" ' .
+                                'loading="lazy" referrerpolicy="no-referrer"></iframe>' .
+                                '<a href="' . e($osmUrl) . '" target="_blank" rel="noopener noreferrer" ' .
+                                'class="text-sm text-primary-600 dark:text-primary-400 hover:underline">↗ In OpenStreetMap öffnen</a>' .
+                                '</div>'
+                            );
+                        }),
+
                     TextInput::make('latitude')
                         ->label('Breitengrad (Latitude)')
                         ->numeric()

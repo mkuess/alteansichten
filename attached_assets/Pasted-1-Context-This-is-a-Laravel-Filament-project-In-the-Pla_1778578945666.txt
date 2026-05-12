@@ -1,0 +1,56 @@
+1. Context
+This is a Laravel/Filament project. In the Place create/edit form, latitude and longitude are optional fields again.
+
+2. Goal
+Show a small map preview with a pin above the latitude/longitude fields, but only when coordinates are already available.
+
+3. Requirements
+- Add a map preview above the latitude and longitude fields in the Place edit form.
+- Only show the map if both latitude and longitude are present.
+- Show a marker/pin at the stored coordinates.
+- Keep latitude and longitude editable as simple optional numeric fields.
+- Do not add geocoding.
+- Do not add address lookup.
+- Do not add drag-and-drop pin editing yet.
+- Do not add complex map interaction.
+- Do not change database schema.
+- Do not change navigation, sidebar, dashboard, theme, upload logic, CSS, or unrelated resources.
+- Do not touch media item forms.
+
+4. Technical direction
+Use the simplest stable approach available in this project.
+
+Preferred simple option:
+- Render an OpenStreetMap-based preview using a lightweight embedded map or static preview approach.
+- If a full interactive map library would require significant setup, do not add it.
+- In that case, use a simple external map link or small iframe preview based on the stored coordinates.
+
+5. UX
+Place the map in a small section above the coordinate inputs, for example:
+“Kartenansicht”
+
+If coordinates are present:
+- show the map preview with the pin
+- optionally show a link: “In OpenStreetMap öffnen”
+
+If coordinates are missing:
+- either hide the map preview or show a quiet note:
+“Noch keine Koordinaten hinterlegt.”
+
+6. Safety
+Before changing anything, identify the exact file/section where the latitude and longitude fields are defined.
+Only add the preview display near those fields.
+Do not modify the save logic for coordinates.
+
+7. Expected result
+When editing a place with coordinates, I should see a small map preview with a marker above the latitude/longitude fields.
+When no coordinates exist, the form should remain clean and not show a broken map.
+
+8. Stop condition
+After implementation, stop and summarize:
+- which file was changed
+- how the map preview is rendered
+- whether it only appears when both coordinates are present
+- confirmation that coordinate input/save logic was not changed
+
+Please stop afterward and do not implement any further steps without being asked.
