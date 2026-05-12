@@ -1,0 +1,51 @@
+1. Context
+This is a Laravel/Filament project. We simplified the Place create/edit form. However, latitude and longitude were removed from the form.
+
+2. Problem
+That is not correct for all places. Some places do not have a normal street address, for example a railway bridge, monument, wayside cross, old station area, viewpoint, or historic site. For those places, coordinates are necessary.
+
+3. Goal
+Add latitude and longitude back to the Place create/edit form, but make them optional and clearly separated from the normal address fields.
+
+4. Requirements
+- Re-add latitude and longitude fields to the Place form.
+- The fields must be optional, not required.
+- Do not require an address if latitude/longitude are provided.
+- Do not require latitude/longitude if an address is provided.
+- Keep coordinate accuracy and location hint removed for now.
+- Do not re-add unnecessary period/date fields.
+- Do not re-add the visible slug field.
+- Do not change the database schema.
+- Do not delete or rename database columns.
+- Do not touch media item forms.
+- Do not change upload logic.
+- Do not change navigation, sidebar, dashboard, theme, CSS, or unrelated resources.
+
+5. UX direction
+Place the latitude and longitude fields in a small separate section, for example:
+“Koordinaten / genaue Position”
+
+The helper text should explain:
+“Optional. Useful for places without a clear street address, such as bridges, monuments or historical locations.”
+
+6. Validation
+Use simple numeric validation for latitude and longitude if already appropriate.
+If possible:
+- latitude should be between -90 and 90
+- longitude should be between -180 and 180
+
+Do not add complex geocoding or map picker logic now.
+
+7. Expected result
+The Place form supports both cases:
+- normal place with municipality/address
+- special place without address but with coordinates
+
+8. Stop condition
+After the change, stop and summarize:
+- which file was changed
+- where latitude/longitude were added back
+- confirmation that they are optional
+- confirmation that no unrelated fields or logic were changed
+
+Please stop afterward and do not implement any further steps without being asked.

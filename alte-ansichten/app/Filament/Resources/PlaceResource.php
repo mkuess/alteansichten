@@ -105,6 +105,23 @@ class PlaceResource extends Resource
                         ->maxLength(255),
                 ]),
 
+            Section::make('Koordinaten / genaue Position')
+                ->description('Optional. Nützlich für Orte ohne klare Straßenadresse, z. B. Brücken, Denkmäler oder historische Stätten.')
+                ->schema([
+                    TextInput::make('latitude')
+                        ->label('Breitengrad (Latitude)')
+                        ->numeric()
+                        ->rules(['nullable', 'numeric', 'between:-90,90'])
+                        ->placeholder('z. B. 47.8095'),
+
+                    TextInput::make('longitude')
+                        ->label('Längengrad (Longitude)')
+                        ->numeric()
+                        ->rules(['nullable', 'numeric', 'between:-180,180'])
+                        ->placeholder('z. B. 13.0550'),
+                ])
+                ->collapsed(),
+
             Section::make('Veröffentlichung')
                 ->schema([
                     Select::make('status')
