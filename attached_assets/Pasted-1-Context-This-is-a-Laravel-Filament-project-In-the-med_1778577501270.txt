@@ -1,0 +1,43 @@
+1. Context
+This is a Laravel/Filament project. In the media item edit form there is a field labeled “Standort / Gemeinde / Bezirk”.
+
+2. Problem
+When I select a value in this dropdown and save the record, the selection seems to be saved. But when I later open the record again in edit mode, the field looks empty. This makes it look as if nothing was selected.
+
+3. Goal
+Fix the edit form so the previously saved selection is clearly visible when reopening an existing media item.
+
+4. Requirements
+- Do not redesign the form.
+- Do not change the visual theme.
+- Do not change navigation, sidebar, dashboard, cards, colors, fonts, CSS, or unrelated resources.
+- Do not refactor unrelated code.
+- Do not change the upload field.
+- Only investigate and fix the “Standort / Gemeinde / Bezirk” field state/display behavior.
+- The saved selection must be visible in edit mode.
+
+5. Technical checks
+Please check:
+- which database column stores this selection
+- whether the value is actually saved correctly
+- whether the Filament form field is bound to the correct state path / database field
+- whether the selected option exists in the options list when editing
+- whether the option label is correctly resolved from the stored value
+- whether the field is using a custom select/search field that needs hydration logic
+
+6. Expected result
+When I edit an existing media item, the “Standort / Gemeinde / Bezirk” field should show the currently saved value clearly, for example the selected location/municipality/district name.
+
+7. Safety
+Only change the minimum necessary code for this field.
+If the stored value is missing or inconsistent, explain that first before changing database structure.
+Do not make schema changes unless absolutely necessary. If a schema change seems required, stop and explain first.
+
+8. Stop condition
+After the fix, stop and summarize:
+- whether the value was already saved correctly
+- which field/column stores it
+- which file was changed
+- what was changed so the selected value appears in edit mode
+
+Please stop afterward and do not implement any further steps without being asked.

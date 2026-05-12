@@ -8,14 +8,12 @@ use App\Models\District;
 use App\Models\MediaItem;
 use App\Models\Municipality;
 use App\Models\Place;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\ImageColumn;
@@ -100,26 +98,7 @@ class MediaItemResource extends Resource
                             elseif ($record->primary_district_id)
                                 $set('primary_context', 'district:' . $record->primary_district_id);
                         })
-                        ->afterStateUpdated(function (Set $set, $state) {
-                            $set('primary_place_id', null);
-                            $set('primary_municipality_id', null);
-                            $set('primary_district_id', null);
-                            if (filled($state)) {
-                                [$type, $id] = explode(':', $state, 2);
-                                match ($type) {
-                                    'place'        => $set('primary_place_id', $id),
-                                    'municipality' => $set('primary_municipality_id', $id),
-                                    'district'     => $set('primary_district_id', $id),
-                                    default        => null,
-                                };
-                            }
-                        })
-                        ->dehydrated(false)
-                        ->live(),
-
-                    Hidden::make('primary_place_id'),
-                    Hidden::make('primary_municipality_id'),
-                    Hidden::make('primary_district_id'),
+                        ->dehydrated(true),
 
                     Select::make('type')
                         ->label('Typ')
