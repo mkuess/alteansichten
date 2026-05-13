@@ -113,8 +113,22 @@ window.karteApp = function(placesData, municipalitiesData) {
                 maxZoom: 20
             }).addTo(self.map);
 
-            var placeCluster = L.markerClusterGroup();
-            var muniCluster  = L.markerClusterGroup({ disableClusteringAtZoom: 10 });
+            var placeCluster = L.markerClusterGroup({
+                animate: false,
+                animateAddingMarkers: false,
+                spiderfyOnMaxZoom: false,
+                showCoverageOnHover: false,
+                zoomToBoundsOnClick: true,
+                maxClusterRadius: 60
+            });
+            var muniCluster = L.markerClusterGroup({
+                animate: false,
+                animateAddingMarkers: false,
+                spiderfyOnMaxZoom: false,
+                showCoverageOnHover: false,
+                zoomToBoundsOnClick: true,
+                maxClusterRadius: 60
+            });
 
             self.places.forEach(function(place) {
                 var marker = L.marker([place.lat, place.lng]);
