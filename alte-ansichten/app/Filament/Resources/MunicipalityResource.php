@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MunicipalityResource\Pages;
 use App\Models\District;
 use App\Models\Municipality;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -64,6 +65,15 @@ class MunicipalityResource extends Resource
             Textarea::make('description')
                 ->label('Beschreibung')
                 ->rows(5),
+
+            FileUpload::make('logo_path')
+                ->label('Gemeindewappen')
+                ->disk('public')
+                ->directory('municipalities/logos')
+                ->image()
+                ->imagePreviewHeight('80')
+                ->maxSize(2048)
+                ->nullable(),
 
             TextInput::make('postal_code')
                 ->label('Postleitzahl')
