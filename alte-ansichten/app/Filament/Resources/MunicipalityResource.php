@@ -81,11 +81,13 @@ class MunicipalityResource extends Resource
 
             TextInput::make('latitude')
                 ->label('Breitengrad')
-                ->numeric(),
+                ->numeric()
+                ->helperText('Wird automatisch ermittelt wenn leer'),
 
             TextInput::make('longitude')
                 ->label('Längengrad')
-                ->numeric(),
+                ->numeric()
+                ->helperText('Wird automatisch ermittelt wenn leer'),
 
             Select::make('status')
                 ->label('Status')

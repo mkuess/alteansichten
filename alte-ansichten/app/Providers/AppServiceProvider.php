@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Municipality;
+use App\Observers\MunicipalityObserver;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,6 +16,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Municipality::observe(MunicipalityObserver::class);
+
         $appUrl = config('app.url');
 
         if ($appUrl) {

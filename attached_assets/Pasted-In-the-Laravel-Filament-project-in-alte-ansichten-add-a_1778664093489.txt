@@ -1,0 +1,120 @@
+In the Laravel Filament project in alte-ansichten/, add automatic geocoding 
+when a Municipality is saved and latitude/longitude are empty.
+
+## 1. Create the GeocodingService
+
+Create file app/Services/GeocodingService.php with this content:
+
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class GeocodingService
+{
+    public function geocodeMunicipality(string $name, ?string $postalCode = null, string $country = 'Austria'): ?array
+    {
+        try {
+            $query = trim(implode(', ', array_filter([
+                $postalCode,
+                $name,
+                $country,
+            ])));
+
+            $response = Http::timeout(5)
+                ->withHeaders(['User-Agent' => 'AlteAnsichten/1.0'])
+                ->get('https://nominatim.openstreetmap.org/search', [
+                    'q'              => $query,
+                    'format'         => 'json',
+                    'limit'          => 1,
+                    'addressdetails' => 0,
+                ]);
+
+            if ($response->successful() && count($response->json()) > 0) {
+                $result = $response->json()[0];
+                return [
+                    'latitude'  => round((float) $result['lat'], 7),
+                    'longitude' => round((float) $result['lon'], 7),
+                ];
+            }
+        } catch (\Exception $e) {
+            Log::warning('Geocoding failed for municipality: ' . $name . ' — ' . $e->getMessage());
+        }
+
+        return null;
+    }
+}
+
+## 2. Create a Municipality Observer
+
+Create file app/Observers/MunicipalityObserver.php with this content:
+
+<?php
+
+namespace App\Observers;
+
+use App\Models\Municipality;
+use App\Services\GeocodingService;
+
+class MunicipalityObserver
+{
+    public function saving(Municipality $municipality): void
+    {
+        if (!empty($municipality->latitude) && !empty($municipality->longitude)) {
+            return;
+        }
+
+        if (empty($municipality->name)) {
+            return;
+        }
+
+        $service = app(GeocodingService::class);
+        $coords = $service->geocodeMunicipality(
+            $municipality->name,
+            $municipality->postal_code
+        );
+
+        if ($coords) {
+            $municipality->latitude  = $coords['latitude'];
+            $municipality->longitude = $coords['longitude'];
+        }
+    }
+}
+
+## 3. Register the Observer
+
+Open app/Providers/AppServiceProvider.php
+
+Add this import at the top:
+use App\Models\Municipality;
+use App\Observers\MunicipalityObserver;
+
+Add this inside the boot() method:
+        Municipality::observe(MunicipalityObserver::class);
+
+## 4. Add a visual indicator in MunicipalityResource
+
+Open app/Filament/Resources/MunicipalityResource.php
+
+Find the latitude field:
+            TextInput::make('latitude')
+                ->label('Breitengrad')
+                ->numeric(),
+
+Replace both latitude and longitude fields with:
+
+            TextInput::make('latitude')
+                ->label('Breitengrad')
+                ->numeric()
+                ->helperText('Wird automatisch ermittelt wenn leer'),
+
+            TextInput::make('longitude')
+                ->label('Längengrad')
+                ->numeric()
+                ->helperText('Wird automatisch ermittelt wenn leer'),
+
+## 5. Run after changes
+
+php artisan optimize:clear

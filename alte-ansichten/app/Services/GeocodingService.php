@@ -83,6 +83,15 @@ class GeocodingService
         }
     }
 
+    public function geocodeMunicipality(string $name, ?string $postalCode = null, string $country = 'Austria'): ?array
+    {
+        return $this->resolveCoordinates([
+            'city'        => $name,
+            'postal_code' => $postalCode,
+            'country'     => $country,
+        ]);
+    }
+
     private function buildQuery(array $parts): string
     {
         $segments = [];
