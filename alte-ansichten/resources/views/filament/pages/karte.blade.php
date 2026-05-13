@@ -87,12 +87,10 @@ window.karteApp = function(placesData, municipalitiesData) {
                 if (muni.logo_path) {
                     muniIcon = L.divIcon({
                         className: '',
-                        html: '<div style="width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid #6b7f56;box-shadow:0 2px 6px rgba(0,0,0,0.3);background:#fff;">' +
-                              '<img src="/storage/' + muni.logo_path + '" style="width:100%;height:100%;object-fit:contain;" />' +
-                              '</div>',
+                        html: '<img src="/storage/' + muni.logo_path + '" style="width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));" />',
                         iconSize: [40, 40],
-                        iconAnchor: [20, 20],
-                        popupAnchor: [0, -22]
+                        iconAnchor: [20, 40],
+                        popupAnchor: [0, -42]
                     });
                 } else {
                     muniIcon = L.divIcon({
