@@ -9,6 +9,13 @@
     .fi-page > section { padding-top: 0 !important; padding-bottom: 0 !important; gap: 0 !important; }
     .fi-page > section > div { gap: 0 !important; }
     .fi-page > section > div > div { gap: 0 !important; }
+
+    .marker-cluster-small div,
+    .marker-cluster-medium div,
+    .marker-cluster-large div {
+        color: rgba(255,255,255,0.92) !important;
+        font-weight: 600 !important;
+    }
 </style>
 
 <script>
@@ -121,8 +128,8 @@ window.karteApp = function(placesData, municipalitiesData) {
                         className: '',
                         html: '<img src="/storage/' + muni.logo_path + '" style="width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));" />',
                         iconSize: [40, 40],
-                        iconAnchor: [20, 40],
-                        popupAnchor: [0, -42]
+                        iconAnchor: [20, 20],
+                        popupAnchor: [0, -22]
                     });
                 } else {
                     muniIcon = L.divIcon({
