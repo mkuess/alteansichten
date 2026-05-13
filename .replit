@@ -1,14 +1,11 @@
-modules = ["php-8.4"]
-[[ports]]
-localPort = 8000
-externalPort = 80
+modules = ["nodejs-20", "php-8.4"]
 
 [[ports]]
 localPort = 5000
 externalPort = 80
 
 [nix]
-packages = ["php", "php80Packages.composer"]
+packages = ["php84Packages.composer", "nodejs_20", "nodePackages.pnpm"]
 
 [agent]
 expertMode = true
@@ -34,5 +31,5 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd alte-ansichten && PATH=/nix/store/zc1v3c5sqbm9kazc0h9rzp17w4ihw2ih-php-with-extensions-8.4.16/bin:$PATH php artisan serve --host=0.0.0.0 --port=5000"
+args = "cd alte-ansichten && export PATH=/nix/store/zc1v3c5sqbm9kazc0h9rzp17w4ihw2ih-php-with-extensions-8.4.16/bin:$PATH && php artisan serve --host=0.0.0.0 --port=5000"
 waitForPort = 5000
