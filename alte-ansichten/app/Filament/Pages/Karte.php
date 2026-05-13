@@ -87,14 +87,10 @@ class Karte extends Page
 
         $municipalityIds = $municipalities->pluck('id');
 
-        $municipalityMedia = \App\Models\MediaLink::where('linkable_type', 'municipality')
-            ->whereIn('linkable_id', $municipalityIds)
-            ->with(['mediaItem' => function ($q) {
-                $q->where('status', 'approved')
-                  ->select('id', 'title', 'file_path', 'external_url', 'year', 'type');
-            }])
+        $municipalityMedia = \App\Models\MediaItem::whereIn('primary_municipality_id', $municipalityIds)
+            ->select('id', 'title', 'file_path', 'external_url', 'year', 'type', 'status', 'primary_municipality_id')
             ->get()
-            ->groupBy('linkable_id');
+            ->groupBy('primary_municipality_id');
 
         $municipalitiesData = $municipalities->map(fn ($m) => [
             'id'          => $m->id,
@@ -113,13 +109,12 @@ class Karte extends Page
                 'lng'   => (float) $p->longitude,
             ])->values()->toArray(),
             'media' => ($municipalityMedia->get($m->id) ?? collect())
-                ->filter(fn ($link) => $link->mediaItem !== null)
-                ->map(fn ($link) => [
-                    'id'        => $link->mediaItem->id,
-                    'title'     => $link->mediaItem->title,
-                    'file_path' => $link->mediaItem->file_path,
-                    'year'      => $link->mediaItem->year,
-                    'type'      => $link->mediaItem->type,
+                ->map(fn ($mi) => [
+                    'id'        => $mi->id,
+                    'title'     => $mi->title,
+                    'file_path' => $mi->file_path,
+                    'year'      => $mi->year,
+                    'type'      => $mi->type,
                 ])->values()->toArray(),
         ])->values()->all();
 
