@@ -314,3 +314,17 @@ a.fi-sidebar-item-button,
   --tw-ring-shadow: none !important;
   --tw-ring-offset-shadow: none !important;
 }
+
+/* ── Hide topbar completely ── */
+.fi-topbar {
+  display: none !important;
+}
+.fi-main {
+  padding-top: 0 !important;
+}
+
+/* ── Hide sidebar collapse/close toggle buttons ── */
+.fi-sidebar-close-btn,
+.fi-topbar-open-sidebar-btn {
+  display: none !important;
+}
