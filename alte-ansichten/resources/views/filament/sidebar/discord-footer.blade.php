@@ -4,7 +4,7 @@
     $email   = $user?->email ?? '';
 @endphp
 
-<div style="
+<div class="user-card-footer" style="
     border-top: 1px solid var(--line);
     background: rgba(0,0,0,0.06);
     padding: 0 0.625rem;
@@ -15,7 +15,7 @@
     flex-shrink: 0;
 ">
     {{-- Avatar circle --}}
-    <div style="
+    <div class="user-card-avatar" style="
         width: 32px;
         height: 32px;
         border-radius: 50%;
@@ -31,7 +31,7 @@
     ">{{ $initial }}</div>
 
     {{-- Name / email --}}
-    <div style="flex: 1; min-width: 0; line-height: 1.25;">
+    <div class="user-card-text" style="flex: 1; min-width: 0; line-height: 1.25;">
         <div style="
             font-size: 0.8125rem;
             font-weight: 600;

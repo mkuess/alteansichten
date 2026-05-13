@@ -320,3 +320,28 @@ a.fi-sidebar-item-button,
 .fi-topbar-open-sidebar-btn {
   display: none !important;
 }
+
+/* ── User card: collapsed sidebar ── */
+.fi-sidebar-collapsed .user-card-text {
+  display: none !important;
+}
+.fi-sidebar-collapsed .user-card-footer {
+  justify-content: center !important;
+  padding: 0.5rem !important;
+  gap: 0 !important;
+}
+.fi-sidebar-collapsed .user-card-avatar {
+  margin: 0 auto !important;
+}
+
+/* ── Tablet: hide overlay that closes sidebar on content click ── */
+@media (min-width: 768px) {
+  .fi-sidebar-close-overlay {
+    display: none !important;
+  }
+}
+
+/* ── Keep sidebar collapse toggle visible on desktop ── */
+.fi-sidebar-header button {
+  display: flex !important;
+}
