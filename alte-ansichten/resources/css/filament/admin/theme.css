@@ -333,15 +333,3 @@ a.fi-sidebar-item-button,
 .fi-sidebar-collapsed .user-card-avatar {
   margin: 0 auto !important;
 }
-
-/* ── Tablet: hide overlay that closes sidebar on content click ── */
-@media (min-width: 768px) {
-  .fi-sidebar-close-overlay {
-    display: none !important;
-  }
-}
-
-/* ── Keep sidebar collapse toggle visible on desktop ── */
-.fi-sidebar-header button {
-  display: flex !important;
-}
