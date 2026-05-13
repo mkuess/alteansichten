@@ -92,7 +92,7 @@ window.karteApp = function(placesData, municipalitiesData) {
         initMap: function() {
             var self = this;
             var defaultCenter = [47.2, 14.0];
-            var defaultZoom = 8;
+            var defaultZoom = 11;
 
             if (self.places.length === 1) {
                 defaultCenter = [self.places[0].lat, self.places[0].lng];
