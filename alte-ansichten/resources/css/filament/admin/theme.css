@@ -4,7 +4,7 @@
 @import '/vendor/filament/filament/resources/css/theme.css';
 @config 'tailwind.config.js';
 
-:root, .dark {
+:root {
   --bg:         #f7f6f3;
   --panel:      #f0ede6;
   --card:       #ffffff;
@@ -32,7 +32,6 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
 .fi-sidebar {
   background: var(--panel) !important;
   border-right: 1px solid var(--line) !important;
-  width: 280px !important;
 }
 .fi-sidebar-nav { background: var(--panel) !important; padding: 0 0.625rem !important; gap: 0 !important; }
 .fi-sidebar-header { background: var(--panel) !important; border-bottom: 0 !important; box-shadow: none !important; padding: 1.1rem 1rem !important; }
@@ -338,5 +337,10 @@ a.fi-sidebar-item-button,
 
 /* ── User card: hide completely when sidebar is collapsed on desktop ── */
 .fi-sidebar-collapsed .user-card-footer {
+  display: none !important;
+}
+
+/* ── Force light mode only — hide theme switcher ── */
+.fi-theme-switcher {
   display: none !important;
 }

@@ -41,6 +41,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->font('Geist')
             ->viteTheme('resources/css/filament/admin/theme.css')
+            ->defaultThemeMode(\Filament\Enums\ThemeMode::Light)
             ->sidebarCollapsibleOnDesktop()
             ->renderHook(
                 PanelsRenderHook::SIDEBAR_FOOTER,
