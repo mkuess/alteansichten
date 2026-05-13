@@ -8,16 +8,18 @@
         align-items:center;
         justify-content:center;
         flex-shrink:0;
+        padding:5px;
     ">
-        <span style="
-            font-family:Georgia,serif;
-            font-style:italic;
-            font-size:17px;
-            color:#f3f1ec;
-            font-weight:700;
-            letter-spacing:-1px;
-            line-height:1;
-        ">AA</span>
+        <img
+            src="/images/aa-logo.svg"
+            alt="AA"
+            style="
+                width:100%;
+                height:100%;
+                object-fit:contain;
+                filter:invert(1) brightness(0.95);
+            "
+        />
     </div>
     <div>
         <div style="
