@@ -110,6 +110,7 @@ class MunicipalityResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->withCount('places'))
             ->columns([
                 TextColumn::make('district.name')
                     ->label('Bezirk')
@@ -141,10 +142,16 @@ class MunicipalityResource extends Resource
                     ->label('Öffentlich')
                     ->boolean(),
 
-                TextColumn::make('created_at')
-                    ->label('Erstellt am')
-                    ->dateTime('d.m.Y')
-                    ->sortable(),
+                TextColumn::make('places_count')
+                    ->label('Standorte')
+                    ->counts('places')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn (int $state): string => match(true) {
+                        $state === 0 => 'gray',
+                        $state < 5   => 'warning',
+                        default      => 'success',
+                    }),
             ])
             ->filters([
                 SelectFilter::make('district')
