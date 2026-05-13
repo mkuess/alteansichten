@@ -107,8 +107,10 @@ window.karteApp = function(placesData, municipalitiesData) {
             }
 
             self.map = L.map(self.$refs.mapEl).setView(defaultCenter, defaultZoom);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '\u00a9 OpenStreetMap contributors'
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '\u00a9 OpenStreetMap contributors \u00a9 CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
             }).addTo(self.map);
 
             var placeCluster = L.markerClusterGroup();
