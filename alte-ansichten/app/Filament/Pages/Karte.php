@@ -81,14 +81,20 @@ class Karte extends Page
             ->whereNotIn('status', ['hidden', 'archived'])
             ->withCount('places')
             ->with(['places' => function ($q) {
-                $q->with(['primaryMediaItems' => function ($mq) {
-                    $mq->where('status', 'approved')
-                       ->select('id', 'title', 'file_path', 'year', 'type', 'primary_place_id')
-                       ->limit(12);
-                }])
-                ->select('id', 'title', 'slug', 'municipality_id', 'latitude', 'longitude', 'status');
+                $q->select('id', 'title', 'slug', 'municipality_id', 'latitude', 'longitude', 'status');
             }])
             ->get(['id', 'name', 'slug', 'latitude', 'longitude', 'logo_path', 'summary', 'postal_code']);
+
+        $municipalityIds = $municipalities->pluck('id');
+
+        $municipalityMedia = \App\Models\MediaLink::where('linkable_type', 'municipality')
+            ->whereIn('linkable_id', $municipalityIds)
+            ->with(['mediaItem' => function ($q) {
+                $q->where('status', 'approved')
+                  ->select('id', 'title', 'file_path', 'external_url', 'year', 'type');
+            }])
+            ->get()
+            ->groupBy('linkable_id');
 
         $municipalitiesData = $municipalities->map(fn ($m) => [
             'id'          => $m->id,
@@ -106,13 +112,15 @@ class Karte extends Page
                 'lat'   => (float) $p->latitude,
                 'lng'   => (float) $p->longitude,
             ])->values()->toArray(),
-            'media' => $m->places->flatMap(fn ($p) => $p->primaryMediaItems->map(fn ($mi) => [
-                'id'        => $mi->id,
-                'title'     => $mi->title,
-                'file_path' => $mi->file_path,
-                'year'      => $mi->year,
-                'type'      => $mi->type,
-            ]))->values()->toArray(),
+            'media' => ($municipalityMedia->get($m->id) ?? collect())
+                ->filter(fn ($link) => $link->mediaItem !== null)
+                ->map(fn ($link) => [
+                    'id'        => $link->mediaItem->id,
+                    'title'     => $link->mediaItem->title,
+                    'file_path' => $link->mediaItem->file_path,
+                    'year'      => $link->mediaItem->year,
+                    'type'      => $link->mediaItem->type,
+                ])->values()->toArray(),
         ])->values()->all();
 
         return ['mapData' => $mapData, 'municipalitiesData' => $municipalitiesData];
