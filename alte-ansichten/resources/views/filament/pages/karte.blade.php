@@ -13,14 +13,14 @@
     .marker-cluster-small,
     .marker-cluster-medium,
     .marker-cluster-large {
-        background-color: rgba(255,255,255,0.6) !important;
+        background-color: rgba(28,26,23,0.25) !important;
     }
 
     .marker-cluster-small div,
     .marker-cluster-medium div,
     .marker-cluster-large div {
-        background-color: rgba(255,255,255,0.9) !important;
-        color: #1c1a17 !important;
+        background-color: rgba(28,26,23,0.85) !important;
+        color: #ffffff !important;
         font-weight: 600 !important;
     }
 </style>
