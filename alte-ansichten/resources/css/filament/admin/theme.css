@@ -307,29 +307,36 @@ a.fi-sidebar-item-button,
   --tw-ring-offset-shadow: none !important;
 }
 
-/* ── Hide topbar completely ── */
+/* ── Topbar: hidden on desktop, visible on mobile/tablet ── */
 .fi-topbar {
   display: none !important;
+}
+@media (max-width: 1023px) {
+  .fi-topbar {
+    display: flex !important;
+  }
 }
 .fi-main {
   padding-top: 0 !important;
 }
+@media (max-width: 1023px) {
+  .fi-main {
+    padding-top: 3.5rem !important;
+  }
+}
 
-/* ── Hide sidebar collapse/close toggle buttons ── */
+/* ── Sidebar open button: hidden on desktop, visible on mobile/tablet ── */
 .fi-sidebar-close-btn,
 .fi-topbar-open-sidebar-btn {
   display: none !important;
 }
+@media (max-width: 1023px) {
+  .fi-topbar-open-sidebar-btn {
+    display: flex !important;
+  }
+}
 
-/* ── User card: collapsed sidebar ── */
-.fi-sidebar-collapsed .user-card-text {
-  display: none !important;
-}
+/* ── User card: hide completely when sidebar is collapsed on desktop ── */
 .fi-sidebar-collapsed .user-card-footer {
-  justify-content: center !important;
-  padding: 0.5rem !important;
-  gap: 0 !important;
-}
-.fi-sidebar-collapsed .user-card-avatar {
-  margin: 0 auto !important;
+  display: none !important;
 }
