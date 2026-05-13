@@ -1,0 +1,167 @@
+In the Laravel Filament project in alte-ansichten/, extend the existing 
+"Karte" admin page to also show municipalities as pins with their coat of 
+arms (logo), and update the slide-in panel for municipalities.
+
+Before implementing, inspect:
+- app/Filament/Pages/Karte.php
+- resources/views/filament/pages/karte.blade.php
+- app/Models/Municipality.php
+
+## 1. Update Karte.php
+
+Open app/Filament/Pages/Karte.php and find where places are loaded 
+for the map data. Add a second query to load municipalities that have 
+both latitude and longitude set.
+
+Pass municipalities separately to the view, for example as $municipalities.
+
+Load municipalities with:
+Municipality::whereNotNull('latitude')
+    ->whereNotNull('longitude')
+    ->where('public_profile_enabled', true)
+    ->whereNotIn('status', ['hidden', 'archived'])
+    ->withCount('places')
+    ->get(['id', 'name', 'slug', 'latitude', 'longitude', 
+           'logo_path', 'summary', 'postal_code', 'places_count'])
+
+## 2. Update karte.blade.php
+
+In the JavaScript where places are rendered as markers, add a second 
+set of markers for municipalities.
+
+For each municipality:
+
+A) If it has a logo_path, use a custom Leaflet divIcon showing the 
+   coat of arms image as a circular pin:
+
+var muniIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid #6b7f56;box-shadow:0 2px 6px rgba(0,0,0,0.3);background:#fff;">' +
+          '<img src="/storage/' + muni.logo_path + '" style="width:100%;height:100%;object-fit:contain;" />' +
+          '</div>',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    popupAnchor: [0, -22]
+});
+var marker = L.marker([muni.lat, muni.lng], { icon: muniIcon }).addTo(self.map);
+
+B) If it has no logo_path, use a styled default marker with a 
+   building icon or the municipality initials:
+
+var muniIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:36px;height:36px;border-radius:50%;background:#6b7f56;border:2px solid #3f5234;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,0.3);">' +
+          muni.name.substring(0,2).toUpperCase() +
+          '</div>',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+    popupAnchor: [0, -20]
+});
+
+C) On click, open the slide-in panel with municipality data:
+
+marker.on('click', function() {
+    self.selected = muni;
+    self.selectedType = 'municipality';
+    self.panelOpen = true;
+    setTimeout(function() {
+        if (self.map) { self.map.invalidateSize(); }
+    }, 250);
+});
+
+## 3. Add selectedType to Alpine data
+
+In the Alpine.js x-data object, add:
+selectedType: null,
+
+When a place marker is clicked, set: self.selectedType = 'place';
+When a municipality marker is clicked, set: self.selectedType = 'municipality';
+
+## 4. Update the slide-in panel HTML
+
+In the panel, show different content based on selectedType:
+
+For places (existing behavior — keep as is):
+- place title, municipality, address, coordinates, media count
+- "Standort bearbeiten" link
+- "Medium hinzufügen" link
+- list of linked media items
+
+For municipalities (new):
+- Show coat of arms image if logo_path exists:
+  <img src="/storage/[logo_path]" style="height:60px;object-fit:contain;">
+- Municipality name as heading
+- Postal code if available
+- Summary if available
+- Number of places: "[places_count] Standorte"
+- Link: "Gemeinde bearbeiten" → /admin/municipalities/[id]/edit
+- Below: list of places belonging to this municipality
+  Load via a small fetch or pass place data from PHP
+
+## 5. Pass municipality places to frontend
+
+In the municipalities JSON data passed to JavaScript, include a 
+places array for each municipality. In Karte.php, eager load:
+
+->with(['places' => function($q) {
+    $q->whereNotNull('latitude')
+      ->whereNotNull('longitude')
+      ->where('status', 'published')
+      ->select('id', 'title', 'slug', 'municipality_id', 
+               'latitude', 'longitude');
+}])
+
+In the JavaScript municipality object, include:
+places: muni.places (array of {id, title, lat, lng})
+
+In the slide-in panel for municipalities, show these places as a 
+simple list with links to each place's edit page.
+
+## 6. Municipality data format for JavaScript
+
+Pass municipalities to JavaScript as a JSON array like places:
+
+var municipalitiesData = @json($municipalities->map(fn($m) => [
+    'id'          => $m->id,
+    'name'        => $m->name,
+    'slug'        => $m->slug,
+    'lat'         => (float) $m->latitude,
+    'lng'         => (float) $m->longitude,
+    'logo_path'   => $m->logo_path,
+    'summary'     => $m->summary,
+    'postal_code' => $m->postal_code,
+    'places_count'=> $m->places_count,
+    'places'      => $m->places->map(fn($p) => [
+        'id'    => $p->id,
+        'title' => $p->title,
+        'lat'   => (float) $p->latitude,
+        'lng'   => (float) $p->longitude,
+    ])->values()->toArray(),
+]));
+
+## 7. Safety
+
+Do not change:
+- PlaceResource
+- MediaItemResource  
+- MunicipalityResource
+- upload handling
+- geocoding logic
+- dashboard widgets
+- global CSS/theme
+- database schema
+- existing place marker logic
+
+## 8. After implementation run:
+
+php artisan optimize:clear
+
+## 9. Stop condition
+
+After implementation, stop and summarize:
+- which files were changed
+- how municipality markers are rendered
+- how the coat of arms is shown
+- how the slide-in panel differs for municipalities vs places
+- confirmation that no existing place markers, media upload, 
+  geocoding, or global theme were changed

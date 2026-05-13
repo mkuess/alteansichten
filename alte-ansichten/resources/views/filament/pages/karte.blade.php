@@ -12,10 +12,12 @@
 </style>
 
 <script>
-window.karteApp = function(placesData) {
+window.karteApp = function(placesData, municipalitiesData) {
     return {
         places: placesData,
+        municipalities: municipalitiesData,
         selected: null,
+        selectedType: null,
         panelOpen: false,
         map: null,
         init: function() {
@@ -72,6 +74,42 @@ window.karteApp = function(placesData) {
                 marker.bindTooltip(place.title, { permanent: false, direction: 'top' });
                 marker.on('click', function() {
                     self.selected = place;
+                    self.selectedType = 'place';
+                    self.panelOpen = true;
+                    setTimeout(function() {
+                        if (self.map) { self.map.invalidateSize(); }
+                    }, 250);
+                });
+            });
+
+            self.municipalities.forEach(function(muni) {
+                var muniIcon;
+                if (muni.logo_path) {
+                    muniIcon = L.divIcon({
+                        className: '',
+                        html: '<div style="width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid #6b7f56;box-shadow:0 2px 6px rgba(0,0,0,0.3);background:#fff;">' +
+                              '<img src="/storage/' + muni.logo_path + '" style="width:100%;height:100%;object-fit:contain;" />' +
+                              '</div>',
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 20],
+                        popupAnchor: [0, -22]
+                    });
+                } else {
+                    muniIcon = L.divIcon({
+                        className: '',
+                        html: '<div style="width:36px;height:36px;border-radius:50%;background:#6b7f56;border:2px solid #3f5234;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,0.3);">' +
+                              muni.name.substring(0, 2).toUpperCase() +
+                              '</div>',
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 18],
+                        popupAnchor: [0, -20]
+                    });
+                }
+                var marker = L.marker([muni.lat, muni.lng], { icon: muniIcon }).addTo(self.map);
+                marker.bindTooltip(muni.name, { permanent: false, direction: 'top' });
+                marker.on('click', function() {
+                    self.selected = muni;
+                    self.selectedType = 'municipality';
                     self.panelOpen = true;
                     setTimeout(function() {
                         if (self.map) { self.map.invalidateSize(); }
@@ -137,7 +175,7 @@ window.karteApp = function(placesData) {
 
 {{-- Outer wrapper: position relative so the panel can float over the map --}}
 <div
-    x-data="karteApp({{ Js::from($mapData) }})"
+    x-data="karteApp({{ Js::from($mapData) }}, {{ Js::from($municipalitiesData) }})"
     class="relative overflow-hidden"
     style="height: calc(100vh - 3.5rem); width: 100%;"
 >
@@ -173,8 +211,8 @@ window.karteApp = function(placesData) {
         {{-- Sticky header --}}
         <div class="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-start justify-between gap-2">
             <div>
-                <p class="text-sm font-semibold text-gray-900 dark:text-white leading-snug" x-text="selected?.title"></p>
-                <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5" x-text="selected?.municipality ? selected.municipality + (selected.district ? ', ' + selected.district : '') : ''"></p>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white leading-snug" x-text="selectedType === 'municipality' ? selected?.name : selected?.title"></p>
+                <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5" x-text="selectedType === 'municipality' ? (selected?.postal_code ?? '') : (selected?.municipality ? selected.municipality + (selected.district ? ', ' + selected.district : '') : '')"></p>
             </div>
             <button
                 @click="closePanel()"
@@ -187,9 +225,9 @@ window.karteApp = function(placesData) {
             </button>
         </div>
 
-        {{-- Large preview image (first media item with a file) --}}
+        {{-- Large preview image (first media item with a file) — places only --}}
         <div
-            x-show="selected?.media?.find(function(m){ return m.thumb_url; })"
+            x-show="selectedType === 'place' && selected?.media?.find(function(m){ return m.thumb_url; })"
             style="display: none;"
         >
             <img
@@ -201,8 +239,8 @@ window.karteApp = function(placesData) {
             />
         </div>
 
-        {{-- Body --}}
-        <div class="p-4 space-y-4" x-show="selected">
+        {{-- Place body --}}
+        <div class="p-4 space-y-4" x-show="selected && selectedType === 'place'" style="display:none;">
 
             {{-- Address --}}
             <div x-show="selected && hasAddress(selected)">
@@ -244,17 +282,14 @@ window.karteApp = function(placesData) {
                     Medien (<span x-text="selected?.media_count ?? 0"></span>)
                 </p>
 
-                {{-- No media --}}
                 <p
                     x-show="!selected?.media || selected.media.length === 0"
                     class="text-sm text-gray-400 dark:text-gray-500 italic"
                 >Keine Medien verknüpft.</p>
 
-                {{-- Media list --}}
                 <div class="space-y-3">
                     <template x-for="item in (selected?.media ?? [])" :key="item.id">
                         <div class="flex gap-3 items-start">
-                            {{-- Thumbnail --}}
                             <div
                                 class="flex-shrink-0 w-16 h-14 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
                                 :class="item.thumb_url ? 'cursor-pointer' : ''"
@@ -276,8 +311,6 @@ window.karteApp = function(placesData) {
                                     </svg>
                                 </div>
                             </div>
-
-                            {{-- Info --}}
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate" x-text="item.title"></p>
                                 <p
@@ -291,6 +324,69 @@ window.karteApp = function(placesData) {
                                 >Bearbeiten</a>
                             </div>
                         </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        {{-- Municipality body --}}
+        <div class="p-4 space-y-4" x-show="selected && selectedType === 'municipality'" style="display:none;">
+
+            {{-- Coat of arms --}}
+            <div x-show="selected?.logo_path" style="display:none;">
+                <img
+                    :src="'/storage/' + selected?.logo_path"
+                    :alt="selected?.name"
+                    style="height:60px;object-fit:contain;"
+                />
+            </div>
+
+            {{-- Postal code --}}
+            <div x-show="selected?.postal_code">
+                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Postleitzahl</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300" x-text="selected?.postal_code"></p>
+            </div>
+
+            {{-- Summary --}}
+            <div x-show="selected?.summary">
+                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Beschreibung</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300" x-text="selected?.summary"></p>
+            </div>
+
+            {{-- Places count --}}
+            <div>
+                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Standorte</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300" x-text="(selected?.places_count ?? 0) + ' Standorte'"></p>
+            </div>
+
+            {{-- Edit link --}}
+            <div class="flex flex-wrap gap-x-4 gap-y-2">
+                <a
+                    :href="'/admin/municipalities/' + selected?.id + '/edit'"
+                    class="inline-flex items-center gap-1 text-xs text-primary-600 dark:text-primary-400 hover:underline"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                    </svg>
+                    Gemeinde bearbeiten
+                </a>
+            </div>
+
+            {{-- Places list --}}
+            <div
+                class="border-t border-gray-100 dark:border-gray-800 pt-4"
+                x-show="selected?.places && selected.places.length > 0"
+            >
+                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
+                    Standorte in dieser Gemeinde
+                </p>
+                <div class="space-y-1">
+                    <template x-for="place in (selected?.places ?? [])" :key="place.id">
+                        <a
+                            :href="'/admin/places/' + place.id + '/edit'"
+                            class="block text-sm text-primary-600 dark:text-primary-400 hover:underline py-0.5 truncate"
+                            x-text="place.title"
+                        ></a>
                     </template>
                 </div>
             </div>

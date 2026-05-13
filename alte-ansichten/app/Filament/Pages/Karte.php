@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Municipality;
 use App\Models\Place;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
@@ -74,6 +75,37 @@ class Karte extends Page
             ];
         })->values()->all();
 
-        return ['mapData' => $mapData];
+        $municipalities = Municipality::whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->where('public_profile_enabled', true)
+            ->whereNotIn('status', ['hidden', 'archived'])
+            ->withCount('places')
+            ->with(['places' => function ($q) {
+                $q->whereNotNull('latitude')
+                  ->whereNotNull('longitude')
+                  ->where('status', 'published')
+                  ->select('id', 'title', 'slug', 'municipality_id', 'latitude', 'longitude');
+            }])
+            ->get(['id', 'name', 'slug', 'latitude', 'longitude', 'logo_path', 'summary', 'postal_code']);
+
+        $municipalitiesData = $municipalities->map(fn ($m) => [
+            'id'          => $m->id,
+            'name'        => $m->name,
+            'slug'        => $m->slug,
+            'lat'         => (float) $m->latitude,
+            'lng'         => (float) $m->longitude,
+            'logo_path'   => $m->logo_path,
+            'summary'     => $m->summary,
+            'postal_code' => $m->postal_code,
+            'places_count' => $m->places_count,
+            'places'      => $m->places->map(fn ($p) => [
+                'id'    => $p->id,
+                'title' => $p->title,
+                'lat'   => (float) $p->latitude,
+                'lng'   => (float) $p->longitude,
+            ])->values()->toArray(),
+        ])->values()->all();
+
+        return ['mapData' => $mapData, 'municipalitiesData' => $municipalitiesData];
     }
 }
