@@ -27,7 +27,35 @@ window.karteApp = function(placesData, municipalitiesData) {
             });
         },
         loadLeaflet: function(cb) {
-            if (window.L) { cb(); return; }
+            var self = this;
+            function loadMarkerCluster(done) {
+                var cssIds = [
+                    ['markercluster-css',         'https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css'],
+                    ['markercluster-default-css',  'https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css'],
+                ];
+                cssIds.forEach(function(pair) {
+                    if (!document.getElementById(pair[0])) {
+                        var link = document.createElement('link');
+                        link.id = pair[0];
+                        link.rel = 'stylesheet';
+                        link.href = pair[1];
+                        document.head.appendChild(link);
+                    }
+                });
+                if (window.L.markerClusterGroup) { done(); return; }
+                if (!document.getElementById('markercluster-js')) {
+                    var s = document.createElement('script');
+                    s.id = 'markercluster-js';
+                    s.src = 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js';
+                    s.onload = done;
+                    document.head.appendChild(s);
+                } else {
+                    var poll = setInterval(function() {
+                        if (window.L.markerClusterGroup) { clearInterval(poll); done(); }
+                    }, 50);
+                }
+            }
+            if (window.L) { loadMarkerCluster(cb); return; }
             if (!document.getElementById('leaflet-css')) {
                 var link = document.createElement('link');
                 link.id = 'leaflet-css';
@@ -39,11 +67,11 @@ window.karteApp = function(placesData, municipalitiesData) {
                 var s = document.createElement('script');
                 s.id = 'leaflet-js';
                 s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-                s.onload = cb;
+                s.onload = function() { loadMarkerCluster(cb); };
                 document.head.appendChild(s);
             } else {
                 var poll = setInterval(function() {
-                    if (window.L) { clearInterval(poll); cb(); }
+                    if (window.L) { clearInterval(poll); loadMarkerCluster(cb); }
                 }, 50);
             }
         },
@@ -69,8 +97,11 @@ window.karteApp = function(placesData, municipalitiesData) {
                 attribution: '\u00a9 OpenStreetMap contributors'
             }).addTo(self.map);
 
+            var placeCluster = L.markerClusterGroup();
+            var muniCluster  = L.markerClusterGroup({ disableClusteringAtZoom: 10 });
+
             self.places.forEach(function(place) {
-                var marker = L.marker([place.lat, place.lng]).addTo(self.map);
+                var marker = L.marker([place.lat, place.lng]);
                 marker.bindTooltip(place.title, { permanent: false, direction: 'top' });
                 marker.on('click', function() {
                     self.selected = place;
@@ -80,6 +111,7 @@ window.karteApp = function(placesData, municipalitiesData) {
                         if (self.map) { self.map.invalidateSize(); }
                     }, 250);
                 });
+                placeCluster.addLayer(marker);
             });
 
             self.municipalities.forEach(function(muni) {
@@ -103,7 +135,7 @@ window.karteApp = function(placesData, municipalitiesData) {
                         popupAnchor: [0, -20]
                     });
                 }
-                var marker = L.marker([muni.lat, muni.lng], { icon: muniIcon }).addTo(self.map);
+                var marker = L.marker([muni.lat, muni.lng], { icon: muniIcon });
                 marker.bindTooltip(muni.name, { permanent: false, direction: 'top' });
                 marker.on('click', function() {
                     self.selected = muni;
@@ -113,7 +145,11 @@ window.karteApp = function(placesData, municipalitiesData) {
                         if (self.map) { self.map.invalidateSize(); }
                     }, 250);
                 });
+                muniCluster.addLayer(marker);
             });
+
+            placeCluster.addTo(self.map);
+            muniCluster.addTo(self.map);
 
             setTimeout(function() {
                 if (self.map) { self.map.invalidateSize(); }
