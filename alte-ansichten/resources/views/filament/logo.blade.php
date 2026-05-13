@@ -17,7 +17,7 @@
                 width:100%;
                 height:100%;
                 object-fit:contain;
-                filter:invert(1) brightness(0.95);
+                filter:none;
             "
         />
     </div>
