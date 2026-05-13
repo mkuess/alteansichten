@@ -131,16 +131,8 @@ html, body, .fi-body, .fi-main, .fi-layout, .fi-simple-layout {
 .fi-link, [class*="text-primary-600"], [class*="text-primary-500"] { color: var(--accent) !important; }
 .font-mono, [class*="font-mono"] { font-family: 'JetBrains Mono', monospace !important; }
 
-/* ── Account widget / user card ── */
-.fi-wi-account { background: var(--panel) !important; border-top: 1px solid var(--line) !important; }
-.fi-sidebar .fi-wi-account,
-.fi-sidebar [class*="account"] {
-  background: var(--card) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 10px !important;
-  margin: 0.5rem 0 0.25rem 0 !important;
-  padding: 0.5rem 0.75rem !important;
-}
+/* ── Account widget — hidden (replaced by Discord-style footer) ── */
+.fi-wi-account { display: none !important; }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }

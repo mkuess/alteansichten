@@ -43,12 +43,10 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->sidebarCollapsibleOnDesktop()
             ->renderHook(
-                PanelsRenderHook::SIDEBAR_NAV_START,
-                fn () => view('filament.sidebar.user-card'),
-            )
-            ->renderHook(
-                PanelsRenderHook::SIDEBAR_NAV_END,
-                fn () => view('filament.sidebar.logout-button'),
+                PanelsRenderHook::SIDEBAR_FOOTER,
+                fn () => view('filament.sidebar.discord-footer', [
+                    'user' => auth()->user(),
+                ]),
             )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -57,7 +55,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
                 StatsOverviewWidget::class,
                 LatestSubmissionsWidget::class,
                 TopMunicipalitiesWidget::class,
