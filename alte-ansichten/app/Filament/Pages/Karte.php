@@ -86,10 +86,7 @@ class Karte extends Page
                        ->select('id', 'title', 'file_path', 'year', 'type', 'primary_place_id')
                        ->limit(12);
                 }])
-                ->whereNotNull('latitude')
-                ->whereNotNull('longitude')
-                ->where('status', 'published')
-                ->select('id', 'title', 'slug', 'municipality_id', 'latitude', 'longitude');
+                ->select('id', 'title', 'slug', 'municipality_id', 'latitude', 'longitude', 'status');
             }])
             ->get(['id', 'name', 'slug', 'latitude', 'longitude', 'logo_path', 'summary', 'postal_code']);
 

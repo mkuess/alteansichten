@@ -212,7 +212,11 @@ window.karteApp = function(placesData, municipalitiesData) {
         lbOpen: false,
         lbIndex: 0,
         lbImages: function() {
-            return (this.selected ? this.selected.media : []).filter(function(m) { return !!m.thumb_url; });
+            return (this.selected ? this.selected.media : []).filter(function(m) { return !!(m.thumb_url || m.file_path); });
+        },
+        lbImgUrl: function(item) {
+            if (!item) return '';
+            return item.thumb_url || (item.file_path ? '/storage/' + item.file_path : '');
         },
         openLightbox: function(itemId) {
             var imgs = this.lbImages();
@@ -470,7 +474,11 @@ window.karteApp = function(placesData, municipalitiesData) {
                     <template x-for="item in (selected?.media ?? [])" :key="item.id">
                         <div class="flex gap-3 items-center">
                             {{-- Thumbnail --}}
-                            <div class="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+                                :class="item.file_path ? 'cursor-pointer' : ''"
+                                @click="item.file_path && openLightbox(item.id)"
+                            >
                                 <template x-if="item.file_path">
                                     <img
                                         :src="'/storage/' + item.file_path"
@@ -542,7 +550,7 @@ window.karteApp = function(placesData, municipalitiesData) {
 
         {{-- Main image --}}
         <img
-            :src="lbImages()[lbIndex]?.thumb_url"
+            :src="lbImgUrl(lbImages()[lbIndex])"
             :alt="lbImages()[lbIndex]?.title"
             style="max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 0.5rem; box-shadow: 0 25px 60px rgba(0,0,0,0.5);"
         />
