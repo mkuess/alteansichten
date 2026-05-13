@@ -10,10 +10,17 @@
     .fi-page > section > div { gap: 0 !important; }
     .fi-page > section > div > div { gap: 0 !important; }
 
+    .marker-cluster-small,
+    .marker-cluster-medium,
+    .marker-cluster-large {
+        background-color: rgba(255,255,255,0.6) !important;
+    }
+
     .marker-cluster-small div,
     .marker-cluster-medium div,
     .marker-cluster-large div {
-        color: rgba(255,255,255,0.92) !important;
+        background-color: rgba(255,255,255,0.9) !important;
+        color: #1c1a17 !important;
         font-weight: 600 !important;
     }
 </style>
