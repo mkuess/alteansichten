@@ -1,3 +1,20 @@
+<style>
+#cat-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(4, 1fr);
+}
+@media (max-width: 1024px) {
+    #cat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+    #cat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+    #cat-grid { grid-template-columns: repeat(1, 1fr); }
+}
+</style>
+
 <x-filament-panels::page>
 
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem;">
@@ -18,7 +35,7 @@
     </div>
 </div>
 
-<div id="cat-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem;">
+<div id="cat-grid" style="gap: 0.75rem;">
     @foreach($categories as $cat)
         <a href="{{ route('filament.admin.resources.categories.edit', $cat) }}"
            data-name="{{ strtolower($cat->name) }}"
