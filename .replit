@@ -1,6 +1,38 @@
+modules = ["php-8.4"]
 [[ports]]
 localPort = 8000
 externalPort = 80
 
+[[ports]]
+localPort = 5000
+externalPort = 80
+
 [nix]
 packages = ["php", "php80Packages.composer"]
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd alte-ansichten && PATH=/nix/store/zc1v3c5sqbm9kazc0h9rzp17w4ihw2ih-php-with-extensions-8.4.16/bin:$PATH php artisan serve --host=0.0.0.0 --port=5000"
+waitForPort = 5000
