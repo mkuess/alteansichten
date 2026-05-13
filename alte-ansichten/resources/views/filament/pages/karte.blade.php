@@ -454,6 +454,51 @@ window.karteApp = function(placesData, municipalitiesData) {
                     </template>
                 </div>
             </div>
+
+            {{-- Media section --}}
+            <div class="border-t border-gray-100 dark:border-gray-800 pt-4">
+                <p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
+                    Medien (<span x-text="(selected?.media ?? []).length"></span>)
+                </p>
+
+                <p
+                    x-show="!selected?.media || selected.media.length === 0"
+                    class="text-sm text-gray-400 dark:text-gray-500 italic"
+                >Keine Medien verknüpft.</p>
+
+                <div class="space-y-2">
+                    <template x-for="item in (selected?.media ?? [])" :key="item.id">
+                        <div class="flex gap-3 items-center">
+                            {{-- Thumbnail --}}
+                            <div class="flex-shrink-0 w-10 h-10 rounded overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                <template x-if="item.file_path">
+                                    <img
+                                        :src="'/storage/' + item.file_path"
+                                        :alt="item.title"
+                                        class="w-full h-full object-cover"
+                                        loading="lazy"
+                                    />
+                                </template>
+                                <template x-if="!item.file_path">
+                                    <div class="w-full h-full flex items-center justify-center text-gray-300 dark:text-gray-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                </template>
+                            </div>
+                            {{-- Info --}}
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 truncate"
+                                   x-text="item.title || item.type || '—'"></p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500"
+                                   x-show="item.year"
+                                   x-text="item.year"></p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
         </div>
     </div>
 
