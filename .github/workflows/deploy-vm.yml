@@ -20,9 +20,14 @@ jobs:
 
             cd /opt/aa/alte-ansichten
 
-            echo "Backup current SQLite database..."
-            mkdir -p /opt/aa/backups
-            docker cp aa_app:/var/www/html/database/database.sqlite /opt/aa/backups/database.sqlite.before-deploy-$(date +%Y%m%d-%H%M%S)
+echo "Ensure app container exists before backup..."
+if ! docker ps -a --format '{{.Names}}' | grep -q '^aa_app$'; then
+  docker-compose up -d aa_app
+fi
+
+echo "Backup current SQLite database..."
+mkdir -p /opt/aa/backups
+docker cp aa_app:/var/www/html/database/database.sqlite /opt/aa/backups/database.sqlite.before-deploy-$(date +%Y%m%d-%H%M%S) || echo "No existing database backup created because aa_app database file was not available."
 
             echo "Pull latest code..."
             git pull origin main
