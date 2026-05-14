@@ -32,13 +32,15 @@ docker cp aa_app:/var/www/html/database/database.sqlite /opt/aa/backups/database
             echo "Pull latest code..."
             git pull origin main
 
-            echo "Build containers..."
-            docker-compose build
+echo "Build containers..."
+docker-compose build
 
-            echo "Recreate app containers without deleting volumes..."
-            docker-compose stop aa_web aa_app || true
-            docker-compose rm -f aa_web aa_app || true
-            docker-compose up -d
+echo "Remove old app container to avoid Docker Compose v1 ContainerConfig error..."
+docker rm -f aa_app || true
+
+echo "Start containers..."
+docker-compose up -d
+
 
             echo "Ensure public storage link exists on host..."
             ln -sfn ../storage/app/public public/storage
