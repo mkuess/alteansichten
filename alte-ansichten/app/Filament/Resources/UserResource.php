@@ -101,7 +101,7 @@ class UserResource extends Resource
                     ->label('Zuletzt eingeloggt')
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
-                    ->default('—')
+                    ->default(null)
                     ->description(fn ($record) => $record->last_login_at
                         ? $record->last_login_at->diffForHumans()
                         : 'Noch nie eingeloggt'),
