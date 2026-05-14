@@ -1,0 +1,55 @@
+name: Deploy to VM
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.AA_SSH_HOST }}
+          username: ${{ secrets.AA_SSH_USER }}
+          key: ${{ secrets.AA_SSH_KEY }}
+          port: ${{ secrets.AA_SSH_PORT }}
+          script: |
+            set -e
+
+            cd /opt/aa/alte-ansichten
+
+            echo "Backup current SQLite database..."
+            mkdir -p /opt/aa/backups
+            docker cp aa_app:/var/www/html/database/database.sqlite /opt/aa/backups/database.sqlite.before-deploy-$(date +%Y%m%d-%H%M%S)
+
+            echo "Pull latest code..."
+            git pull origin main
+
+            echo "Rebuild containers..."
+            docker-compose up -d --build
+
+            echo "Ensure public storage link exists on host..."
+            ln -sfn ../storage/app/public public/storage
+
+            echo "Copy Vite build assets from app container to host..."
+            rm -rf public/build
+            docker cp aa_app:/var/www/html/public/build ./public/build
+            chown -R root:root public/build
+            chmod -R a+rX public/build
+
+            echo "Fix Laravel permissions..."
+            docker exec aa_app sh -c 'chown -R www-data:www-data /var/www/html/database /var/www/html/storage /var/www/html/bootstrap/cache && chmod -R ug+rwX /var/www/html/database /var/www/html/storage /var/www/html/bootstrap/cache'
+
+            echo "Clear Laravel cache..."
+            docker exec aa_app php artisan optimize:clear
+
+            echo "Run safe migrations..."
+            docker exec aa_app php artisan migrate --force
+
+            echo "Optimize Laravel..."
+            docker exec aa_app php artisan optimize
+
+            echo "Test site..."
+            curl -I https://aa.ikuu.app
