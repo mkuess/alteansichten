@@ -97,12 +97,16 @@ class UserResource extends Resource
                         default  => ucfirst($state),
                     }),
 
-                TextColumn::make('created_at')
-                    ->label('Erstellt')
+                TextColumn::make('last_login_at')
+                    ->label('Zuletzt eingeloggt')
                     ->dateTime('d.m.Y H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->default('—')
+                    ->description(fn ($record) => $record->last_login_at
+                        ? $record->last_login_at->diffForHumans()
+                        : 'Noch nie eingeloggt'),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('last_login_at', 'desc')
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
