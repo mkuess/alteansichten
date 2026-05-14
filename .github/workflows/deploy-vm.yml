@@ -27,8 +27,13 @@ jobs:
             echo "Pull latest code..."
             git pull origin main
 
-            echo "Rebuild containers..."
-            docker-compose up -d --build
+            echo "Build containers..."
+            docker-compose build
+
+            echo "Recreate app containers without deleting volumes..."
+            docker-compose stop aa_web aa_app || true
+            docker-compose rm -f aa_web aa_app || true
+            docker-compose up -d
 
             echo "Ensure public storage link exists on host..."
             ln -sfn ../storage/app/public public/storage
